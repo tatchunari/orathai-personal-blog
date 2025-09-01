@@ -9,7 +9,7 @@ const HeroSection = () => {
           <h1 className="text-3xl md:text-4xl font-bold mb-4 leading-tight md:text-right">
             DevDreamer. <br className="md:hidden" />
             Matcha Lover.<br />
-            Capy Enerygy.
+            Capy Energy.
           </h1>
           <p className="text-gray-500 mb-6 text-base md:text-xl md:text-right">
             Documentation of my career journey, hobbies <br />and interests.
