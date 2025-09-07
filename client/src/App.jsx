@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
-import Home from "./pages/Home.jsx";
+import LandingPage from "./pages/LandingPage.jsx";
+import ViewPostPage from "./pages/ViewPostPage.jsx";
 
 function App() {
 
@@ -9,7 +10,8 @@ function App() {
     <div className="App">
       <Router>
         <Routes>
-          <Route path='/' element={<Home />}/>
+          <Route path='/' element={<LandingPage />}/>
+          <Route path='/post/:postId' element={<ViewPostPage />}/>
         </Routes>
       </Router>
     </div>

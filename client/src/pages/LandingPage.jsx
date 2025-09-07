@@ -4,7 +4,7 @@ import Footer from '../components/Footer'
 import ArticleSection from '../components/ArticleSection'
 
 
-const Home = () => {
+const LandingPage = () => {
   return (
     <div className="flex flex-col">
       <Navbar/>
@@ -15,4 +15,4 @@ const Home = () => {
   )
 }
 
-export default Home;
+export default LandingPage;

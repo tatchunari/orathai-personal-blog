@@ -1,3 +1,5 @@
+import { useNavigate } from "react-router-dom";
+
 function BlogCard(props) {
   const {image, category, title, description, author, date} = props;
   return (
