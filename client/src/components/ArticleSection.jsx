@@ -4,7 +4,7 @@ import BlogCard from "./BlogCard";
 
 
 import { useEffect, useState } from "react";
-import axios from "axios";
+import { fetchPosts } from "@/api/posts";
 
 const ArticleSection = () => {
 
@@ -17,12 +17,12 @@ const ArticleSection = () => {
 
   useEffect(() => {
     setIsLoading(true);
-    const fetchPosts = async () => {
+    const getPosts = async () => {
       try {
-        const response = await axios.get(`https://blog-post-project-api.vercel.app/posts?page=${page}&limit=6&${category !== 'Highlight' ? `&category=${category}` : "" }`)
-        setPosts((prevPosts) => [...prevPosts, ...response.data.posts]);
+        const data = await fetchPosts({ page, category }); 
+        setPosts((prevPosts) => [...prevPosts, ...data.posts]);
         setIsLoading(false);
-        if (response.data.currentPage >= response.data.totalPages) {
+        if (data.currentPage >= data.totalPages) {
           setHasMore(false);
         }
       } catch (error) {
@@ -30,7 +30,7 @@ const ArticleSection = () => {
         setIsLoading(false);
       }
     }
-    fetchPosts();
+    getPosts();
   }, [page, category])
 
   const handleLoadMore = () => {

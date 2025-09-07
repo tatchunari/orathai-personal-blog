@@ -2,14 +2,17 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
 import { useParams } from "react-router-dom";
+import NotFoundPage from "./NotFoundPage";
 
 
 const ViewPostPage = () => {
 
   const { postId } = useParams();
+
+  const blog = find((post) => post.id.toString() === postId);
+  if (!blog) return <NotFoundPage/>
   return (
-    <div>
-      <h1>{postId}</h1>
+    <div className="flex flex-col min-h-screen">
       <Navbar />
       <Footer />
     </div>
