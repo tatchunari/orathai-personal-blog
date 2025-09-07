@@ -31,7 +31,7 @@ const ViewPost = () => {
     try {
       const response = await axios.get(`https://blog-post-project-api.vercel.app/posts/${params.id}`);
 
-      if (response.data || Object.keys(response.data).length === 0) {
+      if (!response.data || Object.keys(response.data).length === 0) {
         setNotFound(true);
       }
 
