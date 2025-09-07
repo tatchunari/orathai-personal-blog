@@ -1,7 +1,4 @@
-import { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { PostsContext } from "./contexts/PostsContext.jsx";
-import { fetchPosts } from "./api/posts.js";
 
 import LandingPage from "./pages/LandingPage.jsx";
 import ViewPostPage from "./pages/ViewPostPage.jsx";
