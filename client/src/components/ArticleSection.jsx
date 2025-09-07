@@ -1,7 +1,8 @@
 import ArticleNavbarMobile from "./ArticleNavbarMobile";
 import ArticleNavbarDesktop from "./ArticleNavbarDesktop";
 import BlogCard from "./BlogCard";
-import { blogPosts } from "@/data/blogPost";
+
+
 import { useEffect, useState } from "react";
 import axios from "axios";
 
@@ -13,7 +14,6 @@ const ArticleSection = () => {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
-
 
   useEffect(() => {
     setIsLoading(true);
@@ -57,6 +57,7 @@ const ArticleSection = () => {
          posts.map((blog, index) => 
           <BlogCard 
             key={index}
+            postId={blog.id}
             image={blog.image}
             category={blog.category}
             title={blog.title}

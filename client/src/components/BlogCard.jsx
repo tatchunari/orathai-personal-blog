@@ -1,7 +1,7 @@
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 function BlogCard(props) {
-  const {image, category, title, description, author, date} = props;
+  const {postId, image, category, title, description, author, date} = props;
   return (
     <div className="flex flex-col gap-4">
       <a href="#" className="relative h-[212px] sm:h-[360px]">
@@ -12,11 +12,14 @@ function BlogCard(props) {
           <span className="bg-[#D7F2E9] rounded-full px-3 py-1 text-sm font-semibold text-[#12B279] mb-2">{category}
           </span>
         </div>
-        <a href="#" >
-          <h2 className="text-start font-bold text-[#26231E] text-xl mb-2 line-clamp-2 hover:underline">
-          {title}
-          </h2>
-        </a>
+         <div>
+          <Link
+            to={`/post/${postId}`}
+            className="text-start font-bold text-[#26231E] text-xl mb-2 line-clamp-2 hover:underline block"
+          >
+            {title}
+          </Link>
+        </div>
         <p className="text-muted-foreground text-[#75716B] text-sm mb-4 flex-grow line-clamp-3">
         {description}
         </p>
