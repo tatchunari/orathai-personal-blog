@@ -6,6 +6,7 @@ import ReactMarkdown from 'react-markdown';
 import AuthorBio from './post/AuthorBio';
 import Comment from './post/Comment';
 import Share from './post/Share';
+import NotFoundPage from '@/pages/NotFoundPage';
 
 const ViewPost = () => {
 
@@ -17,6 +18,7 @@ const ViewPost = () => {
   const [content, setContent] = useState("");
   const [likes, setLikes] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
+  const [notFound, setNotFound] = useState(false);
 
   const params = useParams();
 
@@ -29,6 +31,10 @@ const ViewPost = () => {
     try {
       const response = await axios.get(`https://blog-post-project-api.vercel.app/posts/${params.id}`);
 
+      if (response.data || Object.keys(response.data).length === 0) {
+        setNotFound(true);
+      }
+
       setImg(response.data.image);
       setTitle(response.data.title);
       setDate(response.data.date);
@@ -39,13 +45,16 @@ const ViewPost = () => {
       setIsLoading(false);
     } catch (error) {
       console.log(error);
+
+      if (error.response && error.response.status === 404) {
+        setNotFound(true);
+      }
       setIsLoading(false);
     }
   }
 
-  if (isLoading) {
-    return <LoadingScreen />;
-  }
+  if (isLoading) return <LoadingScreen />;
+  if (notFound) return <NotFoundPage />
   return (
     <div className="max-w-7xl mx-auto space-y-8 container md:px-8 pb-20 md:pb-28 md:pt-8 lg:pt-16">
       <div className="space-y-4 md:px-4">
