@@ -8,12 +8,14 @@ import NotFoundPage from "./NotFoundPage";
 const ViewPostPage = () => {
 
   const { postId } = useParams();
-
-  const blog = find((post) => post.id.toString() === postId);
+  const blog = posts.find((post) => post.id.toString() === postId);
   if (!blog) return <NotFoundPage/>
+
+  
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar />
+
       <Footer />
     </div>
   )
