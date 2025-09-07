@@ -5,7 +5,7 @@ import { useState } from "react";
 
 const ArticleNavbarDesktop = () => {
 
-  const categories = ["Highlight", "Cat", "Inspiration", "General"];
+  const categories = ["Highlight", "Dev", "Hobbies", "Art"];
   const [selectedCategory, setSelectedCategory] = useState("Highlight");
 
 

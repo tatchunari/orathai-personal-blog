@@ -30,7 +30,7 @@ const HeroSection = () => {
           <p className="text-xs text-gray-400 mb-1">–Author</p>
           <h2 className="font-semibold text-lg mb-2">Orathai S.</h2>
           <p className="text-gray-600 mb-4 text-sm">
-            I am a to-be-fullstack developer with a creative background in graphic design and marketing. <br /> Diving deep into self-learning andnow exploring backend development with Node.js and MongoDB.
+            I am a to-be-fullstack developer with a creative background in graphic design and marketing. <br /> Diving deep into self-learning and now exploring backend development with Node.js and MongoDB.
           </p>
           <p className="text-gray-600 text-sm">
              When I’m not coding, I enjoy drawing, playing video games, and sipping matcha or milk tea while dreaming up cool UI ideas.
