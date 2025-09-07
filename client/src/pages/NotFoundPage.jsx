@@ -5,8 +5,7 @@ import Footer from "@/components/Footer";
 const NotFoundPage = () => {
   return (
     <div>
-      <Navbar />
-      <Footer />
+      Not Found
     </div>
   )
 }

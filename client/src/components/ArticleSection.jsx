@@ -57,7 +57,7 @@ const ArticleSection = () => {
          posts.map((blog, index) => 
           <BlogCard 
             key={index}
-            postId={blog.id}
+            id={blog.id}
             image={blog.image}
             category={blog.category}
             title={blog.title}

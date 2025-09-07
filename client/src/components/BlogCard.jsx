@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 
 function BlogCard(props) {
-  const {postId, image, category, title, description, author, date} = props;
+  const {id, image, category, title, description, author, date} = props;
   return (
     <div className="flex flex-col gap-4">
       <a href="#" className="relative h-[212px] sm:h-[360px]">
@@ -14,7 +14,7 @@ function BlogCard(props) {
         </div>
          <div>
           <Link
-            to={`/post/${postId}`}
+            to={`/post/${id}`}
             className="text-start font-bold text-[#26231E] text-xl mb-2 line-clamp-2 hover:underline block"
           >
             {title}
