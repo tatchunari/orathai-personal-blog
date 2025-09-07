@@ -1,18 +1,17 @@
-import './App.css'
-import Navbar from './components/Navbar'
-import HeroSection from './components/HeroSection'
-import Footer from './components/Footer'
-import ArticleSection from './components/ArticleSection'
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+
+import Home from "./pages/Home.jsx";
 
 function App() {
 
   return (
     <>
-    <div className="flex flex-col">
-      <Navbar/>
-      <HeroSection/>
-      <ArticleSection />
-      <Footer />
+    <div className="App">
+      <Router>
+        <Routes>
+          <Route path='/' element={<Home />}/>
+        </Routes>
+      </Router>
     </div>
     </>
   )
