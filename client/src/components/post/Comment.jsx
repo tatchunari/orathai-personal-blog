@@ -1,8 +1,18 @@
 import { Textarea } from "@/components/ui/textarea"
-
-
+import { useState } from "react";
+import AlertDialog from "../AlertDialog";
 
 const Comment = ({ comments = [] }) => {
+
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const isLoggedIn = false;
+
+    const handleComment = () => {
+      if (!isLoggedIn) {
+        setIsDialogOpen(true);
+        return;
+      }
+    }
   return (
    <div>
       <div className="space-y-4 px-4 mb-16">
@@ -13,7 +23,10 @@ const Comment = ({ comments = [] }) => {
             className="w-full p-4 h-24 resize-none py-3 rounded-sm placeholder:text-muted-foreground focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-muted-foreground"
           />
           <div className="flex justify-end">
-            <button className="px-8 py-2 bg-foreground text-white rounded-full hover:bg-muted-foreground transition-colors">
+            <button 
+            className="px-8 py-2 bg-[#26231E] hover:bg-[#43403B] text-white rounded-full transition-colors cursor-pointer"
+            onClick={handleComment}
+            >
               Send
             </button>
           </div>
@@ -44,6 +57,10 @@ const Comment = ({ comments = [] }) => {
           </div>
         ))}
       </div>
+       <AlertDialog
+        isOpen={isDialogOpen}
+        onClose={() => setIsDialogOpen(false)}
+        message="Create an account to continue" />
     </div>
   );
 }
