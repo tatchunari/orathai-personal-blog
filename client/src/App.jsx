@@ -4,11 +4,13 @@ import LandingPage from "./pages/LandingPage.jsx";
 import ViewPostPage from "./pages/ViewPostPage.jsx";
 import LoginPage from "./pages/LoginPage.jsx";
 import SignUpPage from "./pages/SignUpPage.jsx";
+import { Toaster } from "sonner";
 
 function App() {
 
   return (
     <>
+    <Toaster position="top-center" />
     <div className="App">
       <Router>
         <Routes>

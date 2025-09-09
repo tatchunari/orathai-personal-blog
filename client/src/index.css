@@ -74,15 +74,6 @@ body {
   }
 }
 
-@layer base {
-  * {
-    @apply border-border;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
-}
-
 .markdown {
   font-size: 16px;
   font-weight: 400;

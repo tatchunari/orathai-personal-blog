@@ -3,10 +3,10 @@ import { FaFacebook, FaLinkedin } from "react-icons/fa";
 import { FaSquareXTwitter } from "react-icons/fa6";
 import AlertDialog from "../AlertDialog";
 import { useState } from "react";
-
+import { toast } from "sonner";
+import { X } from "lucide-react";
 function Share({ postId, likesAmount }) {
   const shareLink = encodeURI(window.location.href);
-  console.log(shareLink);
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const isLoggedIn = false;
@@ -37,8 +37,24 @@ function Share({ postId, likesAmount }) {
           <button
             onClick={() => {
               navigator.clipboard.writeText(shareLink);
+              toast.custom((t) => (
+                <div className="bg-green-500 text-white p-4 rounded-sm flex justify-between items-start max-w-md w-full">
+                  <div>
+                    <h2 className="font-bold text-lg mb-1">Copied!</h2>
+                    <p className="text-sm">
+                      This article has been copied to your clipboard.
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => toast.dismiss(t)}
+                    className="text-white hover:text-gray-200"
+                  >
+                    <X size={20} />
+                  </button>
+                </div>
+              ))
             }}
-            className="bg-white flex flex-1 items-center justify-center space-x-2 px-11 py-3 rounded-full text-foreground border border-foreground hover:border-muted-foreground hover:text-white hover:bg-[#26231E] transition-colors group"
+            className="bg-white flex flex-1 items-center justify-center space-x-2 px-11 py-3 rounded-full text-foreground border border-foreground hover:border-muted-foreground hover:text-white hover:bg-[#26231E] transition-colors group cursor-pointer"
           >
             <Copy className="w-5 h-5 text-foreground transition-colors group-hover:text-muted-foreground" />
             <span className="text-foreground font-medium transition-colors group-hover:text-muted-foreground">

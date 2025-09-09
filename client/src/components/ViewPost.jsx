@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import axios from 'axios';
-import LoadingScreen from '@/pages/LoadingScreen';
 import ReactMarkdown from 'react-markdown';
+import axios from 'axios';
+import { toast } from 'sonner';
+
+import LoadingScreen from '@/pages/LoadingScreen';
 import AuthorBio from './post/AuthorBio';
 import Comment from './post/Comment';
 import Share from './post/Share';
@@ -101,6 +103,7 @@ const ViewPost = () => {
           </div>
         </div>
       </div>
+      {/* Toaster when  */}
     </div>
   )
 }
