@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import ReactMarkdown from 'react-markdown';
 import axios from 'axios';
-import { toast } from 'sonner';
 
 import LoadingScreen from '@/pages/LoadingScreen';
 import AuthorBio from './post/AuthorBio';
@@ -103,7 +102,6 @@ const ViewPost = () => {
           </div>
         </div>
       </div>
-      {/* Toaster when  */}
     </div>
   )
 }
