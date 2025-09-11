@@ -5,6 +5,8 @@ import AlertDialog from "../AlertDialog";
 import { useState } from "react";
 import { toast } from "sonner";
 import { X } from "lucide-react";
+
+
 function Share({ postId, likesAmount }) {
   const shareLink = encodeURI(window.location.href);
 
@@ -20,6 +22,8 @@ function Share({ postId, likesAmount }) {
   return (
     <div className="md:px-4">
       <div className="bg-[#EFEEEB] py-4 px-4 md:rounded-sm flex flex-col space-y-4 md:gap-16 md:flex-row md:items-center md:space-y-0 md:justify-between mb-10">
+
+        {/* Like Article Button */}
         <button 
         className="bg-white flex items-center justify-center space-x-2 px-11 py-3 rounded-full text-foreground border border-foreground hover:bg-[#26231E] hover:border-muted-foreground hover:text-white transition-colors group cursor-pointer"
         onClick={handleLike}
@@ -29,6 +33,8 @@ function Share({ postId, likesAmount }) {
             {likesAmount}
           </span>
         </button>
+        
+        {/* Alert Dialog when not logged in */}
          <AlertDialog
         isOpen={isDialogOpen}
         onClose={() => setIsDialogOpen(false)}
@@ -45,6 +51,8 @@ function Share({ postId, likesAmount }) {
                       This article has been copied to your clipboard.
                     </p>
                   </div>
+
+                  {/* Copy Article link to clipboard Button */}
                   <button
                     onClick={() => toast.dismiss(t)}
                     className="text-white hover:text-gray-200"
