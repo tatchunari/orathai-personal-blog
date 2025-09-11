@@ -49,14 +49,14 @@ const LoginPage = () => {
               type="submit"
               className="w-auto py-3 px-10 text-base text-white bg-[#26231E] rounded-full hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 cursor-pointer"
             >
-              Sign up
+              Log in
             </button>
           </div> 
         </form>
         <div className=" flex flex-row items-center justify-center text-center text-sm text-gray-600">
-          <p className="mr-1">Already have an account? </p>
-          <Link to="/login">
-          <span className="font-medium text-gray-800 hover:underline cursor-pointer">Log in</span>
+          <p className="mr-1">Don't have an account? </p>
+          <Link to="/signup">
+          <span className="font-medium text-gray-800 hover:underline cursor-pointer">Sign up</span>
           </Link>
         </div>
       </div>

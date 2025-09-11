@@ -1,5 +1,8 @@
+import { Link, useNavigate } from "react-router-dom";
 
 const AlertDialog = ({ isOpen, onClose, message }) => {
+
+  const navigate = useNavigate();
 
   if (!isOpen) return null;
   return (
@@ -7,15 +10,23 @@ const AlertDialog = ({ isOpen, onClose, message }) => {
       <div className="bg-white rounded-lg shadow-lg p-6 max-w-sm w-full text-center">
         <p className="mb-4 font-bold">{message}</p>
         <button
-          onClick={onClose}
+          onClick={() => {
+            onClose();
+            navigate('/signup')
+          }}
           className="px-6 py-4 mb-2 rounded-full bg-[#26231E] text-white hover:bg-[#43403B] transition-colors cursor-pointer"
         >
           Create Account
         </button>
-        <p className="text-[14px]">Already have an account? <span className="font-bold hover:text-blue-600 underline cursor-pointer">Sign In</span></p>
+        <p className="text-[14px]">Already have an account?
+          <Link to='/login'>
+          <span className="font-bold hover:text-blue-600 underline cursor-pointer ml-1">
+            Sign In
+          </span>
+          </Link>
+          </p>
       </div>
     </div>
   )
 }
-
 export default AlertDialog
