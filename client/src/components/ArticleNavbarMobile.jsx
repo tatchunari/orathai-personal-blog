@@ -1,6 +1,8 @@
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { usePostsData } from "@/hooks/usePostsData";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 
 const ArticleNavbarMobile = () => {
@@ -13,16 +15,61 @@ const ArticleNavbarMobile = () => {
   ];
 
   const [selectedCategory, setSelectedCategory] = useState("highlight");
+
+  const { posts, loading } = usePostsData();
+  const [query, setQuery] = useState("");
+  const [filteredPosts, setFilteredPosts] = useState([]);
+  const navigate = useNavigate();
+
+  const handleSearchChange = (e) => {
+  const value = e.target.value;
+  setQuery(value);
+
+  if (value.trim === "") {
+    setFilteredPosts([]);
+  } else {
+    const matches = posts.filter(
+      (post) => post.title.toLowerCase().includes(value.toLowerCase())
+      )
+      setFilteredPosts(matches)
+    }
+  };
+
+  const handleSelectedPost = (id) => {
+    setQuery("");
+    setFilteredPosts([]);
+    navigate(`/post/${id}`);
+  }
+
   
   return (
     <div className="bg-[#efeeeb] px-4 py-6 md:hidden">
+
+      {/* Search Bar */}
       <form className="mb-6 relative">
         <Input
           type="text"
-          placeholder="Search"
+          placeholder={loading ? "Loading posts" : "Search posts..."}
+          value={query}
+          onChange={handleSearchChange}
+          disabled={loading}
           className="bg-white border border-[#d6d3cb] focus:ring-0 pr-12 text-base placeholder:text-[#75716B]"
         />
         <Search className="w-5 h-5 absolute right-4 top-1/2 -translate-y-1/2 text-[#75716B] pointer-events-none" />
+        {/* Dropdown Search Result */}
+        {filteredPosts.length > 0 && (
+        <ul className="absolute z-20 w-full mt-2 bg-white border border-gray-200 roundedlg shadow-lg max-h-60 overflow-y-auto">
+          {filteredPosts.map((post) => (
+            <li
+            key={post.id}
+            onClick={() => handleSelectedPost(post.id)}
+            className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+            >
+              {post.title}
+            </li>
+          ))}
+        </ul>
+      )}
       </form>
 
       {/* Category Dropdown */}

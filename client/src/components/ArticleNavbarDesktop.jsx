@@ -5,7 +5,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { usePostsData } from "@/hooks/usePostsData";
 
-const ArticleNavbarDesktop = ({ article }) => {
+const ArticleNavbarDesktop = () => {
 
   const categories = ["Highlight", "Dev", "Hobbies", "Art"];
   const [selectedCategory, setSelectedCategory] = useState("Highlight");
