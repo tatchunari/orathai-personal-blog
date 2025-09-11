@@ -33,12 +33,16 @@ const Navbar = () => {
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-56 bg-white border border-[#d6d3cb] text-[#75716B]" align="start">
             <DropdownMenuGroup>
+              <Link to="/login">
               <DropdownMenuItem className="hover:bg-gray-100 cursor-pointer">
                 Log in
               </DropdownMenuItem>
+              </Link>
+              <Link to="/signup">
               <DropdownMenuItem className="hover:bg-gray-100 cursor-pointer">
                 Sign up
               </DropdownMenuItem>
+              </Link>
               </DropdownMenuGroup>
               </DropdownMenuContent>
             </DropdownMenu>

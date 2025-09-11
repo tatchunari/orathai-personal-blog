@@ -1,8 +1,12 @@
-import React from 'react'
+import Footer from "@/components/Footer"
+import Navbar from "@/components/Navbar"
 
 const LoginPage = () => {
   return (
-    <div>LoginPage</div>
+    <div className="flex flex-col min-h-screen">
+      <Navbar/>
+      <Footer/>
+    </div>
   )
 }
 
