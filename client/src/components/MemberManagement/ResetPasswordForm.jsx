@@ -24,7 +24,7 @@ const ResetPasswordForm = () => {
               <input
                 id="currentPassword"
                 type="password"
-                className="mt-1 block w-96 rounded-md border bg-white border-gray-300 px-4 py-2 shadow-sm focus:border-gray-500 focus:ring-gray-500"
+                className="mt-1 block w-90 rounded-md border bg-white border-gray-300 px-4 py-2 shadow-sm focus:border-gray-500 focus:ring-gray-500"
               />
             </div>
 

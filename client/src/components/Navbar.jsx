@@ -6,6 +6,8 @@ import { IoIosArrowDown } from "react-icons/io";
 import { RxPerson } from "react-icons/rx";
 import { GrPowerReset } from "react-icons/gr";
 import { SlLogout } from "react-icons/sl";
+import { RiAdminLine } from "react-icons/ri";
+
 
 
 import {
@@ -20,6 +22,7 @@ import {
 const Navbar = () => {
 
   const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navigate = useNavigate();
@@ -80,6 +83,14 @@ const Navbar = () => {
                   <Link to="/member">Reset Password</Link>
                   </div>
 
+                  {isAdmin && 
+                  <div className='flex flex-row gap-3'>
+                    <RiAdminLine className='w-6 h-6 text-gray-500'/>
+                    <Link to="/admin">Admin Panel</Link>
+
+                  </div>
+                  }
+
                   <div className="w-full border-t border-gray-300 my-2"></div>
                   <div className='flex flex-row gap-3'>
                   <SlLogout className='w-6 h-6 text-gray-500'/>
@@ -114,7 +125,7 @@ const Navbar = () => {
                 <FaRegBell className='w-4 h-4 text-gray-400' />
                 </div>
 
-                {/* Drop Down when logged in */}
+                {/* Desktop Drop Down when logged in */}
               <div>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -137,6 +148,13 @@ const Navbar = () => {
                     <GrPowerReset className="w-5 h-5 text-gray-500" />
                     Reset Password
                   </DropdownMenuItem>
+
+                  {isAdmin && 
+                    <DropdownMenuItem onClick={() => navigate("/admin")}>
+                    <RiAdminLine className="w-5 h-5 text-gray-500" />
+                    Admin Panel
+                  </DropdownMenuItem> 
+                  }
                   <DropdownMenuItem onClick={() => setIsLoggedIn(false)}>
                     <SlLogout className='w-5 h-5 text-gray-500'/>
                     Log out
