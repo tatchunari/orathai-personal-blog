@@ -1,4 +1,19 @@
+import { toast } from "sonner"
+
 const ProfileForm = () => {
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    // Add Saving profile data handler later
+    // eg. sending API request, update state
+
+    toast.success("Save Profile", {
+      description: "Your profile has been successfully updated",
+      className: "bg-green-600 text-white",
+    })
+  }
+
   return (
     <div>
       <main className="flex-1">
@@ -15,7 +30,7 @@ const ProfileForm = () => {
           </div>
 
           {/* Form */}
-          <form className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-6">
             {/* Name */}
             <div>
               <label htmlFor="name" className="block text-sm font-medium text-gray-700">

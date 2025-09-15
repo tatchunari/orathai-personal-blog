@@ -48,7 +48,7 @@ const ResetPasswordForm = () => {
                 type="submit"
                 className="px-10 py-3 text-base rounded-full bg-[#26231E] text-white cursor-pointer hover:bg-gray-800"
               >
-                Save
+                Reset Password
               </button>
             </div>
           </form>

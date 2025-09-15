@@ -1,11 +1,12 @@
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import ProfileForm from "../../components/MemberManagement/ProfileForm";
+import ResetPasswordForm from "@/components/MemberManagement/ResetPasswordForm";
 
 import { RxPerson } from "react-icons/rx";
 import { GrPowerReset } from "react-icons/gr";
-import ProfileForm from "../../components/MemberManagement/ProfileForm";
-import ResetPasswordForm from "@/components/MemberManagement/ResetPasswordForm";
 import { useState } from "react";
+
 
 const MemberManagementPage = () => {
 
@@ -15,7 +16,7 @@ const MemberManagementPage = () => {
     <div className="flex flex-col min-h-screen overflow-hidden">
       <Navbar/>
 
-    <div className="bg-[#F7F6F4] flex flex-col justify-center items-center px-4 py-15">
+    <div className="flex-grow bg-[#F7F6F4] flex flex-col justify-center items-center px-4 py-15">
       {/* Header */}
       <div className="flex items-center space-x-4 my-10">
         <img src="mockpfp.jpg" alt="profile-icon" className="h-10 w-10 rounded-full"/>
