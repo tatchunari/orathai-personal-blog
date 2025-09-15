@@ -1,5 +1,16 @@
+import { useState } from 'react';
+import ResetPasswordAlertDialog from '../ResetPasswordAlertDialog';
+
 const ResetPasswordForm = () => {
+
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  
+  const handleConfirm = (e) => {
+    e.preventDefault();
+    setIsDialogOpen(true);
+  }
   return (
+    
   <div>
       <main className="flex-1">
 
@@ -45,11 +56,15 @@ const ResetPasswordForm = () => {
             {/* Save Button */}
             <div className="pt-4">
               <button
-                type="submit"
+                onClick={handleConfirm}
+                type="button"
                 className="px-10 py-3 text-base rounded-full bg-[#26231E] text-white cursor-pointer hover:bg-gray-800"
               >
                 Reset Password
               </button>
+              <ResetPasswordAlertDialog 
+              isOpen={isDialogOpen}
+              />
             </div>
           </form>
       </main>

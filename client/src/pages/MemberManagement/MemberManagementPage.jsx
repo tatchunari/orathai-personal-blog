@@ -25,6 +25,7 @@ const MemberManagementPage = () => {
         <p className="font-semibold text-xl">Profile</p>
       </div>
       <div className="flex flex-row">
+        
       {/* Side bar */}
       <div className="w-80">
         <aside>
