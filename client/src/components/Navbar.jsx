@@ -1,7 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Button } from "@/components/ui/button";
 import { RxHamburgerMenu } from "react-icons/rx";
+import { FaRegBell } from "react-icons/fa6";
+import { IoIosArrowDown } from "react-icons/io";
+import { RxPerson } from "react-icons/rx";
+import { GrPowerReset } from "react-icons/gr";
+import { SlLogout } from "react-icons/sl";
+
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,6 +18,9 @@ import {
 
 
 const Navbar = () => {
+
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navigate = useNavigate();
 
@@ -26,41 +35,117 @@ const Navbar = () => {
             </div>
           </Link>
 
-          {/* Mobile Drop Down Menu */}
-          <DropdownMenu>
-          <DropdownMenuTrigger asChild className="md:hidden">
-            <Button variant="outline"><RxHamburgerMenu /></Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-56 bg-white border border-[#d6d3cb] text-[#75716B]" align="start">
-            <DropdownMenuGroup>
-              <Link to="/login">
-              <DropdownMenuItem className="hover:bg-gray-100 cursor-pointer">
-                Log in
-              </DropdownMenuItem>
-              </Link>
-              <Link to="/signup">
-              <DropdownMenuItem className="hover:bg-gray-100 cursor-pointer">
-                Sign up
-              </DropdownMenuItem>
-              </Link>
-              </DropdownMenuGroup>
-              </DropdownMenuContent>
-            </DropdownMenu>
+          {/* Hamburger */}
+          <button
+            className="md:hidden"
+            onClick={() => setMobileMenuOpen(true)}
+          >
+            <RxHamburgerMenu className="w-6 h-6"/>
+          </button>
 
+          {/* Mobile Drop Down Menu */}
+          {mobileMenuOpen && (
+            <div className="fixed inset-0 bg-white flex flex-col items-center justify-center space-y-6 text-lg text-[#75716B] z-50">
+              <button
+                className="absolute top-5 right-5 text-2xl"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                ✕
+              </button>
+
+              {!isLoggedIn ? (
+                <div className='flex flex-col gap-10'>
+                  
+                  <Link 
+                  to="/"
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    setIsLoggedIn(true);
+                  }}>
+                    Log in</Link>
+
+                  <Link to="/signup" onClick={() => setMobileMenuOpen(false)}>Sign up</Link>
+                </div>
+              ) : (
+                <div className='flex flex-col gap-10'>
+                  <div className='flex flex-row gap-3'>
+                    <RxPerson className="w-6 h-6 text-gray-500" />
+                  <Link to="/member" onClick={() => setMobileMenuOpen(false)}> 
+                    Profile
+                    </Link>
+                  </div>
+
+                 <div className='flex flex-row gap-3'>
+                  <GrPowerReset className="w-6 h-6 text-gray-500" />
+                  <Link to="/member">Reset Password</Link>
+                  </div>
+
+                  <div className="w-full border-t border-gray-300 my-2"></div>
+                  <div className='flex flex-row gap-3'>
+                  <SlLogout className='w-6 h-6 text-gray-500'/>
+                  <button onClick={() => { setIsLoggedIn(false); setMobileMenuOpen(false); }}>Log out</button>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+          
           {/* Buttons */}
-          <div className="hidden md:flex space-x-3">
-            <button 
-            className="px-10 py-2 rounded-full border border-black text-black hover:bg-gray-100 transition cursor-pointer"
-            onClick={() => navigate("/login")}
-            >
-              Log in
-            </button>
-            <button 
-            className="px-10 py-2 rounded-full bg-[#26231E] text-white hover:bg-[#43403B] transition cursor-pointer"
-            onClick={() => navigate("/signup")}
-            >
-              Sign up
-            </button>
+          {/* Desktop Buttons / Profile */}
+          <div className="hidden md:flex items-center space-x-3">
+            {!isLoggedIn ? (
+              <>
+                <button
+                  className="px-10 py-2 rounded-full border border-black text-black hover:bg-gray-100 transition cursor-pointer"
+                  onClick={() => navigate("/login")}
+                >
+                  Log in
+                </button>
+                <button
+                  className="px-10 py-2 rounded-full bg-[#26231E] text-white hover:bg-[#43403B] transition cursor-pointer"
+                  onClick={() => navigate("/signup")}
+                >
+                  Sign up
+                </button>
+              </>
+            ) : (
+              <div className='flex flex-row gap-x-4'>
+                <div className='border border-gray-300 bg-white px-3 py-3 rounded-full items-center justify-center'>
+                <FaRegBell className='w-4 h-4 text-gray-400' />
+                </div>
+
+                {/* Drop Down when logged in */}
+              <div>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button className="flex items-center gap-2 focus:outline-none">
+                    <img
+                      src="/mockpfp.jpg"
+                      alt="profile"
+                      className="h-10 w-10 rounded-full"
+                    />
+                    <p>Full Name</p>
+                  <IoIosArrowDown className='text-gray-600'/>
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-48 bg-white border border-gray-200">
+                  <DropdownMenuItem onClick={() => navigate("/member")}>
+                     <RxPerson className="w-5 h-5 text-gray-500" />
+                    Profile
+                  </DropdownMenuItem>
+                   <DropdownMenuItem onClick={() => navigate("/member")}>
+                    <GrPowerReset className="w-5 h-5 text-gray-500" />
+                    Reset Password
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setIsLoggedIn(false)}>
+                    <SlLogout className='w-5 h-5 text-gray-500'/>
+                    Log out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+              </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
