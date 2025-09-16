@@ -129,7 +129,7 @@ const Navbar = () => {
               <div>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <button className="flex items-center gap-2 focus:outline-none">
+                  <button className="flex items-center gap-2 cursor-pointer focus:outline-none">
                     <img
                       src="/mockpfp.jpg"
                       alt="profile"

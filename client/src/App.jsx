@@ -7,6 +7,7 @@ import LoginPage from "./pages/LoginPage.jsx";
 import SignUpPage from "./pages/SignUpPage.jsx";
 import { Toaster } from "sonner";
 import MemberManagementPage from "./pages/MemberManagement/MemberManagementPage.jsx";
+import AdminDashboard from "./pages/ArticleManagement/AdminDashboard";
 
 function App() {
 
@@ -21,6 +22,7 @@ function App() {
           <Route path='/login' element={<LoginPage />}/>
           <Route path='/signup' element={<SignUpPage />}/>
           <Route path='/member' element={<MemberManagementPage />}/>
+          <Route path='/admin' element={<AdminDashboard />}/>
         </Routes>
       </Router>
     </div>
