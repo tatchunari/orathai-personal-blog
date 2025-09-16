@@ -6,7 +6,19 @@ import { GrPowerReset } from "react-icons/gr";
 import { FiExternalLink } from "react-icons/fi";
 import { BiLogOut } from "react-icons/bi";
 
-const AdminPanel = () => {
+const menuItems = [
+  { id: "articles", label: "Article management", icon: SlNotebook },
+  { id: "categories", label: "Category management", icon: MdOutlineFolder },
+  { id: "notifications", label: "Notification", icon: FaRegBell },
+  { id: "resetPassword", label: "Reset Password", icon: GrPowerReset },
+];
+
+const AdminPanel = ({ onSelect, activePage }) => {
+
+  const handleClick = (id) => {
+    onSelect(id);
+  }
+
   return (
     <div className="bg-[#EFEEEB] min-h-screen flex flex-col w-72">
       {/* Header */}
@@ -23,25 +35,23 @@ const AdminPanel = () => {
       <div className="flex flex-col justify-between flex-grow mt-10">
         {/* Top Nav */}
         <div>
-          <button className="w-full text-sm text-left px-10 py-4 text-[#75716B] flex items-center gap-3 hover:bg-[#DAD6D1] cursor-pointer">
-            <SlNotebook className="w-5 h-5" />
-            Article management
-          </button>
-
-          <button className="w-full text-sm text-left px-10 py-4 text-[#75716B] flex items-center gap-3 hover:bg-[#DAD6D1] cursor-pointer">
-            <MdOutlineFolder className="w-6 h-6" />
-            Category management
-          </button>
-
-          <button className="w-full text-sm text-left px-10 py-4 text-[#75716B] flex items-center gap-3 hover:bg-[#DAD6D1] cursor-pointer">
-            <FaRegBell className="w-5 h-5" />
-            Notification
-          </button>
-
-          <button className="w-full text-sm text-left px-10 py-4 text-[#75716B] flex items-center gap-3 hover:bg-[#DAD6D1] cursor-pointer">
-            <GrPowerReset className="w-5 h-5" />
-            Reset Password
-          </button>
+          {menuItems.map((item) => {
+            const Icon = item.icon;
+            return (
+              <button 
+                key={item.id}
+                onClick={() => handleClick(item.id)}
+                className={`w-full text-sm text-left px-10 py-4 flex items-center gap-3 hover:bg-[#DAD6D1] cursor-pointer transition-colors ${
+                  activePage === item.id 
+                    ? 'bg-[#DAD6D1] text-[#26231E] font-medium' 
+                    : 'text-[#75716B]'
+                }`}
+              >
+                <Icon className="w-5 h-5" />
+                {item.label}
+              </button>
+            );
+          })}
         </div>
 
         {/* Bottom Nav */}
