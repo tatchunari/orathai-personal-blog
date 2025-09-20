@@ -5,14 +5,18 @@ import { FaRegBell } from "react-icons/fa";
 import { GrPowerReset } from "react-icons/gr";
 import { FiExternalLink } from "react-icons/fi";
 import { BiLogOut } from "react-icons/bi";
+import { GoPerson } from "react-icons/go";
+
 
 import { useNavigate } from "react-router-dom";
 
 const menuItems = [
   { id: "articles", label: "Article management", icon: SlNotebook, path: '/admin/article-management' },
   { id: "categories", label: "Category management", icon: MdOutlineFolder, path: '/admin/category-management' },
+  { id: "profile", label: "Profile", icon: GoPerson, path: '/admin/profile' },
   { id: "notifications", label: "Notification", icon: FaRegBell, path: '/admin/notifications-management' },
   { id: "resetPassword", label: "Reset Password", icon: GrPowerReset, path: '/admin/resetpassword' },
+
 ];
 
 const AdminPanel = ({ onSelect, activePage }) => {

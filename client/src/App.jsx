@@ -21,6 +21,7 @@ import AdminEditArticle from "./pages/ArticleManagement/AdminEditArticle";
 import AdminProfile from "./pages/ArticleManagement/AdminProfile";
 import AdminCreateCategory from "./pages/ArticleManagement/AdminCreateCategory";
 import AdminEditCategory from "./pages/ArticleManagement/AdminEditCategory";
+import AdminLoginPage from "./pages/AdminLoginPage";
 
 function App() {
 
@@ -36,6 +37,7 @@ function App() {
           <Route path='/signup' element={<SignUpPage />}/>
           <Route path='/member' element={<MemberManagementPage />}/>
           <Route path='/admin' element={<AdminDashboard />}/>
+          <Route path='/admin/login' element={<AdminLoginPage/>}/>
           <Route path='/admin/article-management' element={<AdminArticles/>}/>
           <Route path='/admin/article-management/create' element={<AdminCreateArticles/>}/>
           <Route path='/admin/article-management/edit' element={<AdminEditArticle/>}/>
