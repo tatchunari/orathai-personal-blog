@@ -53,3 +53,6 @@ export default async function handler(req, res) {
     return res.status(200).json(data);
   }
 }
+
+console.log("SUPABASE_URL is set:", !!process.env.SUPABASE_URL);
+console.log("SUPABASE_SERVICE_ROLE_KEY is set:", !!process.env.SUPABASE_SERVICE_ROLE_KEY);

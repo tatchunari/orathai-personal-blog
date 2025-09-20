@@ -1,98 +1,106 @@
-// src/context/authentication.jsx
+/* eslint-disable react-refresh/only-export-components */
+/* eslint-disable react/prop-types */
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import supabase from '../lib/supabaseClient';
 
 const AuthContext = React.createContext();
 
 function AuthProvider(props) {
   const [state, setState] = useState({
-    loading: false,
-    getUserLoading: false,
+    loading: null,
+    getUserLoading: null,
     error: null,
     user: null,
   });
 
   const navigate = useNavigate();
 
-  // Fetch current logged-in user
+  // Fetch user details using Supabase API
   const fetchUser = async () => {
-    setState((prev) => ({ ...prev, getUserLoading: true }));
-    const { data: { user }, error } = await supabase.auth.getUser();
-
-    if (error) {
-      setState((prev) => ({
-        ...prev,
+    const token = localStorage.getItem("token");
+    if (!token) {
+      setState((prevState) => ({
+        ...prevState,
         user: null,
-        error: error.message,
         getUserLoading: false,
       }));
-    } else {
-      setState((prev) => ({ ...prev, user, getUserLoading: false }));
+      return;
+    }
+
+    try {
+      setState((prevState) => ({ ...prevState, getUserLoading: true }));
+      const response = await axios.get(
+        "https://blog-post-project-api-with-db.vercel.app/auth/get-user"
+      );
+      setState((prevState) => ({
+        ...prevState,
+        user: response.data,
+        getUserLoading: false,
+      }));
+    } catch (error) {
+      setState((prevState) => ({
+        ...prevState,
+        error: error.message,
+        user: null,
+        getUserLoading: false,
+      }));
     }
   };
 
   useEffect(() => {
-    fetchUser();
-
-    // Listen to auth changes (login/logout)
-    const { data: listener } = supabase.auth.onAuthStateChange(
-      (event, session) => {
-        if (session?.user) {
-          setState((prev) => ({ ...prev, user: session.user }));
-        } else {
-          setState((prev) => ({ ...prev, user: null }));
-        }
-      }
-    );
-
-    return () => listener.subscription.unsubscribe();
+    fetchUser(); // Load user on initial app load
   }, []);
 
-  // Register a new user
-  const register = async ({ email, password }) => {
+  // Login user
+  const login = async (data) => {
     try {
-      setState((prev) => ({ ...prev, loading: true, error: null }));
-      const { data, error } = await supabase.auth.signUp({ email, password });
-  const register = async ({ email, password }) => {
-    try {
-      setState((prev) => ({ ...prev, loading: true, error: null }));
-      const { data, error } = await supabase.auth.signUp({ email, password });
+      setState((prevState) => ({ ...prevState, loading: true, error: null }));
+      const response = await axios.post(
+        "https://blog-post-project-api-with-db.vercel.app/auth/login",
+        data
+      );
+      const token = response.data.access_token;
+      localStorage.setItem("token", token);
 
-      if (error) throw error;
-      if (error) throw error;
-
-      setState((prev) => ({ ...prev, loading: false }));
-      navigate("/signup/success");
+      // Fetch and set user details
+      setState((prevState) => ({ ...prevState, loading: false, error: null }));
+      navigate("/");
+      await fetchUser();
     } catch (error) {
-      setState((prev) => ({ ...prev, loading: false, error: error.message }));
-      return { error: error.message };
+      setState((prevState) => ({
+        ...prevState,
+        loading: false,
+        error: error.response?.data?.error || "Login failed",
+      }));
+      return { error: error.response?.data?.error || "Login failed" };
     }
   };
 
-  // Login existing user
-  const login = async ({ email, password }) => {
+  // Register user
+  const register = async (data) => {
     try {
-      setState((prev) => ({ ...prev, loading: true, error: null }));
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
-
-      if (error) throw error;
-
-      setState((prev) => ({ ...prev, user: data.user, loading: false }));
-      navigate("/");
+      setState((prevState) => ({ ...prevState, loading: true, error: null }));
+      await axios.post(
+        "https://blog-post-project-api-with-db.vercel.app/auth/register",
+        data
+      );
+      setState((prevState) => ({ ...prevState, loading: false, error: null }));
+      navigate("/sign-up/success");
     } catch (error) {
-      setState((prev) => ({ ...prev, loading: false, error: error.message }));
-      return { error: error.message };
+      setState((prevState) => ({
+        ...prevState,
+        loading: false,
+        error: error.response?.data?.error || "Registration failed",
+      }));
+      return { error: state.error };
     }
   };
 
   // Logout user
-  const logout = async () => {
-    await supabase.auth.signOut();
-    setState({ user: null, loading: false, error: null });
+  const logout = () => {
+    localStorage.removeItem("token");
+    setState({ user: null, error: null, loading: null });
     navigate("/");
   };
 
@@ -114,7 +122,7 @@ function AuthProvider(props) {
   );
 }
 
-// Custom hook
+// Hook for consuming AuthContext
 const useAuth = () => React.useContext(AuthContext);
 
 export { AuthProvider, useAuth };
