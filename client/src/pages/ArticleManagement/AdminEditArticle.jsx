@@ -1,8 +1,14 @@
+import AdminPanel from '@/components/ArticleManagement/AdminPanel'
 import React from 'react'
 
 const AdminEditArticle = () => {
   return (
-    <div>AdminEditArticle</div>
+    <div className='flex h-screen'>
+      <AdminPanel />
+
+      {/* Edit Article Section */}
+
+    </div>
   )
 }
 

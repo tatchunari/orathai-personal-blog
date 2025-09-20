@@ -16,6 +16,11 @@ import AdminArticles from "./pages/ArticleManagement/AdminArticles";
 import AdminCategories from "./pages/ArticleManagement/AdminCategories";
 import AdminNotifications from "./pages/ArticleManagement/AdminNotifications";
 import AdminResetPassWord from "./pages/ArticleManagement/AdminResetPassWord";
+import AdminCreateArticles from "./pages/ArticleManagement/AdminCreateArticle";
+import AdminEditArticle from "./pages/ArticleManagement/AdminEditArticle";
+import AdminProfile from "./pages/ArticleManagement/AdminProfile";
+import AdminCreateCategory from "./pages/ArticleManagement/AdminCreateCategory";
+import AdminEditCategory from "./pages/ArticleManagement/AdminEditCategory";
 
 function App() {
 
@@ -32,9 +37,16 @@ function App() {
           <Route path='/member' element={<MemberManagementPage />}/>
           <Route path='/admin' element={<AdminDashboard />}/>
           <Route path='/admin/article-management' element={<AdminArticles/>}/>
+          <Route path='/admin/article-management/create' element={<AdminCreateArticles/>}/>
+          <Route path='/admin/article-management/edit' element={<AdminEditArticle/>}/>
           <Route path='/admin/categories-management' element={<AdminCategories/>} />
+          <Route path='/admin/categories-management/create' element={<AdminCreateCategory/>}/>
+          <Route path='/admin/categories-management/edit' element={<AdminEditCategory/>} />
           <Route path='/admin/notifications-management' element={<AdminNotifications />} />
           <Route path='/admin/resetpassword' element={<AdminResetPassWord/>}/>
+          <Route path='/admin/profile' element={<AdminProfile
+            />
+          }/>
         </Routes>
       </Router>
     </div>
