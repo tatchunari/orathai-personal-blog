@@ -50,42 +50,20 @@ function AuthProvider(props) {
   }, []);
 
   // Register a new user
-  const register = async ({ email, password, name }) => {
-  try {
-    setState((prev) => ({ ...prev, loading: true, error: null }));
+  const register = async ({ email, password }) => {
+    try {
+      setState((prev) => ({ ...prev, loading: true, error: null }));
+      const { data, error } = await supabase.auth.signUp({ email, password });
 
-    // 1️⃣ Sign up user in Supabase Auth
-    const { data: authData, error: authError } = await supabase.auth.signUp({
-      email,
-      password,
-    });
+      if (error) throw error;
 
-    if (authError) throw authError;
-
-    const userId = authData.user.id; // this will be used for profile
-
-    // 2️⃣ Create profile in 'profiles' table
-    const { data: profileData, error: profileError } = await supabase
-      .from('profiles')
-      .insert([
-        {
-          id: userId,       // matches auth user id
-          name: name,       // provided by user
-          role: 'user',     // default role
-        },
-      ]);
-
-    if (profileError) throw profileError;
-
-    setState((prev) => ({ ...prev, loading: false }));
-    navigate("/signup/success");
-
-  } catch (error) {
-    setState((prev) => ({ ...prev, loading: false, error: error.message }));
-    return { error: error.message };
-  }
-};
-
+      setState((prev) => ({ ...prev, loading: false }));
+      navigate("/signup/success");
+    } catch (error) {
+      setState((prev) => ({ ...prev, loading: false, error: error.message }));
+      return { error: error.message };
+    }
+  };
 
   // Login existing user
   const login = async ({ email, password }) => {
