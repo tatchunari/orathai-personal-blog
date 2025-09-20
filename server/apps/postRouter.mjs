@@ -23,8 +23,6 @@ postRouter.post("/",validatePostData, async (req, res) => {
 
     await connectionPool.query(query, values);
   } catch (e) {
-    console.log("Error read post : ", e.message)
-    console.error(e)
     return res.status(500).json({
       message: e.message,
 
@@ -128,9 +126,10 @@ postRouter.get("/", async (req, res) => {
     }
     // Return success response to client
     return res.status(200).json(results);
-  } catch {
+  } catch (e) {
+    console.log("Error get posts:", e.message)
     return res.status(500).json({
-      message: "Server could not read post because database issue",
+            message: e.message,
     });
   }
 });
