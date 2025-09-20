@@ -8,8 +8,9 @@ export function usePostsData() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("https://blog-post-project-api.vercel.app/posts");
-        setPosts(response.data.posts);
+        const response = await axios.get("https://orathai-personal-blog-backend.vercel.app/api/posts");
+        console.log(response)
+        setPosts(response);
       } catch (err) {
         console.error("Error fetching posts:", err);
       } finally {

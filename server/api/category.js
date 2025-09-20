@@ -7,6 +7,16 @@ const supabase = createClient(
 );
 
 export default async function handler(req, res) {
+
+  // 1️⃣ Add CORS headers
+  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:5173'); // or '*' for all
+  res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+  // 2️⃣ Handle preflight request
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
   try {
     if (req.method === 'GET') {
       // Fetch all categories

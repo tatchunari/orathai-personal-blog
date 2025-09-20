@@ -4,19 +4,21 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { usePostsData } from "@/hooks/usePostsData";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
+import { useCategoryData } from "@/hooks/useCategoryData";
 
 const ArticleNavbarMobile = () => {
 
-  const categories = [
-  { value: "highlight", label: "Highlight" },
-  { value: "dev", label: "Dev" },
-  { value: "hobbies", label: "Hobbies" },
-  { value: "art", label: "Art" },
-  ];
+  // const categories = [
+  // { value: "highlight", label: "Highlight" },
+  // { value: "dev", label: "Dev" },
+  // { value: "hobbies", label: "Hobbies" },
+  // { value: "art", label: "Art" },
+  // ];
 
   const [selectedCategory, setSelectedCategory] = useState("highlight");
 
   const { posts, loading } = usePostsData();
+  const { categories } = useCategoryData();
   const [query, setQuery] = useState("");
   const [filteredPosts, setFilteredPosts] = useState([]);
   const navigate = useNavigate();
@@ -81,11 +83,11 @@ const ArticleNavbarMobile = () => {
         <SelectContent className="bg-white border border-[#d6d3cb] text-[#75716B]">
         {categories.map((cat) => (
           <SelectItem
-            key={cat.value}
+            key={cat.id}
             value={cat.value}
             className="hover:bg-gray-100 cursor-pointer"
           >
-            {cat.label}
+            {cat.name}
           </SelectItem>
         ))}
       </SelectContent>

@@ -4,10 +4,11 @@ import { Search } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { usePostsData } from "@/hooks/usePostsData";
+import { useCategoryData } from "@/hooks/useCategoryData";
 
 const ArticleNavbarDesktop = () => {
 
-  const categories = ["Highlight", "Dev", "Hobbies", "Art"];
+  const { categories } = useCategoryData();
   const [selectedCategory, setSelectedCategory] = useState("Highlight");
 
 
@@ -42,12 +43,12 @@ const ArticleNavbarDesktop = () => {
     <div className="hidden md:flex bg-[#efeeeb] rounded-xl p-4 items-center justify-between">
       {/* Category buttons */}
       <nav className="flex gap-4 flex-wrap">
-        {categories.map((label) => {
+        {categories.map((cat) => {
           const isActive = selectedCategory === label;
 
           return (
             <Button
-              key={label}
+              key={cat.id}
               onClick={() => setSelectedCategory(label)}
               disabled={isActive} // ปุ่มที่ถูกเลือกแล้วกดไม่ได้
               className={`rounded-lg px-6 py-2 font-medium transition-colors
@@ -58,7 +59,7 @@ const ArticleNavbarDesktop = () => {
                 }
               `}
             >
-              {label}
+              {cat.name}
             </Button>
           );
         })}
