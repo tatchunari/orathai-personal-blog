@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 
 const menuItems = [
   { id: "articles", label: "Article management", icon: SlNotebook, path: '/admin/article-management' },
-  { id: "categories", label: "Category management", icon: MdOutlineFolder, path: '/admin/categories-management' },
+  { id: "categories", label: "Category management", icon: MdOutlineFolder, path: '/admin/category-management' },
   { id: "notifications", label: "Notification", icon: FaRegBell, path: '/admin/notifications-management' },
   { id: "resetPassword", label: "Reset Password", icon: GrPowerReset, path: '/admin/resetpassword' },
 ];

@@ -39,9 +39,9 @@ function App() {
           <Route path='/admin/article-management' element={<AdminArticles/>}/>
           <Route path='/admin/article-management/create' element={<AdminCreateArticles/>}/>
           <Route path='/admin/article-management/edit' element={<AdminEditArticle/>}/>
-          <Route path='/admin/categories-management' element={<AdminCategories/>} />
-          <Route path='/admin/categories-management/create' element={<AdminCreateCategory/>}/>
-          <Route path='/admin/categories-management/edit' element={<AdminEditCategory/>} />
+          <Route path='/admin/category-management' element={<AdminCategories/>} />
+          <Route path='/admin/category-management/create' element={<AdminCreateCategory/>}/>
+          <Route path='/admin/category-management/edit' element={<AdminEditCategory/>} />
           <Route path='/admin/notifications-management' element={<AdminNotifications />} />
           <Route path='/admin/resetpassword' element={<AdminResetPassWord/>}/>
           <Route path='/admin/profile' element={<AdminProfile
