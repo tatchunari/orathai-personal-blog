@@ -54,7 +54,12 @@ function AuthProvider(props) {
     try {
       setState((prev) => ({ ...prev, loading: true, error: null }));
       const { data, error } = await supabase.auth.signUp({ email, password });
+  const register = async ({ email, password }) => {
+    try {
+      setState((prev) => ({ ...prev, loading: true, error: null }));
+      const { data, error } = await supabase.auth.signUp({ email, password });
 
+      if (error) throw error;
       if (error) throw error;
 
       setState((prev) => ({ ...prev, loading: false }));
