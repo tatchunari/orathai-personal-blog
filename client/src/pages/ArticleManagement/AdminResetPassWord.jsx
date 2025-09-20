@@ -2,6 +2,16 @@ import AdminPanel from '@/components/ArticleManagement/AdminPanel'
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogCancel,
+} from "@/components/ui/alert-dialog";
+import { X } from "lucide-react";
+
+
 
 import { useState } from 'react';
 const AdminResetPassWord = () => {
