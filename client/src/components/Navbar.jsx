@@ -63,7 +63,7 @@ const Navbar = () => {
                 <div className='flex flex-col gap-10'>
                   
                   <Link 
-                  to="/"
+                  to="/login"
                   onClick={() => {
                     setMobileMenuOpen(false);
                     setIsLoggedIn(true);
