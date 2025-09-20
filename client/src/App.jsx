@@ -8,6 +8,8 @@ import SignUpPage from "./pages/SignUpPage.jsx";
 import { Toaster } from "sonner";
 import MemberManagementPage from "./pages/MemberManagement/MemberManagementPage.jsx";
 import AdminDashboard from "./pages/ArticleManagement/AdminDashboard";
+import CreateArticle from "./pages/ArticleManagement/CreateArticle";
+import EditArticle from "./pages/ArticleManagement/EditArticle";
 
 function App() {
 
@@ -23,6 +25,8 @@ function App() {
           <Route path='/signup' element={<SignUpPage />}/>
           <Route path='/member' element={<MemberManagementPage />}/>
           <Route path='/admin' element={<AdminDashboard />}/>
+          <Route path='/admin/create' element={<CreateArticle/>}/>
+          <Route path='admin/edit/:id' element={<EditArticle />} />
         </Routes>
       </Router>
     </div>
