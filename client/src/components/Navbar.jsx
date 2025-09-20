@@ -8,6 +8,8 @@ import { GrPowerReset } from "react-icons/gr";
 import { SlLogout } from "react-icons/sl";
 import { RiAdminLine } from "react-icons/ri";
 
+import { useAuth } from '@/context/authentication';
+
 
 
 import {
@@ -17,12 +19,13 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+
 
 
 const Navbar = () => {
 
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
-  const [isAdmin, setIsAdmin] = useState(true);
+  const { isAuthenticated, state, logout} = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navigate = useNavigate();
@@ -56,7 +59,7 @@ const Navbar = () => {
                 ✕
               </button>
 
-              {!isLoggedIn ? (
+              {!isAuthenticated ? (
                 <div className='flex flex-col gap-10'>
                   
                   <Link 
@@ -83,7 +86,7 @@ const Navbar = () => {
                   <Link to="/member">Reset Password</Link>
                   </div>
 
-                  {isAdmin && 
+                  {state.user.role === 'admin' && 
                   <div className='flex flex-row gap-3'>
                     <RiAdminLine className='w-6 h-6 text-gray-500'/>
                     <Link to="/admin">Admin Panel</Link>
@@ -104,7 +107,7 @@ const Navbar = () => {
           {/* Buttons */}
           {/* Desktop Buttons / Profile */}
           <div className="hidden md:flex items-center space-x-3">
-            {!isLoggedIn ? (
+            {!isAuthenticated ? (
               <>
                 <button
                   className="px-10 py-2 rounded-full border border-black text-black hover:bg-gray-100 transition cursor-pointer"
@@ -130,12 +133,17 @@ const Navbar = () => {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <button className="flex items-center gap-2 cursor-pointer focus:outline-none">
-                    <img
-                      src="/mockpfp.jpg"
-                      alt="profile"
-                      className="h-10 w-10 rounded-full"
-                    />
-                    <p>Full Name</p>
+                    <Avatar className="h-12 w-12">
+                  <AvatarImage
+                    src={state.user.profilePic}
+                    alt="Profile"
+                    className="object-cover"
+                  />
+                  <AvatarFallback>
+                    <User className="h-4 w-4" />
+                  </AvatarFallback>
+                </Avatar>
+                    <p>{state.user.name}</p>
                   <IoIosArrowDown className='text-gray-600'/>
                   </button>
                 </DropdownMenuTrigger>
@@ -144,12 +152,16 @@ const Navbar = () => {
                      <RxPerson className="w-5 h-5 text-gray-500" />
                     Profile
                   </DropdownMenuItem>
-                   <DropdownMenuItem onClick={() => navigate("/member")}>
+                   <DropdownMenuItem onClick={() => navigate(
+                    state.user.role === "admin"
+                      ? "/admin/resetpassword"
+                      : "/reset-password"
+                  )}>
                     <GrPowerReset className="w-5 h-5 text-gray-500" />
                     Reset Password
                   </DropdownMenuItem>
 
-                  {isAdmin && 
+                  {state.user.role === admin  && 
                     <DropdownMenuItem onClick={() => navigate("/admin")}>
                     <RiAdminLine className="w-5 h-5 text-gray-500" />
                     Admin Panel
