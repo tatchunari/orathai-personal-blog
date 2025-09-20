@@ -9,7 +9,7 @@ import { useCategoryData } from "@/hooks/useCategoryData";
 const ArticleNavbarDesktop = () => {
 
   const { categories } = useCategoryData();
-  const [selectedCategory, setSelectedCategory] = useState("Highlight");
+  const [selectedCategory, setSelectedCategory] = useState(null);
 
 
   const { posts, loading } = usePostsData();
@@ -44,12 +44,12 @@ const ArticleNavbarDesktop = () => {
       {/* Category buttons */}
       <nav className="flex gap-4 flex-wrap">
         {categories.map((cat) => {
-          const isActive = selectedCategory === cat;
+          const isActive = selectedCategory == cat.id;
 
           return (
             <Button
               key={cat.id}
-              onClick={() => setSelectedCategory(cat)}
+              onClick={() => setSelectedCategory(cat.id)}
               disabled={isActive} // ปุ่มที่ถูกเลือกแล้วกดไม่ได้
               className={`rounded-lg px-6 py-2 font-medium transition-colors
                 ${

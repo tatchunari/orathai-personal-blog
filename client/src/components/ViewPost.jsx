@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
+import { useAuth } from '@/context/authentication';
 import ReactMarkdown from 'react-markdown';
 import axios from 'axios';
 
@@ -30,7 +31,7 @@ const ViewPost = () => {
   const getPost = async () => {
     setIsLoading(true);
     try {
-      const response = await axios.get(`https://blog-post-project-api.vercel.app/posts/${params.id}`);
+      const response = await axios.get(`https://orathai-personal-blog-backend.vercel.app/api/posts/${params.id}`);
 
       if (!response.data || Object.keys(response.data).length === 0) {
         setNotFound(true);

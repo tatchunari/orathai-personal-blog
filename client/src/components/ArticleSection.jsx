@@ -35,11 +35,11 @@ const ArticleSection = () => {
             key={post.id}
             id={post.id}
             image={post.thumbnail_image}
-            category={post.categories.name}
+            category={post.category}
             title={post.title}
             description={post.content}
             author={post.author}
-            date={new Date(post.date).toLocaleDateString("en-GB", {
+            date={new Date(post.created_at).toLocaleDateString("en-GB", {
               day: "numeric",
               month: "long",
               year: "numeric",
