@@ -6,6 +6,7 @@ const supabase = createClient(
 );
 
 export default async function handler(req, res) {
+    console.log("D JAAAAAAAAA")
   // 1️⃣ Add CORS headers
   res.setHeader('Access-Control-Allow-Origin', 'http://localhost:5173'); // or '*' for all
   res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
@@ -18,7 +19,6 @@ export default async function handler(req, res) {
 
   // 3️⃣ Handle GET
   if (req.method === 'GET') {
-    console.log("GET API")
   const { id } = req.query;
 
   if (id) {
