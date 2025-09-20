@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import connectionPool from "./utils/db.mjs";
+import validatePostData from "./middleware/validatePostData.mjs";
 
 const app = express();
 const port = process.env.PORT || 4001;
@@ -13,7 +14,7 @@ app.get("/", (req, res) => {
 });
 
 // User can create new post
-app.post("/posts", async (req, res) => {
+app.post("/posts",validatePostData, async (req, res) => {
 
   const newPost = req.body;
   try {
@@ -175,7 +176,7 @@ app.get("/posts/:postId", async (req, res) => {
 
 
 // User can edit post by Id
-app.put("/posts/:postId", async (req, res) => {
+app.put("/posts/:postId",validatePostData, async (req, res) => {
   
   const postIdFromClient = req.params.postId;
   const updatedPost = { ...req.body, date: new Date() };
