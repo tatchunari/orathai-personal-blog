@@ -2,6 +2,13 @@ import { Router } from "express";
 import validatePostData from "../middleware/postValidation.mjs";
 import connectionPool from "../utils/db.mjs";
 
+import { createClient } from '@supabase/supabase-js';
+
+const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_ROLE_KEY 
+);
+
 const postRouter = Router();
 
 // User can create new post
@@ -36,96 +43,106 @@ postRouter.post("/",validatePostData, async (req, res) => {
 postRouter.get("/", async (req, res) => {
 
   try {
-    const category = req.query.category || "";
-    const keyword = req.query.keyword || "";
-    const page = Number(req.query.page) || 1;
-    const limit = Number(req.query.limit) || 6;
+    // const category = req.query.category || "";
+    // const keyword = req.query.keyword || "";
+    // const page = Number(req.query.page) || 1;
+    // const limit = Number(req.query.limit) || 6;
 
-    const safePage = Math.max(1, page);
-    const safeLimit = Math.max(1, Math.min(100, limit));
-    const offset = (safePage - 1) * safeLimit;
+    // const safePage = Math.max(1, page);
+    // const safeLimit = Math.max(1, Math.min(100, limit));
+    // const offset = (safePage - 1) * safeLimit;
 
-    let query = `
-      SELECT posts.id, posts.image, categories.name AS category, posts.title, posts.description, posts.date, posts.content, statuses.status, posts.likes_count
-      FROM posts
-      INNER JOIN categories ON posts.category_id = categories.id
-      INNER JOIN statuses ON posts.status_id = statuses.id
-    `;
-    let values = [];
+    // let query = `
+    //   SELECT posts.id, posts.image, categories.name AS category, posts.title, posts.description, posts.date, posts.content, statuses.status, posts.likes_count
+    //   FROM posts
+    //   INNER JOIN categories ON posts.category_id = categories.id
+    //   INNER JOIN statuses ON posts.status_id = statuses.id
+    // `;
+    // let values = [];
 
-    if (category && keyword) {
-      query += `
-        WHERE categories.name ILIKE $1 
-        AND (posts.title ILIKE $2 OR posts.description ILIKE $2 OR posts.content ILIKE $2)
-      `;
-      values = [`%${category}%`, `%${keyword}%`];
-    } else if (category) {
-      query += " WHERE categories.name ILIKE $1";
-      values = [`%${category}%`];
-    } else if (keyword) {
-      query += `
-        WHERE posts.title ILIKE $1 
-        OR posts.description ILIKE $1 
-        OR posts.content ILIKE $1
-      `;
-      values = [`%${keyword}%`];
-    }
+    // if (category && keyword) {
+    //   query += `
+    //     WHERE categories.name ILIKE $1 
+    //     AND (posts.title ILIKE $2 OR posts.description ILIKE $2 OR posts.content ILIKE $2)
+    //   `;
+    //   values = [`%${category}%`, `%${keyword}%`];
+    // } else if (category) {
+    //   query += " WHERE categories.name ILIKE $1";
+    //   values = [`%${category}%`];
+    // } else if (keyword) {
+    //   query += `
+    //     WHERE posts.title ILIKE $1 
+    //     OR posts.description ILIKE $1 
+    //     OR posts.content ILIKE $1
+    //   `;
+    //   values = [`%${keyword}%`];
+    // }
 
-    // Order by date
-    query += ` ORDER BY posts.date DESC LIMIT $${values.length + 1} OFFSET $${
-      values.length + 2
-    }`;
+    // // Order by date
+    // query += ` ORDER BY posts.date DESC LIMIT $${values.length + 1} OFFSET $${
+    //   values.length + 2
+    // }`;
 
-    values.push(safeLimit, offset);
+    // values.push(safeLimit, offset);
 
-    // Execute the main query
-    const result = await connectionPool.query(query, values);
+    // // Execute the main query
+    // const result = await connectionPool.query(query, values);
 
    
-    let countQuery = `
-      SELECT COUNT(*)
-      FROM posts
-      INNER JOIN categories ON posts.category_id = categories.id
-      INNER JOIN statuses ON posts.status_id = statuses.id
-    `;
-    let countValues = values.slice(0, -2); // delete LIMIT and offset
+    // let countQuery = `
+    //   SELECT COUNT(*)
+    //   FROM posts
+    //   INNER JOIN categories ON posts.category_id = categories.id
+    //   INNER JOIN statuses ON posts.status_id = statuses.id
+    // `;
+    // let countValues = values.slice(0, -2); // delete LIMIT and offset
 
-    if (category && keyword) {
-      countQuery += `
-        WHERE categories.name ILIKE $1 
-        AND (posts.title ILIKE $2 OR posts.description ILIKE $2 OR posts.content ILIKE $2)
-      `;
-    } else if (category) {
-      countQuery += " WHERE categories.name ILIKE $1";
-    } else if (keyword) {
-      countQuery += `
-        WHERE posts.title ILIKE $1 
-        OR posts.description ILIKE $1 
-        OR posts.content ILIKE $1
-      `;
-    }
+    // if (category && keyword) {
+    //   countQuery += `
+    //     WHERE categories.name ILIKE $1 
+    //     AND (posts.title ILIKE $2 OR posts.description ILIKE $2 OR posts.content ILIKE $2)
+    //   `;
+    // } else if (category) {
+    //   countQuery += " WHERE categories.name ILIKE $1";
+    // } else if (keyword) {
+    //   countQuery += `
+    //     WHERE posts.title ILIKE $1 
+    //     OR posts.description ILIKE $1 
+    //     OR posts.content ILIKE $1
+    //   `;
+    // }
 
-    const countResult = await connectionPool.query(countQuery, countValues);
-    const totalPosts = parseInt(countResult.rows[0].count, 10);
+    // const countResult = await connectionPool.query(countQuery, countValues);
+    // const totalPosts = parseInt(countResult.rows[0].count, 10);
 
-    // Respibse for pagination
-    const results = {
-      totalPosts,
-      totalPages: Math.ceil(totalPosts / safeLimit),
-      currentPage: safePage,
-      limit: safeLimit,
-      posts: result.rows,
-    };
-    // Check for next page
-    if (offset + safeLimit < totalPosts) {
-      results.nextPage = safePage + 1;
-    }
-    // Check for previous page
-    if (offset > 0) {
-      results.previousPage = safePage - 1;
-    }
+    // // Respibse for pagination
+    // const results = {
+    //   totalPosts,
+    //   totalPages: Math.ceil(totalPosts / safeLimit),
+    //   currentPage: safePage,
+    //   limit: safeLimit,
+    //   posts: result.rows,
+    // };
+    // // Check for next page
+    // if (offset + safeLimit < totalPosts) {
+    //   results.nextPage = safePage + 1;
+    // }
+    // // Check for previous page
+    // if (offset > 0) {
+    //   results.previousPage = safePage - 1;
+    // }
+
+
     // Return success response to client
-    return res.status(200).json(results);
+    // return res.status(200).json(results);
+
+      const { data, error } = await supabase
+      .from('posts')
+      .select('*');
+
+    if (error) return res.status(500).json({ error: error.message });
+    if (!data) return res.status(404).json({ error: 'Post not found' });
+    return res.status(200).json(data);
   } catch (e) {
     console.log("Error get posts:", e.message)
     return res.status(500).json({
