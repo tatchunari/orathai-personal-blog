@@ -22,7 +22,9 @@ postRouter.post("/",validatePostData, async (req, res) => {
     ];
 
     await connectionPool.query(query, values);
-  } catch {
+  } catch (e) {
+    console.log("Error read post : ", e.message)
+    console.error(e)
     return res.status(500).json({
       message: `Server could not create post because database connection`,
     });

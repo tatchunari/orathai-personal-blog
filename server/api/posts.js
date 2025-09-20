@@ -21,19 +21,19 @@ export default async function handler(req, res) {
   if (req.method === 'GET') {
   const { id } = req.query;
 
-  // if (id) {
-  //   const numericId = parseInt(id, 10);
+  if (id) {
+    const numericId = parseInt(id, 10);
 
-  //   const { data, error } = await supabase
-  //     .from('posts')
-  //     .select('*')
-  //     .eq('id', numericId)
-  //     .maybeSingle();
+    const { data, error } = await supabase
+      .from('posts')
+      .select('*')
+      .eq('id', numericId)
+      .maybeSingle();
 
-  //   if (error) return res.status(500).json({ error: error.message });
-  //   if (!data) return res.status(404).json({ error: 'Post not found' });
-  //   return res.status(200).json(data);
-  // }
+    if (error) return res.status(500).json({ error: error.message });
+    if (!data) return res.status(404).json({ error: 'Post not found' });
+    return res.status(200).json(data);
+  }
   return res.status(200).json(JSON.stringify({username: "test1234"}))
 
   // fallback: all posts
