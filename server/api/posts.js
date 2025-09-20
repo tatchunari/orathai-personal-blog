@@ -18,6 +18,7 @@ export default async function handler(req, res) {
 
   // 3️⃣ Handle GET
   if (req.method === 'GET') {
+    console.log("GET API")
   const { id } = req.query;
 
   if (id) {
