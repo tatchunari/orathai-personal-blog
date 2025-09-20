@@ -44,12 +44,12 @@ const ArticleNavbarDesktop = () => {
       {/* Category buttons */}
       <nav className="flex gap-4 flex-wrap">
         {categories.map((cat) => {
-          const isActive = selectedCategory === label;
+          const isActive = selectedCategory === cat;
 
           return (
             <Button
               key={cat.id}
-              onClick={() => setSelectedCategory(label)}
+              onClick={() => setSelectedCategory(cat)}
               disabled={isActive} // ปุ่มที่ถูกเลือกแล้วกดไม่ได้
               className={`rounded-lg px-6 py-2 font-medium transition-colors
                 ${

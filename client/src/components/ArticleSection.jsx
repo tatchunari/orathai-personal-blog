@@ -4,38 +4,14 @@ import BlogCard from "./BlogCard";
 
 
 import { useEffect, useState } from "react";
-import { fetchPosts } from "@/api/posts";
+import { usePostsData } from "@/hooks/usePostsData";
 
 const ArticleSection = () => {
 
+  const { posts, loading } = usePostsData();
   const categories = ["Highlight", "Dev", "Hobbies", "Art"];
   const [category, setCategory] = useState("Highlight");
-  const [posts, setPosts] = useState([]);
-  const [page, setPage] = useState(1);
-  const [hasMore, setHasMore] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
-
-  useEffect(() => {
-    setIsLoading(true);
-    const getPosts = async () => {
-      try {
-        const data = await fetchPosts({ page, category }); 
-        setPosts((prevPosts) => [...prevPosts, ...data.posts]);
-        setIsLoading(false);
-        if (data.currentPage >= data.totalPages) {
-          setHasMore(false);
-        }
-      } catch (error) {
-        console.log(error);
-        setIsLoading(false);
-      }
-    }
-    getPosts();
-  }, [page, category])
-
-  const handleLoadMore = () => {
-    setPage((prevPage) => prevPage + 1);
-  }
 
   return (
     <section className="w-full bg-[#f7f6f3] py-8 px-0">
@@ -54,16 +30,16 @@ const ArticleSection = () => {
       {/* Blog/Article Cards Section */}
       <div className="max-w-5xl mx-auto px-4 mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
         {
-         posts.map((blog, index) => 
+         posts.map((post) => 
           <BlogCard 
-            key={index}
-            id={blog.id}
-            image={blog.image}
-            category={blog.category}
-            title={blog.title}
-            description={blog.description}
-            author={blog.author}
-            date={new Date(blog.date).toLocaleDateString("en-GB", {
+            key={post.id}
+            id={post.id}
+            image={post.thumbnail_image}
+            category={post.category_id}
+            title={post.title}
+            description={post.content}
+            author={post.author}
+            date={new Date(post.date).toLocaleDateString("en-GB", {
               day: "numeric",
               month: "long",
               year: "numeric",
@@ -73,16 +49,6 @@ const ArticleSection = () => {
         ) 
         }
       </div>
-      {hasMore && (
-        <div className="text-center mt-8">
-          <button 
-          onClick={handleLoadMore}
-          className="cursor-pointer hover:text-muted-foreground font-medium underline"
-          >
-            {isLoading ? "Loading..." : "View more"}
-          </button>
-        </div>
-      )}
     </section>
   );
 };
