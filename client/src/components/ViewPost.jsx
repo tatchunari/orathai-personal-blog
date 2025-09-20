@@ -12,7 +12,7 @@ import NotFoundPage from '@/pages/NotFoundPage';
 
 const ViewPost = () => {
 
-  const [img, setImg] = useState("");
+  const [img, setImg] = useState(null);
   const [title, setTitle] = useState("");
   const [date, setDate] = useState("");
   const [description, setDescription] = useState("");
@@ -31,15 +31,15 @@ const ViewPost = () => {
   const getPost = async () => {
     setIsLoading(true);
     try {
-      const response = await axios.get(`https://orathai-personal-blog-backend.vercel.app/api/posts/${params.id}`);
+      const response = await axios.get(`https://orathai-personal-blog-backend.vercel.app/api/posts?id=${params.id}`);
 
       if (!response.data || Object.keys(response.data).length === 0) {
         setNotFound(true);
       }
 
-      setImg(response.data.image);
+      setImg(response.data.thumbnail_image);
       setTitle(response.data.title);
-      setDate(response.data.date);
+      setDate(response.data.created_at);
       setDescription(response.data.description);
       setCategory(response.data.category);
       setContent(response.data.content);

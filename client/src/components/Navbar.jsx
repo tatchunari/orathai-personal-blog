@@ -6,6 +6,7 @@ import { IoIosArrowDown } from "react-icons/io";
 import { RxPerson } from "react-icons/rx";
 import { GrPowerReset } from "react-icons/gr";
 import { SlLogout } from "react-icons/sl";
+import { User } from 'lucide-react'
 import { RiAdminLine } from "react-icons/ri";
 
 import { useAuth } from '@/context/authentication';
@@ -161,13 +162,13 @@ const Navbar = () => {
                     Reset Password
                   </DropdownMenuItem>
 
-                  {state.user.role === admin  && 
+                  {state.user.role === "admin"  && 
                     <DropdownMenuItem onClick={() => navigate("/admin")}>
                     <RiAdminLine className="w-5 h-5 text-gray-500" />
                     Admin Panel
                   </DropdownMenuItem> 
                   }
-                  <DropdownMenuItem onClick={() => setIsLoggedIn(false)}>
+                  <DropdownMenuItem onClick={() => {logout();}}>
                     <SlLogout className='w-5 h-5 text-gray-500'/>
                     Log out
                   </DropdownMenuItem>
