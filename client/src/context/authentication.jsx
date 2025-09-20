@@ -1,106 +1,91 @@
-/* eslint-disable react-refresh/only-export-components */
-/* eslint-disable react/prop-types */
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import supabase from '../lib/supabaseClient';
 
 const AuthContext = React.createContext();
 
 function AuthProvider(props) {
   const [state, setState] = useState({
-    loading: null,
-    getUserLoading: null,
+    loading: false,
+    getUserLoading: false,
     error: null,
     user: null,
   });
 
   const navigate = useNavigate();
 
-  // Fetch user details using Supabase API
+  // Fetch current logged-in user
   const fetchUser = async () => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      setState((prevState) => ({
-        ...prevState,
-        user: null,
-        getUserLoading: false,
-      }));
-      return;
-    }
+    setState((prev) => ({ ...prev, getUserLoading: true }));
+    const { data: { user }, error } = await supabase.auth.getUser();
 
-    try {
-      setState((prevState) => ({ ...prevState, getUserLoading: true }));
-      const response = await axios.get(
-        "https://blog-post-project-api-with-db.vercel.app/auth/get-user"
-      );
-      setState((prevState) => ({
-        ...prevState,
-        user: response.data,
-        getUserLoading: false,
-      }));
-    } catch (error) {
-      setState((prevState) => ({
-        ...prevState,
-        error: error.message,
+    if (error) {
+      setState((prev) => ({
+        ...prev,
         user: null,
+        error: error.message,
         getUserLoading: false,
       }));
+    } else {
+      setState((prev) => ({ ...prev, user, getUserLoading: false }));
     }
   };
 
   useEffect(() => {
-    fetchUser(); // Load user on initial app load
+    fetchUser();
+
+    const { data: listener } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        if (session?.user) {
+          setState((prev) => ({ ...prev, user: session.user }));
+        } else {
+          setState((prev) => ({ ...prev, user: null }));
+        }
+      }
+    );
+
+    return () => listener.subscription.unsubscribe();
   }, []);
 
-  // Login user
-  const login = async (data) => {
+  // Register a new user
+  const register = async ({ email, password }) => {
     try {
-      setState((prevState) => ({ ...prevState, loading: true, error: null }));
-      const response = await axios.post(
-        "https://blog-post-project-api-with-db.vercel.app/auth/login",
-        data
-      );
-      const token = response.data.access_token;
-      localStorage.setItem("token", token);
+      setState((prev) => ({ ...prev, loading: true, error: null }));
+      const { data, error } = await supabase.auth.signUp({ email, password });
 
-      // Fetch and set user details
-      setState((prevState) => ({ ...prevState, loading: false, error: null }));
-      navigate("/");
-      await fetchUser();
+      if (error) throw error;
+
+      setState((prev) => ({ ...prev, loading: false }));
+      navigate("/signup/success");
     } catch (error) {
-      setState((prevState) => ({
-        ...prevState,
-        loading: false,
-        error: error.response?.data?.error || "Login failed",
-      }));
-      return { error: error.response?.data?.error || "Login failed" };
+      setState((prev) => ({ ...prev, loading: false, error: error.message }));
+      return { error: error.message };
     }
   };
 
-  // Register user
-  const register = async (data) => {
+  // Login existing user
+  const login = async ({ email, password }) => {
     try {
-      setState((prevState) => ({ ...prevState, loading: true, error: null }));
-      await axios.post(
-        "https://blog-post-project-api-with-db.vercel.app/auth/register",
-        data
-      );
-      setState((prevState) => ({ ...prevState, loading: false, error: null }));
-      navigate("/sign-up/success");
+      setState((prev) => ({ ...prev, loading: true, error: null }));
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) throw error;
+
+      setState((prev) => ({ ...prev, user: data.user, loading: false }));
+      navigate("/");
     } catch (error) {
-      setState((prevState) => ({
-        ...prevState,
-        loading: false,
-        error: error.response?.data?.error || "Registration failed",
-      }));
-      return { error: state.error };
+      setState((prev) => ({ ...prev, loading: false, error: error.message }));
+      return { error: error.message };
     }
   };
 
   // Logout user
-  const logout = () => {
-    localStorage.removeItem("token");
-    setState({ user: null, error: null, loading: null });
+  const logout = async () => {
+    await supabase.auth.signOut();
+    setState({ user: null, loading: false, error: null });
     navigate("/");
   };
 
@@ -122,7 +107,7 @@ function AuthProvider(props) {
   );
 }
 
-// Hook for consuming AuthContext
+// Custom hook
 const useAuth = () => React.useContext(AuthContext);
 
 export { AuthProvider, useAuth };
