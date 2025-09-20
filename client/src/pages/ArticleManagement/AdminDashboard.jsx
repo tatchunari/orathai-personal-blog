@@ -1,11 +1,12 @@
 import AdminPanel from "@/components/ArticleManagement/AdminPanel"
-import Articles from "./Articles"
-import CreateArticle from "./CreateArticle"
-import EditArticle from "./EditArticle"
-import Categories from "./Categories"
-import Notifications from "./Notifications"
-import Profile from "./Profile"
-import ResetPassword from "./ResetPassword"
+import AdminArticles from "./AdminArticles"
+import AdminCreateArticle from "./AdminCreateArticle"
+import AdminEditArticle from "./AdminEditArticle"
+import AdminCategories from "./AdminCategories"
+import AdminNotifications from "./AdminNotifications"
+import AdminProfile from "./AdminProfile"
+import AdminResetPassword from "./AdminResetPassWord"
+
 import { useState } from "react"
 
 const AdminDashboard = () => {
@@ -33,17 +34,17 @@ const AdminDashboard = () => {
   function renderMainPage() {
     switch (navigation.mainPage) {
       case "articles":
-        return <Articles onNavigate={navigateToPage} />;
+        return <AdminArticles onNavigate={navigateToPage} />;
       case "categories":
-        return <Categories onNavigate={navigateToPage} />;
+        return <AdminCategories onNavigate={navigateToPage} />;
       case "notifications":
-        return <Notifications onNavigate={navigateToPage} />;
+        return <AdminNotifications onNavigate={navigateToPage} />;
       case "profile":
-        return <Profile onNavigate={navigateToPage} />;
+        return <AdminProfile onNavigate={navigateToPage} />;
       case "resetPassword":
-        return <ResetPassword onNavigate={navigateToPage} />;
+        return <AdminResetPassword onNavigate={navigateToPage} />;
       default:
-        return <Articles onNavigate={navigateToPage} />;
+        return <AdminArticles onNavigate={navigateToPage} />;
     }
   }
 
@@ -54,9 +55,9 @@ const AdminDashboard = () => {
     if (mainPage === "articles") {
       switch (subPage) {
         case "create":
-          return <CreateArticle onBack={goBack} onNavigate={navigateToPage} />;
+          return <AdminCreateArticle onBack={goBack} onNavigate={navigateToPage} />;
         case "edit":
-          return <EditArticle articleId={params?.id} onBack={goBack} onNavigate={navigateToPage} />;
+          return <AdminEditArticle articleId={params?.id} onBack={goBack} onNavigate={navigateToPage} />;
         default:
           return null;
       }
@@ -66,7 +67,7 @@ const AdminDashboard = () => {
     if (mainPage === "categories") {
       switch (subPage) {
         case "create":
-          return <CreateCategory onBack={goBack} />;
+          return <AdminCategories onBack={goBack} />;
         default:
           return null;
       }

@@ -6,14 +6,18 @@ import { GrPowerReset } from "react-icons/gr";
 import { FiExternalLink } from "react-icons/fi";
 import { BiLogOut } from "react-icons/bi";
 
+import { useNavigate } from "react-router-dom";
+
 const menuItems = [
-  { id: "articles", label: "Article management", icon: SlNotebook },
-  { id: "categories", label: "Category management", icon: MdOutlineFolder },
-  { id: "notifications", label: "Notification", icon: FaRegBell },
-  { id: "resetPassword", label: "Reset Password", icon: GrPowerReset },
+  { id: "articles", label: "Article management", icon: SlNotebook, path: '/admin/article-management' },
+  { id: "categories", label: "Category management", icon: MdOutlineFolder, path: '/admin/categories-management' },
+  { id: "notifications", label: "Notification", icon: FaRegBell, path: '/admin/notifications-management' },
+  { id: "resetPassword", label: "Reset Password", icon: GrPowerReset, path: '/admin/resetpassword' },
 ];
 
 const AdminPanel = ({ onSelect, activePage }) => {
+
+  const navigate = useNavigate();
 
   const handleClick = (id) => {
     onSelect(id);
@@ -40,12 +44,8 @@ const AdminPanel = ({ onSelect, activePage }) => {
             return (
               <button 
                 key={item.id}
-                onClick={() => handleClick(item.id)}
-                className={`w-full text-sm text-left px-10 py-4 flex items-center gap-3 hover:bg-[#DAD6D1] cursor-pointer transition-colors ${
-                  activePage === item.id 
-                    ? 'bg-[#DAD6D1] text-[#26231E] font-medium' 
-                    : 'text-[#75716B]'
-                }`}
+                onClick={() => navigate(`${item.path}`)}
+                className='w-full text-sm text-left px-10 py-4 flex items-center gap-3 hover:bg-[#DAD6D1] cursor-pointer transition-colors'
               >
                 <Icon className="w-5 h-5" />
                 {item.label}

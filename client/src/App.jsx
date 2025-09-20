@@ -7,9 +7,15 @@ import LoginPage from "./pages/LoginPage.jsx";
 import SignUpPage from "./pages/SignUpPage.jsx";
 import { Toaster } from "sonner";
 import MemberManagementPage from "./pages/MemberManagement/MemberManagementPage.jsx";
+
+// Admin
 import AdminDashboard from "./pages/ArticleManagement/AdminDashboard";
-import CreateArticle from "./pages/ArticleManagement/CreateArticle";
-import EditArticle from "./pages/ArticleManagement/EditArticle";
+import CreateArticle from "./pages/ArticleManagement/AdminCreateArticle";
+import EditArticle from "./pages/ArticleManagement/AdminEditArticle";
+import AdminArticles from "./pages/ArticleManagement/AdminArticles";
+import AdminCategories from "./pages/ArticleManagement/AdminCategories";
+import AdminNotifications from "./pages/ArticleManagement/AdminNotifications";
+import AdminResetPassWord from "./pages/ArticleManagement/AdminResetPassWord";
 
 function App() {
 
@@ -25,8 +31,10 @@ function App() {
           <Route path='/signup' element={<SignUpPage />}/>
           <Route path='/member' element={<MemberManagementPage />}/>
           <Route path='/admin' element={<AdminDashboard />}/>
-          <Route path='/admin/create' element={<CreateArticle/>}/>
-          <Route path='admin/edit/:id' element={<EditArticle />} />
+          <Route path='/admin/article-management' element={<AdminArticles/>}/>
+          <Route path='/admin/categories-management' element={<AdminCategories/>} />
+          <Route path='/admin/notifications-management' element={<AdminNotifications />} />
+          <Route path='/admin/resetpassword' element={<AdminResetPassWord/>}/>
         </Routes>
       </Router>
     </div>

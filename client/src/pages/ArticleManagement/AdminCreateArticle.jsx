@@ -17,7 +17,7 @@ import { usePostsData } from "@/hooks/usePostsData";
 // Remove the useNavigate import since we'll use onNavigate prop
 // import { useNavigate } from "react-router-dom";
 
-const Articles = ({ onNavigate }) => {  // Make sure onNavigate prop is received
+const AdminCreateArticles = ({ onNavigate }) => {  // Make sure onNavigate prop is received
 
   // State for Dropdown menus
   const [status, setStatus] = useState("");
@@ -80,7 +80,7 @@ const Articles = ({ onNavigate }) => {  // Make sure onNavigate prop is received
         <div className="flex flex-row gap-x-4">
 
           {/* Category */}
-          <Select value={category} onValueChange={(value) => setCategory(value)}>  {/* Fixed onValueChange */}
+          <Select value={category} onValueChange={(value) => setCategory(value)}>
             <SelectTrigger className="w-40 py-5 border border-gray-300 text-[#75716B] text-sm">
               <SelectValue placeholder="Category" />
             </SelectTrigger>
@@ -93,7 +93,7 @@ const Articles = ({ onNavigate }) => {  // Make sure onNavigate prop is received
           </Select>
 
           {/* Status */}
-          <Select value={status} onValueChange={(value) => setStatus(value)}>  {/* Fixed onValueChange */}
+          <Select value={status} onValueChange={(value) => setStatus(value)}>
             <SelectTrigger className="w-40 border py-5 border-[#DAD6D1] text-[#75716B] text-sm">
               <SelectValue placeholder="Status" />
             </SelectTrigger>
@@ -106,7 +106,7 @@ const Articles = ({ onNavigate }) => {  // Make sure onNavigate prop is received
         </div>
       </div>
 
-       {/* Article Lists  */}
+      {/* Article Lists */}
       <table className="w-full mt-10 mx-4 border-collapse bg-white rounded-md shadow-sm">
         <thead className="bg-[#F9F8F6] text-left text-gray-600 text-sm">
           <tr>
@@ -133,7 +133,7 @@ const Articles = ({ onNavigate }) => {  // Make sure onNavigate prop is received
               <td className="p-3 flex gap-3">
                 <button
                   className="text-gray-500 hover:text-blue-500 cursor-pointer"
-                  onClick={() => onNavigate('articles', 'edit', { id: article.id })}  
+                  onClick={() => onNavigate('articles', 'edit', { id: article.id })}
                 >
                   <LuPencil/>
                 </button>
@@ -152,4 +152,4 @@ const Articles = ({ onNavigate }) => {  // Make sure onNavigate prop is received
   )
 }
 
-export default Articles
+export default AdminCreateArticles;
