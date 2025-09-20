@@ -113,13 +113,6 @@ const AdminDashboard = () => {
 
   return (
     <div className="flex min-h-screen">
-      {/* Left Panel - Always Visible */}
-      <div className="w-72 flex-shrink-0">
-        <AdminPanel 
-          onSelect={(mainPage) => navigateToPage(mainPage)} 
-          activePage={navigation.mainPage}
-        />
-      </div>
 
       {/* Right Panel - Flexible Width */}
       <div className="flex-1 flex flex-col">
