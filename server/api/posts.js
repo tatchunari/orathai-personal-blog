@@ -25,6 +25,10 @@ export default async function handler(req, res) {
       introduction,
       content,
       like_count,
+      thumbnail_image,
+      author,
+      created_at,
+      updated_at,
       categories(name)
       `);
     if (error) return res.status(500).json({ error: error.message });

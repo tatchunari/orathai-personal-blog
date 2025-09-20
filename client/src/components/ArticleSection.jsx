@@ -35,7 +35,7 @@ const ArticleSection = () => {
             key={post.id}
             id={post.id}
             image={post.thumbnail_image}
-            category={post.category_id}
+            category={post.categories.name}
             title={post.title}
             description={post.content}
             author={post.author}

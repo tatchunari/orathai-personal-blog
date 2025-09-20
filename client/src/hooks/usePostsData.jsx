@@ -9,6 +9,7 @@ export function usePostsData() {
     const fetchData = async () => {
       try {
         const response = await axios.get("https://orathai-personal-blog-backend.vercel.app/api/posts");
+        console.log("API Response:" ,response.data)
         setPosts(response.data);
       } catch (err) {
         console.error("Error fetching posts:", err);
