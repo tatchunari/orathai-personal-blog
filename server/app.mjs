@@ -29,7 +29,7 @@ app.get("/admin-only", protectAdmin, (req, res) => {
 app.use("/posts", postRouter);
 app.use("/auth", authRouter);
 app.use("/category", categoryRouter);
-app.use("/profile", profileRouter);
+app.use("/profiles", profileRouter);
 
 app.listen(port, () => {
   console.log(`Server is running at ${port}`);
