@@ -87,7 +87,7 @@ const Navbar = () => {
                   <Link to="/member">Reset Password</Link>
                   </div>
 
-                  {state.user.role === 'admin' && 
+                  {state.profiles?.role === 'admin' && 
                   <div className='flex flex-row gap-3'>
                     <RiAdminLine className='w-6 h-6 text-gray-500'/>
                     <Link to="/admin">Admin Panel</Link>
@@ -154,7 +154,7 @@ const Navbar = () => {
                     Profile
                   </DropdownMenuItem>
                    <DropdownMenuItem onClick={() => navigate(
-                    state.user.role === "admin"
+                    state.profile?.role === "admin"
                       ? "/admin/resetpassword"
                       : "/reset-password"
                   )}>
@@ -162,7 +162,7 @@ const Navbar = () => {
                     Reset Password
                   </DropdownMenuItem>
 
-                  {state.user.role === "admin"  && 
+                  {state.profile?.role === "admin"  && 
                     <DropdownMenuItem onClick={() => navigate("/admin")}>
                     <RiAdminLine className="w-5 h-5 text-gray-500" />
                     Admin Panel

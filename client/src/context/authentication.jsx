@@ -17,10 +17,15 @@ function AuthProvider(props) {
 
   // Fetch current logged-in user
   const fetchUser = async () => {
+    // console.log(`fetchUser....`);
     setState((prev) => ({ ...prev, getUserLoading: true }));
     const { data: { user }, error } = await supabase.auth.getUser();
 
+    // console.log(`fetchUser data: `, user)
+    
+
     if (error) {
+      console.error(error);
       setState((prev) => ({
         ...prev,
         user: null,
@@ -29,22 +34,24 @@ function AuthProvider(props) {
       }));
     } else {
       setState((prev) => ({ ...prev, user, getUserLoading: false }));
+      getProfileById(user.id)
     }
   };
 
   // Get Profile data when user log in
-  const getProfile = async () => {
+  const getProfileById = async (id) => {
       try {
         setState((prev) => ({ ...prev, getUserLoading: true, error: null }));
 
-        if (!state.user) throw new Error("No user logged in");
+        if (!id) throw new Error("No user logged in");
 
         const { data, error } = await supabase
           .from("profiles")
           .select("id, name, bio, role")
-          .eq("id", state.user.id)
+          .eq("id", id)
           .single();
 
+          // console.log("Profile Data", data);
         if (error) throw error;
 
         setState((prev) => ({
@@ -89,7 +96,7 @@ function AuthProvider(props) {
     fetchUser();
 
     const { data: listener } = supabase.auth.onAuthStateChange(
-      (event, session) => {
+      async (event, session) => {
         if (session?.user) {
           setState((prev) => ({ ...prev, user: session.user }));
         } else {
@@ -132,14 +139,14 @@ function AuthProvider(props) {
 
       console.log("Login data : ", JSON.stringify(data));
 
-      const profile = await getProfile();
-
       setState((prev) => ({ ...prev, user: data.user, loading: false }));
+      await getProfileById(data.user.id);
       navigate("/");
     } catch (error) {
       setState((prev) => ({ ...prev, loading: false, error: error.message }));
       return { error: error.message };
     }
+    
   };
 
   // Logout user

@@ -1,8 +1,9 @@
 import { useAuth } from "@/context/authentication";
+import { Navigate } from "react-router-dom";
 
 export function AdminRoute ({ children }) {
   const { isAuthenticated, isAdmin, state,  state: { getUserLoading } } = useAuth(); 
-  const isActualLoading = isLoading === null || isLoading;
+  const isActualLoading = getUserLoading === null || getUserLoading;
 
   if (isActualLoading) {
     return (

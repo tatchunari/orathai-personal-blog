@@ -4,6 +4,7 @@ import { useAuth } from "./context/authentication.jsx";
 import jwtInterceptor from "./utils/jwtIntercaptor";
 import { AdminRoute } from "./components/auth/AdminRoute";
 import AuthenticationRoute from "./components/auth/AuthenticationRoute";
+import AnonUserRoute from './components/auth/AnonUserRoute';
 
 import LandingPage from "./pages/LandingPage.jsx";
 import ViewPostPage from "./pages/ViewPostPage.jsx";
@@ -32,7 +33,7 @@ function App() {
 
   const { state } = useAuth();
 
-  console.log(`Auth user: `, state.user);
+  // console.log(`Auth user: `, state);
 
   return (
     <>
@@ -47,17 +48,17 @@ function App() {
           <Route 
           path='/login' 
           element={
-          <AuthenticationRoute>
+            <AnonUserRoute>
               <LoginPage />
-            </AuthenticationRoute>
+            </AnonUserRoute>
           }/>
 
           <Route 
           path='/signup' 
           element={
-          <AuthenticationRoute>
+          <AnonUserRoute>
               <SignUpPage />
-            </AuthenticationRoute>
+            </AnonUserRoute>
           }/>
 
           <Route

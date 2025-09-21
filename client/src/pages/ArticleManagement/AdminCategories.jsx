@@ -22,6 +22,7 @@ const categories = [
 ];
 
 const AdminCategories = () => {
+  console.log('render AdminCategories...');
 
   const navigate = useNavigate();
 

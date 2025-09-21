@@ -1,9 +1,31 @@
 import Footer from "@/components/Footer"
 import Navbar from "@/components/Navbar"
+import { useAuth } from "@/context/authentication"
+import { useState } from "react"
 
 import { Link } from "react-router-dom"
 
 const LoginPage = () => {
+
+  const { login } = useAuth();
+  
+  const [formValue, setFormValue] = useState({
+    email: "",
+    password: "",
+  })
+
+  const handleChange = (key, value) => {
+    setFormValue((prev) => ({...prev, [key]: value}))
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const result = await login(formValue)
+    console.log(formValue);
+  }
+
+  console.log("Email and password input", formValue.email, formValue.password);
+
   return (
      <div>
         <Navbar/>
@@ -12,7 +34,7 @@ const LoginPage = () => {
       <div className="w-full max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl my-20 py-8 px-10 space-y-6 bg-[#EFEEEB] rounded-lg shadow-lg">
         <h2 className="text-3xl font-semibold mx-10 text-center text-[#26231E]">Log in</h2>
 
-        <form className="space-y-6">
+        <form className="space-y-6" onSubmit={handleSubmit}>
           {/* Email Input */}
           <div>
              <div className="mt-1 mx-15">
@@ -23,6 +45,7 @@ const LoginPage = () => {
                 type="email"
                 autoComplete="email"
                 placeholder="Email"
+                onChange={(e) => handleChange("email", e.target.value)}
                 required
                 className="block w-full px-4 py-2 bg-white text-gray-900 placeholder-gray-400 border border-gray-300 rounded-md focus:ring-gray-500 focus:border-gray-500"
               />
@@ -38,6 +61,7 @@ const LoginPage = () => {
                 type="password"
                 autoComplete="new-password"
                 placeholder="Password"
+                onChange={(e) => handleChange("password", e.target.value)}
                 required
                 className="block w-full px-4 py-2  bg-white text-gray-900 placeholder-gray-400 border border-gray-300 rounded-md focus:ring-gray-500 focus:border-gray-500"
               />

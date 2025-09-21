@@ -26,10 +26,11 @@ import { Input } from "@/components/ui/input";
 
 import { useState } from "react";
 import { usePostsData } from "@/hooks/usePostsData";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import AdminPanel from "@/components/ArticleManagement/AdminPanel";
 
 const AdminArticles = ({ onNavigate }) => {  
+  console.log(`render AdminArticles....`)
 
   const [status, setStatus] = useState("");
   const [category, setCategory] = useState("");
@@ -53,7 +54,7 @@ const AdminArticles = ({ onNavigate }) => {
   // Delete handler
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`https://blog-post-project-api.vercel.app/posts/${id}`);
+      await axios.delete(`https://orathai-personal-blog-backend.vercel.app/posts/${id}`);
       // Optionally re-fetch data or filter locally
       window.location.reload(); // quick way, but better to refetch
     } catch (err) {
@@ -126,11 +127,15 @@ const AdminArticles = ({ onNavigate }) => {
                   </span>
                 </TableCell>
                 <TableCell className="text-right">
-                  <Button variant="ghost" size="sm">
-                    <LuPencil className="h-4 w-4 hover:text-muted-foreground" />
+                  <Button variant="ghost" size="sm" onClick={() => navigate(`/admin/article-management/edit/${post.id}`)}>
+                    <LuPencil className="h-4 w-4 hover:text-muted-foreground cursor-pointer" />
                   </Button>
-                  <Button variant="ghost" size="sm">
-                    <FaRegTrashAlt className="h-4 w-4 hover:text-muted-foreground" />
+                  <Button variant="ghost" size="sm" onClick={() => {
+                    if(confirm("Are you sure?")) {
+                      handleDelete(post.id)
+                    }
+                  }}>
+                    <FaRegTrashAlt className="h-4 w-4 cursor-pointer hover:text-muted-foreground" />
                   </Button>
                 </TableCell>
               </TableRow>
