@@ -16,11 +16,12 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { useCategoryData } from '@/hooks/useCategoryData';
 import axios from 'axios';
+import { useQuery } from '@/hooks/useQuery';
 
 const AdminCategories = () => {
   // console.log('render AdminCategories...');
 
-  const { categories, loading } = useCategoryData();
+  const { data, loading } = useQuery('category');
 
   const navigate = useNavigate();
 
@@ -60,6 +61,8 @@ const AdminCategories = () => {
           />
         </div>
 
+        {loading && <div>Loading...</div>}
+
         <Table>
           <TableHeader>
             <TableRow>
@@ -68,7 +71,7 @@ const AdminCategories = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {categories.map((category) => (
+            {data?.map((category) => (
               <TableRow key={category.id}>
                 <TableCell className="font-medium">{category.name}</TableCell>
                 <TableCell className="text-right flex">

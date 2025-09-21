@@ -6,32 +6,35 @@ import { Input } from '@/components/ui/input'
 import { useEffect, useState, useRef } from 'react'
 import axios from 'axios'
 import { useParams } from 'react-router-dom'
+import { useQuery } from '@/hooks/useQuery'
 
 const AdminEditCategory = () => {
 
 const { categoryId } = useParams();
 const categoryNameInputRef = useRef();
+const { data  , loading } = useQuery(`category/${categoryId}`)
 
 const [categoryName, setCategoryName] = useState("");
 
-useEffect(() => {
-  fetchCategoryById(categoryId);
-}, [])
+// useEffect(() => {
+//   fetchCategoryById(categoryId);
+// }, [])
 
 
-// Fetch Category name
-const fetchCategoryById = async (id) => {
-    try {
-      const response = await axios.get(`https://orathai-personal-blog-backend.vercel.app/category/${id}`);
-      setCategoryName(response.data.name);
-      // setCategoryName(response)
-    } catch (err) {
-      console.error("Fetch data failed:", err);
-    }
-  };
+// // Fetch Category name
+// const fetchCategoryById = async (id) => {
+//     try {
+//       const response = await axios.get(`https://orathai-personal-blog-backend.vercel.app/category/${id}`);
+//       setCategoryName(response.data.name);
+//       // setCategoryName(response)
+//     } catch (err) {
+//       console.error("Fetch data failed:", err);
+//     }
+//   };
 
   // Update Category name
   const handleUpdateCategoryName = async (id) => {
+
       const name = categoryNameInputRef.current?.value;
         if (!name) {
           alert("Category name is required");
@@ -45,7 +48,7 @@ const fetchCategoryById = async (id) => {
           console.log(response)
         } catch (err) {
           console.error("Edit Category failed:", err);
-        }
+        } 
       }
 
 
@@ -77,7 +80,7 @@ const fetchCategoryById = async (id) => {
               ref={categoryNameInputRef}
               placeholder="Category name"
               className="mt-3 py-3 rounded-sm placeholder:text-muted-foreground focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-muted-foreground"
-              defaultValue={categoryName}
+              defaultValue={data?.name}
             />
           </div>
         </div>
