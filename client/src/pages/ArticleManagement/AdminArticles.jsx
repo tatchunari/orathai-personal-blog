@@ -1,6 +1,4 @@
 // Article Management
-import { FaPlus } from "react-icons/fa6";
-import { CiSearch } from "react-icons/ci";
 import { LuPencil } from "react-icons/lu";
 import { FaRegTrashAlt } from "react-icons/fa";
 

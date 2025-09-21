@@ -14,17 +14,26 @@ import {
 } from "@/components/ui/table";
 
 import { useNavigate } from 'react-router-dom';
-
-const categories = [
-  { name: "Cat" },
-  { name: "General" },
-  { name: "Inspiration" },
-];
+import { useCategoryData } from '@/hooks/useCategoryData';
 
 const AdminCategories = () => {
-  console.log('render AdminCategories...');
+  // console.log('render AdminCategories...');
+
+  const { categories, loading } = useCategoryData();
 
   const navigate = useNavigate();
+
+  // Delete Category
+  const handleDelete = async (id) => {
+    try {
+      await axios.delete(`https://orathai-personal-blog-backend.vercel.app/category/${id}`);
+      // Optionally re-fetch data or filter locally
+      window.location.reload(); // quick way, but better to refetch
+    } catch (err) {
+      console.error("Delete failed:", err);
+    }
+  };
+
 
   return (
     <div className='flex h-screen'>
@@ -58,14 +67,18 @@ const AdminCategories = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {categories.map((category, index) => (
-              <TableRow key={index}>
+            {categories.map((category) => (
+              <TableRow key={category.id}>
                 <TableCell className="font-medium">{category.name}</TableCell>
                 <TableCell className="text-right flex">
-                  <Button variant="ghost" size="sm">
+                  <Button variant="ghost" size="sm" onClick={() => navigate(`/admin/category-management/edit/${category.id}`)}>
                     <LuPencil className="h-4 w-4 hover:text-muted-foreground" />
                   </Button>
-                  <Button variant="ghost" size="sm">
+                  <Button variant="ghost" size="sm" onClick={() => {
+                    if(confirm("Are you sure?")) {
+                      handleDelete(post.id)
+                    }
+                  }}>
                     <FaRegTrashAlt className="h-4 w-4 hover:text-muted-foreground" />
                   </Button>
                 </TableCell>

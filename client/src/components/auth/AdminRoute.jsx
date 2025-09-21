@@ -1,9 +1,16 @@
 import { useAuth } from "@/context/authentication";
 import { Navigate } from "react-router-dom";
+import LoadingScreen from "@/pages/LoadingScreen";
+import { useEffect } from "react";
 
 export function AdminRoute ({ children }) {
   const { isAuthenticated, isAdmin, state,  state: { getUserLoading } } = useAuth(); 
   const isActualLoading = getUserLoading === null || getUserLoading;
+
+  useEffect(() => {
+    console.log(`useEffect AdminRoute....`);
+  }, [])
+
 
   if (isActualLoading) {
     return (
@@ -14,6 +21,7 @@ export function AdminRoute ({ children }) {
       </div>
     );
   }
+  console.log(`AdminRoute getUserLoading: ${getUserLoading} after loading isAdmin : ${isAdmin}`)
 
   // Not logged in
   if (!isAuthenticated) {

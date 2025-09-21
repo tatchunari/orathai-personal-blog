@@ -1,10 +1,24 @@
 import AdminPanel from '@/components/ArticleManagement/AdminPanel'
 
-import { FaRegTrashAlt } from "react-icons/fa";
-
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+ 
+import { useState } from 'react'
+
 const AdminEditCategory = () => {
+
+const [inputValue, setInputValue] = useState("");
+
+  const handleChange = (key, value) => {
+    setFormValue((prev) => ({...prev, [key]: value}))
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const result = await login(formValue)
+    console.log(formValue);
+  }
+
   return (
     <div className='flex h-screen'>
       <AdminPanel/>
@@ -31,10 +45,6 @@ const AdminEditCategory = () => {
             />
           </div>
         </div>
-        <button className="underline underline-offset-2 hover:text-muted-foreground text-sm font-medium flex items-center gap-1 mt-6">
-          <FaRegTrashAlt className="h-5 w-5" />
-          Delete Category
-        </button>
       </main>
     </div>
   )

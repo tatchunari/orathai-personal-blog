@@ -7,21 +7,23 @@ const AuthContext = React.createContext();
 function AuthProvider(props) {
   const [state, setState] = useState({
     loading: false,
-    getUserLoading: false,
+    getUserLoading: true,
     error: null,
     user: null,
     profile: null
   });
 
+  console.log(`state: `, state);
+
   const navigate = useNavigate();
 
   // Fetch current logged-in user
   const fetchUser = async () => {
-    // console.log(`fetchUser....`);
+    console.log(`fetchUser....`);
     setState((prev) => ({ ...prev, getUserLoading: true }));
     const { data: { user }, error } = await supabase.auth.getUser();
 
-    // console.log(`fetchUser data: `, user)
+    console.log(`fetchUser data: `, user)
     
 
     if (error) {
@@ -38,8 +40,13 @@ function AuthProvider(props) {
     }
   };
 
+  const getCurrentProfile = async () => {
+    return getProfileById(state.user?.id);
+  }
+
   // Get Profile data when user log in
   const getProfileById = async (id) => {
+      console.log('getProfileById : ', id);
       try {
         setState((prev) => ({ ...prev, getUserLoading: true, error: null }));
 
@@ -93,6 +100,7 @@ function AuthProvider(props) {
     };
 
   useEffect(() => {
+    console.log(`useEffect auth`)
     fetchUser();
 
     const { data: listener } = supabase.auth.onAuthStateChange(
@@ -170,7 +178,8 @@ function AuthProvider(props) {
         register,
         isAuthenticated,
         fetchUser,
-        isAdmin
+        isAdmin,
+        getCurrentProfile
       }}
     >
       {props.children}
