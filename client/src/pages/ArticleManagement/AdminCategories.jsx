@@ -15,6 +15,7 @@ import {
 
 import { useNavigate } from 'react-router-dom';
 import { useCategoryData } from '@/hooks/useCategoryData';
+import axios from 'axios';
 
 const AdminCategories = () => {
   // console.log('render AdminCategories...');
@@ -76,7 +77,7 @@ const AdminCategories = () => {
                   </Button>
                   <Button variant="ghost" size="sm" onClick={() => {
                     if(confirm("Are you sure?")) {
-                      handleDelete(post.id)
+                      handleDelete(category.id)
                     }
                   }}>
                     <FaRegTrashAlt className="h-4 w-4 hover:text-muted-foreground" />
