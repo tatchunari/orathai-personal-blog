@@ -28,3 +28,30 @@ profileRouter.get("/:id", async (req, res) => {
   }
 });
 export default profileRouter;
+
+/**
+ * UPDATE category
+ */
+profileRouter.put("/:id", async (req, res) => {
+  const { id } = req.params;
+  const { name, bio, username, email } = req.body;
+
+  try {
+    const { data, error } = await supabase
+      .from("profiles")
+      .update({ name, bio, username, email })
+      .eq("id", id)
+      .select()
+      .single();
+
+    if (error) return res.status(500).json({ error: error.message });
+    if (!data) return res.status(404).json({ error: "Profile not found" });
+
+    return res.status(200).json({
+      message: "Profile updated successfully",
+      profile: data,
+    });
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
+  }
+});
