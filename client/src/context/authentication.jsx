@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import supabase from '../lib/supabaseClient';
 
@@ -10,6 +10,7 @@ function AuthProvider(props) {
     getUserLoading: false,
     error: null,
     user: null,
+    profile: null
   });
 
   const navigate = useNavigate();
@@ -30,6 +31,59 @@ function AuthProvider(props) {
       setState((prev) => ({ ...prev, user, getUserLoading: false }));
     }
   };
+
+  // Get Profile data when user log in
+  const getProfile = async () => {
+      try {
+        setState((prev) => ({ ...prev, getUserLoading: true, error: null }));
+
+        if (!state.user) throw new Error("No user logged in");
+
+        const { data, error } = await supabase
+          .from("profiles")
+          .select("id, name, bio, role")
+          .eq("id", state.user.id)
+          .single();
+
+        if (error) throw error;
+
+        setState((prev) => ({
+          ...prev,
+          profile: data,
+          getUserLoading: false,
+        }));
+
+        return data;
+      } catch (error) {
+        setState((prev) => ({
+          ...prev,
+          profile: null,
+          getUserLoading: false,
+          error: error.message,
+        }));
+        return null;
+      }
+    };
+  
+  // Save Profile data when user register
+  const saveProfile = async (user) => {
+      try {
+        if (!user) throw new Error("No user to save profile for");
+
+        const { error } = await supabase.from("profiles").insert([
+          {
+            id: user.id,
+            name: user.email.split("@")[0], 
+            bio: "",
+            role: "user",
+          },
+        ]);
+
+        if (error) throw error;
+      } catch (error) {
+        console.error("Error saving profile:", error.message);
+      }
+    };
 
   useEffect(() => {
     fetchUser();
@@ -55,8 +109,10 @@ function AuthProvider(props) {
 
       if (error) throw error;
 
+      await saveProfile(data.user);
+
       setState((prev) => ({ ...prev, loading: false }));
-      navigate("/signup/success");
+      navigate("/sign-up/success");
     } catch (error) {
       setState((prev) => ({ ...prev, loading: false, error: error.message }));
       return { error: error.message };
@@ -74,6 +130,10 @@ function AuthProvider(props) {
 
       if (error) throw error;
 
+      console.log("Login data : ", JSON.stringify(data));
+
+      const profile = await getProfile();
+
       setState((prev) => ({ ...prev, user: data.user, loading: false }));
       navigate("/");
     } catch (error) {
@@ -89,6 +149,9 @@ function AuthProvider(props) {
     navigate("/");
   };
 
+  //  Check Admin Role
+  const isAdmin = useMemo(() => state.profile?.role === 'admin');
+
   const isAuthenticated = Boolean(state.user);
 
   return (
@@ -100,6 +163,7 @@ function AuthProvider(props) {
         register,
         isAuthenticated,
         fetchUser,
+        isAdmin
       }}
     >
       {props.children}

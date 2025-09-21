@@ -1,9 +1,11 @@
 /* eslint-disable react/prop-types */
 import { Navigate } from "react-router-dom";
 import LoadingScreen from "@/pages/LoadingScreen";
+import { useAuth } from "@/context/authentication";
 
-function AuthenticationRoute({ isLoading, isAuthenticated, children }) {
-  if (isLoading === null || isLoading) {
+function AuthenticationRoute({ children }) {
+  const { isAuthenticated, state: { getUserLoading } } = useAuth();
+  if (getUserLoading === null || getUserLoading) {
     // Loading state or no data yet
     return (
       <div className="flex flex-col min-h-screen">
@@ -15,12 +17,11 @@ function AuthenticationRoute({ isLoading, isAuthenticated, children }) {
   }
 
   if (isAuthenticated) {
-    // Return null while navigate performs the redirection
-    return <Navigate to="/" replace />;
+    return children;
   }
 
-  // User is authenticated and has the correct role
-  return children;
+  // If not authenticated 
+  return <Navigate to="/login" replace />;
 }
 
 export default AuthenticationRoute;

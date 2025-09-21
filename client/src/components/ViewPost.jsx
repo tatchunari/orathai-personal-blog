@@ -23,6 +23,9 @@ const ViewPost = () => {
   const [notFound, setNotFound] = useState(false);
 
   const params = useParams();
+  const navigate = useNavigate();
+  const { state } = useAuth();
+  const user = state.user;
 
   useEffect(() => {
     getPost();
@@ -31,7 +34,8 @@ const ViewPost = () => {
   const getPost = async () => {
     setIsLoading(true);
     try {
-      const response = await axios.get(`https://orathai-personal-blog-backend.vercel.app/posts?id=${params.id}`);
+      const response = await axios.get(`https://orathai-personal-blog-backend.vercel.app/posts/${params.id}`);
+      console.log(response);
 
       if (!response.data || Object.keys(response.data).length === 0) {
         setNotFound(true);
