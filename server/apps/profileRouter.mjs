@@ -12,6 +12,7 @@ const profileRouter = Router();
  * READ single user profile by id
  */
 profileRouter.get("/:id", async (req, res) => {
+    const { id } = req.params;
   try {
     const { data, error } = await supabase
       .from("profiles")
