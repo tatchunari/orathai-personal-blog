@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import postRouter from "./apps/postRouter.mjs";
 import authRouter from "./apps/auth.mjs";
+import categoryRouter from "./apps/categoryRouter.mjs";
 import protectUser from "./middleware/protectUser.mjs";
 import protectAdmin from "./middleware/protectAdmin.mjs";
 
@@ -26,6 +27,7 @@ app.get("/admin-only", protectAdmin, (req, res) => {
 
 app.use("/posts", postRouter);
 app.use("/auth", authRouter);
+app.use("/category", categoryRouter);
 
 app.listen(port, () => {
   console.log(`Server is running at ${port}`);
