@@ -54,7 +54,7 @@ function AuthProvider(props) {
 
         const { data, error } = await supabase
           .from("profiles")
-          .select("id, name, bio, role")
+          .select("id, name, bio, role, username, email")
           .eq("id", id)
           .single();
 
@@ -80,18 +80,25 @@ function AuthProvider(props) {
     };
   
   // Save Profile data when user register
-  const saveProfile = async (user) => {
+  const saveProfile = async (userData) => {
+    console.log("logging userData", userData)
       try {
-        if (!user) throw new Error("No user to save profile for");
+        if (!userData) throw new Error("No user to save profile for");
 
-        const { error } = await supabase.from("profiles").insert([
+        const saveData = [
           {
-            id: user.id,
-            name: user.email.split("@")[0], 
+            id: userData.user.id,
+            name: userData.name,
+            email: userData.user.email, 
             bio: "",
             role: "user",
+            username: userData.username,
           },
-        ]);
+        ];
+
+        console.log(`save user data : `, saveData);
+
+        const { error } = await supabase.from("profiles").insert(saveData);
 
         if (error) throw error;
       } catch (error) {
@@ -117,14 +124,21 @@ function AuthProvider(props) {
   }, []);
 
   // Register a new user
-  const register = async ({ email, password }) => {
+  const register = async ({ email, password, username, name }) => {
     try {
       setState((prev) => ({ ...prev, loading: true, error: null }));
       const { data, error } = await supabase.auth.signUp({ email, password });
 
       if (error) throw error;
 
-      await saveProfile(data.user);
+      const userData = {
+        user: data.user,
+        username: username,
+        name: name,
+        email: email
+      }
+
+      await saveProfile(userData);
 
       setState((prev) => ({ ...prev, loading: false }));
       navigate("/sign-up/success");

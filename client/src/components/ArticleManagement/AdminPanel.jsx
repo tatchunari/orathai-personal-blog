@@ -9,6 +9,7 @@ import { GoPerson } from "react-icons/go";
 
 
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/context/authentication";
 
 const menuItems = [
   { id: "articles", label: "Article management", icon: SlNotebook, path: '/admin/article-management' },
@@ -16,12 +17,14 @@ const menuItems = [
   { id: "profile", label: "Profile", icon: GoPerson, path: '/admin/profile' },
   { id: "notifications", label: "Notification", icon: FaRegBell, path: '/admin/notifications-management' },
   { id: "resetPassword", label: "Reset Password", icon: GrPowerReset, path: '/admin/resetpassword' },
-
 ];
+
 
 const AdminPanel = ({ onSelect, activePage }) => {
 
   const navigate = useNavigate();
+  const { logout } = useAuth();
+
 
   const handleClick = (id) => {
     onSelect(id);
@@ -60,12 +63,18 @@ const AdminPanel = ({ onSelect, activePage }) => {
 
         {/* Bottom Nav */}
         <div>
-          <button className="w-full text-sm text-left px-10 py-4 text-[#75716B] flex items-center gap-3 hover:bg-[#DAD6D1] cursor-pointer">
+          <button 
+          className="w-full text-sm text-left px-10 py-4 text-[#75716B] flex items-center gap-3 hover:bg-[#DAD6D1] cursor-pointer"
+          onClick={() => navigate('/')}
+          >
             <FiExternalLink className="w-5 h-5" />
             Orathai.Blog website
           </button>
 
-          <button className="w-full text-sm text-left px-10 py-4 text-[#75716B] flex items-center gap-3 hover:bg-[#DAD6D1] cursor-pointer">
+          <button 
+          className="w-full text-sm text-left px-10 py-4 text-[#75716B] flex items-center gap-3 hover:bg-[#DAD6D1] cursor-pointer"
+          onClick={() => logout()}
+          >
             <BiLogOut className="w-5 h-5" />
             Log out
           </button>

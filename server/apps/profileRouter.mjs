@@ -39,7 +39,7 @@ profileRouter.put("/:id", async (req, res) => {
   try {
     const { data, error } = await supabase
       .from("profiles")
-      .update({ name, bio, username, email })
+      .update({ name, bio })
       .eq("id", id)
       .select()
       .single();
