@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = "https://orathai-personal-blog-backend.vercel.app/api/posts";
+const BASE_URL = "https://orathai-personal-blog-backend.vercel.app/posts";
 
 export const fetchPosts = async ({ page = 1, limit = 6, category = "Highlight" }) => {
   try {

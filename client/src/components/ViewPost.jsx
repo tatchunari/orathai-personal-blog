@@ -31,7 +31,7 @@ const ViewPost = () => {
   const getPost = async () => {
     setIsLoading(true);
     try {
-      const response = await axios.get(`https://orathai-personal-blog-backend.vercel.app/api/posts?id=${params.id}`);
+      const response = await axios.get(`https://orathai-personal-blog-backend.vercel.app/posts?id=${params.id}`);
 
       if (!response.data || Object.keys(response.data).length === 0) {
         setNotFound(true);

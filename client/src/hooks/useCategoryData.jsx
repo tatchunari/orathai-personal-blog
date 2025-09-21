@@ -8,7 +8,7 @@ export function useCategoryData() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("https://orathai-personal-blog-backend.vercel.app/api/category");
+        const response = await axios.get("https://orathai-personal-blog-backend.vercel.app/category");
         setCategories(response.data);
       } catch (err) {
         console.error("Error fetching categories:", err);
