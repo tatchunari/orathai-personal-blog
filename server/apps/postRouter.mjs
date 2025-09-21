@@ -41,7 +41,7 @@ postRouter.get("/", async (req, res) => {
     const { data, error } = await supabase
       .from("posts")
       .select("*")
-      .order("date", { ascending: false });
+      .order("created_at", { ascending: false });
 
     if (error) return res.status(500).json({ message: error.message });
     if (!data || data.length === 0)
