@@ -24,9 +24,4 @@ profileRouter.get("/:id", async (req, res) => {
     return res.status(500).json({ error: err.message });
   }
 });
-
-
-
-
-
-export default categoryRouter;
+export default profileRouter;
