@@ -3,7 +3,6 @@ import AdminPanel from '@/components/ArticleManagement/AdminPanel'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea';
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useAuth } from '@/context/authentication';
 import { useRef } from 'react';
 import axios from 'axios';
@@ -53,10 +52,10 @@ const AdminProfile = () => {
 
         <form>
           <div className="flex items-center mb-6">
-            <label for="fileInput" class="border bg-white text-sm w-35 h-35 border-gray-500 py-10 mr-4 flex flex-col rounded-full items-center gap-4  cursor-pointer">
-                <p class="text-gray-500">+</p>
-                <p class="text-gray-500">Upload Image</p>
-                <input id="fileInput" type="file" class="hidden" />
+            <label for="fileInput" className="border bg-white text-sm w-35 h-35 border-gray-500 py-10 mr-4 flex flex-col rounded-full items-center gap-4  cursor-pointer">
+                <p className="text-gray-500">+</p>
+                <p className="text-gray-500">Upload Image</p>
+                <input name="fileInput" type="file" className="hidden" />
             </label>
             <Button className="border-1 border-black text-black rounded-full font-normal">Upload profile picture</Button>
           </div>
