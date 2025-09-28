@@ -81,7 +81,7 @@ postRouter.get("/:postId", async (req, res) => {
 /**
  * UPDATE post by id
  */
-postRouter.put("/:id", validatePostData, async (req, res) => {
+postRouter.put("/:postId", validatePostData, async (req, res) => {
   const { postId } = req.params;
   const updatedPost = { ...req.body, date: new Date() };
 
