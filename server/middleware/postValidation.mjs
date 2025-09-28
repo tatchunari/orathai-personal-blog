@@ -1,10 +1,14 @@
 function validatePostData(req, res, next) {
-  const { title, category, introduction, content, thumbnail_image } =
+  const { title, category, author, introduction, content, thumbnail_image } =
     req.body;
 
   // Check for required fields
   if (!title) {
     return res.status(400).json({ message: "Title is required" });
+  }
+
+  if (!author) {
+    return res.status(400).json({ message: "Author name is required" });
   }
 
   if (!thumbnail_image) {
@@ -30,6 +34,10 @@ function validatePostData(req, res, next) {
   // type validations
   if (typeof title !== "string") {
     return res.status(400).json({ message: "Title must be a string" });
+  }
+
+  if (typeof author !== "string") {
+    return res.status(400).json({ message: "Author name must be a string" });
   }
 
   if (typeof thumbnail_image !== "string") {
