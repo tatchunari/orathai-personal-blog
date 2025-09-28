@@ -83,7 +83,7 @@ postRouter.get("/:postId", async (req, res) => {
  */
 postRouter.put("/:postId", validatePostData, async (req, res) => {
   const { postId } = req.params;
-  const updatedPost = { ...req.body, date: new Date() };
+  const updatedPost = { ...req.body, updated_at: new Date() };
 
   try {
     const { data, error } = await supabase
