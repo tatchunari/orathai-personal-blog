@@ -1,5 +1,5 @@
 function validatePostData(req, res, next) {
-  const { title, category, introduction, content } =
+  const { title, category, introduction, content, thumbnail_image } =
     req.body;
 
   // Check for required fields
@@ -7,9 +7,9 @@ function validatePostData(req, res, next) {
     return res.status(400).json({ message: "Title is required" });
   }
 
-  // if (!image) {
-  //   return res.status(400).json({ message: "Image is required" });
-  // }
+  if (!thumbnail_image) {
+    return res.status(400).json({ message: "Image is required" });
+  }
 
   if (!category) {
     return res.status(400).json({ message: "Category is required" });
@@ -32,9 +32,9 @@ function validatePostData(req, res, next) {
     return res.status(400).json({ message: "Title must be a string" });
   }
 
-  // if (typeof image !== "string") {
-  //   return res.status(400).json({ message: "Image must be a string URL" });
-  // }
+  if (typeof thumbnail_image !== "string") {
+    return res.status(400).json({ message: "Image must be a string URL" });
+  }
 
   if (typeof category !== "string") {
     return res.status(400).json({ message: "Category ID must be a string" });
