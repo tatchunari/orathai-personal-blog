@@ -131,7 +131,7 @@ export default function ResetPasswordPage() {
           <div className="md:hidden p-4">
             <div className="flex justify-start gap-12 items-center mb-4">
               <a
-                onClick={() => navigate("/profile")}
+                onClick={() => navigate("/member")}
                 className="flex items-center gap-2 text-muted-foreground transition-colors hover:text-foreground cursor-pointer"
               >
                 <User className="h-5 w-5 mb-1" />
@@ -163,7 +163,7 @@ export default function ResetPasswordPage() {
               <nav>
                 <div className="space-y-3">
                   <a
-                    onClick={() => navigate("/profile")}
+                    onClick={() => navigate("/member")}
                     className="flex items-center gap-2 text-muted-foreground transition-colors hover:text-foreground cursor-pointer"
                   >
                     <User className="h-5 w-5 mb-1" />

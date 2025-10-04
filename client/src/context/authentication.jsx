@@ -19,11 +19,11 @@ function AuthProvider(props) {
 
   // Fetch current logged-in user
   const fetchUser = async () => {
-    console.log(`fetchUser....`);
+    // console.log(`fetchUser....`);
     setState((prev) => ({ ...prev, getUserLoading: true }));
     const { data: { user }, error } = await supabase.auth.getUser();
 
-    console.log(`fetchUser data: `, user)
+    // console.log(`fetchUser data: `, user)
     
 
     if (error) {

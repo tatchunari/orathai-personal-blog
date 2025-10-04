@@ -21,6 +21,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
+import axios from "axios";
 
 import { useState } from "react";
 import { usePostsData } from "@/hooks/usePostsData";

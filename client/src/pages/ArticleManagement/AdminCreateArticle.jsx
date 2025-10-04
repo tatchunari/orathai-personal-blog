@@ -13,11 +13,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { CiImageOn } from "react-icons/ci";
 import LoadingScreen from "../LoadingScreen";
+import ThumbnailUploader from "../../components/ImageUploader";
 
 const AdminCreateArticle = () => {
 
+  // const [thumbnail, setThumbnail] = useState(null);
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
@@ -27,8 +28,9 @@ const AdminCreateArticle = () => {
     title: "",
     introduction: "",
     content: "",
-    thumbnail_image: "",
+    thumbnail_image: null,
   })
+
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -75,7 +77,6 @@ const AdminCreateArticle = () => {
   }
 };
 
-
   if (isLoading) {
     return <LoadingScreen/>
   }
@@ -104,25 +105,12 @@ const AdminCreateArticle = () => {
             >
               Thumbnail image
             </label>
-            <div className="flex items-end space-x-4">
-              <div className="flex justify-center items-center w-full max-w-lg h-64 px-6 py-20 border-2 border-gray-300 border-dashed rounded-md bg-gray-50">
-                <div className="text-center space-y-2">
-                  <CiImageOn className="mx-auto h-8 w-8 text-gray-400" />
-                </div>
-              </div>
-              <label
-                htmlFor="file-upload"
-                className="px-8 py-2 bg-background rounded-full text-foreground border border-foreground hover:border-muted-foreground hover:text-muted-foreground transition-colors cursor-pointer"
-              >
-                <span>Upload thumbnail image</span>
-                <input
-                  type="text"
-                  name="thumbnail_image"
-                  placeholder="Thumbnail URL"
-                  onChange={handleInputChange}
-                />
-              </label>
-            </div>
+            
+            {/* Thumbnail Image Upload */}
+            <ThumbnailUploader onFileSelect={(url) => setPostForm(prev => ({ ...prev, thumbnail_image: url }))} />
+
+            
+            
           </div>
 
           <div>
