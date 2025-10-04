@@ -4,6 +4,7 @@ import BlogCard from "./BlogCard";
 
 import { useEffect, useState } from "react";
 import { usePostsData } from "@/hooks/usePostsData";
+import { useAuth } from "@/context/authentication";
 
 const ArticleSection = () => {
   const { posts, loading } = usePostsData();

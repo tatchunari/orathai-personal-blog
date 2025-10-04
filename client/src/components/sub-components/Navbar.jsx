@@ -151,8 +151,8 @@ const Navbar = () => {
                               className="object-cover"
                             />
                           ) : (
-                            <AvatarFallback>
-                              <User className="h-4 w-4" />
+                            <AvatarFallback className="border border-gray-300">
+                              <User className="h-6 w-6" />
                             </AvatarFallback>
                           )}
                         </Avatar>

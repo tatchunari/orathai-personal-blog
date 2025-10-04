@@ -15,10 +15,10 @@ export default function SignUpSuccessPage() {
               <Check className="h-12 w-12 text-white" strokeWidth={3} />
             </div>
           </div>
-          <h1 className="mt-6 text-2xl font-bold">Registration Successful</h1>
+          <h1 className="mt-4 text-2xl font-bold">Registration Successful</h1>
           <button
             onClick={() => navigate("/login")}
-            className="px-8 py-4 bg-foreground text-white rounded-full hover:bg-muted-foreground transition-colors"
+            className="px-8 py-4 bg-black text-white rounded-full hover:bg-muted-foreground cursor-pointer hover:bg-gray-700 transition-colors"
           >
             Continue
           </button>
