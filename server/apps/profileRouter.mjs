@@ -30,7 +30,7 @@ profileRouter.get("/:id", async (req, res) => {
 export default profileRouter;
 
 /**
- * UPDATE category
+ * UPDATE profile
  */
 profileRouter.put("/:id", async (req, res) => {
   const { id } = req.params;
@@ -39,7 +39,7 @@ profileRouter.put("/:id", async (req, res) => {
   try {
     const { data, error } = await supabase
       .from("profiles")
-      .update({ name, bio })
+      .update({ name, bio, avatar_url })
       .eq("id", id)
       .select()
       .single();
