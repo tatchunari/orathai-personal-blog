@@ -2,14 +2,13 @@
 import { LuPencil } from "react-icons/lu";
 import { FaRegTrashAlt } from "react-icons/fa";
 
-
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
+} from "@/components/ui/select";
 import {
   Table,
   TableBody,
@@ -27,19 +26,20 @@ import { useState } from "react";
 import { usePostsData } from "@/hooks/usePostsData";
 import { useNavigate, useParams } from "react-router-dom";
 import AdminPanel from "@/components/ArticleManagement/AdminPanel";
+import LoadingScreen from "../LoadingScreen";
 
-const AdminArticles = ({ onNavigate }) => {  
-  console.log(`render AdminArticles....`)
+const AdminArticles = ({ onNavigate }) => {
+  console.log(`render AdminArticles....`);
 
   const [status, setStatus] = useState("");
   const [category, setCategory] = useState("");
 
-  const {posts, loading} = usePostsData();
+  const { posts, loading } = usePostsData();
   const [search, setSearch] = useState("");
   // Remove the navigate hook since we'll use onNavigate prop
   const navigate = useNavigate();
 
-  if (loading) return <p>Loading...</p>
+  if (loading) return <LoadingScreen />;
 
   // Filter Logic
   const filteredArticles = posts.filter((article) => {
@@ -53,7 +53,9 @@ const AdminArticles = ({ onNavigate }) => {
   // Delete handler
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`https://orathai-personal-blog-backend.vercel.app/posts/${id}`);
+      await axios.delete(
+        `https://orathai-personal-blog-backend.vercel.app/posts/${id}`
+      );
       // Optionally re-fetch data or filter locally
       window.location.reload(); // quick way, but better to refetch
     } catch (err) {
@@ -63,10 +65,10 @@ const AdminArticles = ({ onNavigate }) => {
 
   return (
     <div className="flex h-screen">
-      <AdminPanel/>
+      <AdminPanel />
 
       {/* Main Article Table Section */}
-    <main className="flex-1 p-8 overflow-auto">
+      <main className="flex-1 p-8 overflow-auto">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-semibold">Article management</h2>
           <Button
@@ -121,19 +123,35 @@ const AdminArticles = ({ onNavigate }) => {
                 <TableCell className="font-medium">{post.title}</TableCell>
                 <TableCell>{post.category}</TableCell>
                 <TableCell>
-                  <span className="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800">
+                  <span
+                    className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
+                      post.status === "Published"
+                        ? "bg-green-100 text-green-800"
+                        : "bg-gray-100 text-gray-800"
+                    }`}
+                  >
                     {post.status}
                   </span>
                 </TableCell>
                 <TableCell className="text-right">
-                  <Button variant="ghost" size="sm" onClick={() => navigate(`/admin/article-management/edit/${post.id}`)}>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() =>
+                      navigate(`/admin/article-management/edit/${post.id}`)
+                    }
+                  >
                     <LuPencil className="h-4 w-4 hover:text-muted-foreground cursor-pointer" />
                   </Button>
-                  <Button variant="ghost" size="sm" onClick={() => {
-                    if(confirm("Are you sure?")) {
-                      handleDelete(post.id)
-                    }
-                  }}>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => {
+                      if (confirm("Are you sure?")) {
+                        handleDelete(post.id);
+                      }
+                    }}
+                  >
                     <FaRegTrashAlt className="h-4 w-4 cursor-pointer hover:text-muted-foreground" />
                   </Button>
                 </TableCell>
@@ -142,8 +160,8 @@ const AdminArticles = ({ onNavigate }) => {
           </TableBody>
         </Table>
       </main>
-      </div>
-  )
-}
+    </div>
+  );
+};
 
-export default AdminArticles
+export default AdminArticles;

@@ -3,7 +3,6 @@ import { useState } from "react";
 import AdminPanel from "./AdminPanel";
 import ThumbnailUploader from "../ImageUploader";
 import { FaRegTrashAlt } from "react-icons/fa";
-;
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
@@ -15,25 +14,17 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-export const EditArticleForm = ({
-  post,
-  categories,
-  onSubmit
-}) => {
+export const EditArticleForm = ({ post, categories, onSubmit }) => {
+  const [formData, setFormData] = useState({
+    thumbnail_image: post.thumbnail_image || "",
+    author: post.author,
+    category: post.category || "",
+    title: post.title || "",
+    introduction: post.introduction || "",
+    content: post.content || "",
+  });
 
-  const [formData, setFormData] = useState(
-    {
-        thumbnail_image: post.thumbnail_image || "",
-        author: post.author,
-        category: post.category || "",
-        title: post.title || "",
-        introduction: post.introduction || "",
-        content: post.content || "",
-      }
-  );
-
-
-  console.log("Form data:", formData)
+  console.log("Form data:", formData);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -44,11 +35,9 @@ export const EditArticleForm = ({
     setFormData((prev) => ({ ...prev, thumbnail_image: url }));
   };
 
-
-  const handleSubmit = () => {
-    onSubmit(formData);
-  }
-  
+  const handleSubmit = (status) => {
+    onSubmit({ ...formData, status });
+  };
 
   // console.log("post data", post);
   // if (loading) return <LoadingScreen/>;
@@ -62,12 +51,16 @@ export const EditArticleForm = ({
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-semibold">Edit article</h2>
           <div className="space-x-2">
-            <Button className="px-8 py-2 rounded-full" variant="outline">
+            <Button
+              className="px-8 py-2 rounded-full"
+              variant="outline"
+              onClick={() => handleSubmit("Draft")}
+            >
               Save as draft
             </Button>
-            <Button 
-            className="px-8 py-2 cursor-pointer rounded-full bg-black text-white"
-            onClick={handleSubmit}
+            <Button
+              className="px-8 py-2 cursor-pointer rounded-full bg-black text-white"
+              onClick={() => handleSubmit("Published")}
             >
               Save
             </Button>
@@ -77,20 +70,22 @@ export const EditArticleForm = ({
         <form className="space-y-7 max-w-4xl">
           {/* Thumbnail */}
           <ThumbnailUploader
-          initialValue={post.thumbnail_image}
-          onFileSelect={(url) =>
-            setFormData((prev) => ({ ...prev, thumbnail_image: url }))
-          }
-        />
+            initialValue={post.thumbnail_image}
+            onFileSelect={(url) =>
+              setFormData((prev) => ({ ...prev, thumbnail_image: url }))
+            }
+          />
 
           {/* Category */}
           <div>
             <label>Category: {formData.category}</label>
-            <Select 
-              value={formData.category} 
+            <Select
+              value={formData.category}
               onValueChange={(value) => {
                 // Find the category object to get both name and id if needed
-                const selectedCategory = categories?.find(cat => cat.name === value);
+                const selectedCategory = categories?.find(
+                  (cat) => cat.name === value
+                );
                 setFormData((prev) => ({ ...prev, category: value }));
               }}
             >
@@ -99,20 +94,22 @@ export const EditArticleForm = ({
               </SelectTrigger>
               <SelectContent className="bg-white">
                 {categories?.map((cat) => (
-                  <SelectItem key={cat.id} value={cat.name}> 
+                  <SelectItem key={cat.id} value={cat.name}>
                     {cat.name}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
-
-
           </div>
 
           {/* Author */}
           <div>
             <label>Author name</label>
-            <Input defaultValue={post.author} className="mt-1 max-w-lg" disabled />
+            <Input
+              defaultValue={post.author}
+              className="mt-1 max-w-lg"
+              disabled
+            />
           </div>
 
           {/* Title */}

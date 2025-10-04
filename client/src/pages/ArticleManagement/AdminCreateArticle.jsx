@@ -1,6 +1,7 @@
-import AdminPanel from "@/components/ArticleManagement/AdminPanel"
+import AdminPanel from "@/components/ArticleManagement/AdminPanel";
 
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 import { Button } from "@/components/ui/button";
@@ -17,8 +18,8 @@ import LoadingScreen from "../LoadingScreen";
 import ThumbnailUploader from "../../components/ImageUploader";
 
 const AdminCreateArticle = () => {
-
   // const [thumbnail, setThumbnail] = useState(null);
+  const navigate = useNavigate();
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
@@ -29,71 +30,83 @@ const AdminCreateArticle = () => {
     introduction: "",
     content: "",
     thumbnail_image: null,
-  })
-
+  });
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setPostForm((prev) => ({
       ...prev,
       [name]: value,
-    }))
-  }
+    }));
+  };
 
   const handleCategoryChange = (value) => {
-  setPostForm(prev => ({ ...prev, category: value }));
-};
+    setPostForm((prev) => ({ ...prev, category: value }));
+  };
 
-// console.log("Form", postForm);
+  // console.log("Form", postForm);
 
+  const handleSubmit = async (status) => {
+    setIsLoading(true);
+    try {
+      const payload = {
+        author: postForm.author,
+        title: postForm.title,
+        introduction: postForm.introduction,
+        content: postForm.content,
+        category: postForm.category,
+        thumbnail_image: postForm.thumbnail_image || null, // optional
+        status: status, // Add status to payload
+      };
 
-  const handleSubmit = async (e) => {
-  e.preventDefault();
-  setIsLoading(true);
-  try {
-    const payload = {
-      author: postForm.author,
-      title: postForm.title,
-      introduction: postForm.introduction,
-      content: postForm.content,
-      category: postForm.category,
-      thumbnail_image: postForm.thumbnail_image || null, // optional
-    };
+      console.log("Submitting post:", payload);
 
-    console.log("Submitting post:", payload);
+      await axios.post(
+        "https://orathai-personal-blog-backend.vercel.app/posts",
+        payload,
+        { headers: { "Content-Type": "application/json" } }
+      );
 
-    await axios.post(
-      "https://orathai-personal-blog-backend.vercel.app/posts",
-      payload, 
-      { headers: { "Content-Type": "application/json" } }
-    );
-
-    alert("Add posts successfully!");
-  } catch (error) {
-    setError(error.message);
-    console.log("Errors: ", error.response?.data || error.message);
-  } finally {
-    setIsLoading(false);
-  }
-};
+      alert(
+        `Article ${
+          status === "Published" ? "published" : "saved as draft"
+        } successfully!`
+      );
+      navigate("/admin");
+    } catch (error) {
+      setError(error.message);
+      console.log("Errors: ", error.response?.data || error.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   if (isLoading) {
-    return <LoadingScreen/>
+    return <LoadingScreen />;
   }
 
   return (
     <div className="flex h-screen">
-      <AdminPanel/>
+      <AdminPanel />
 
       {/* Main Create Aricle Section */}
       <main className="flex-1 p-8 bg-gray-50 overflow-auto">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-semibold">Create article</h2>
           <div className="space-x-2">
-            <Button className="px-8 py-2 rounded-full" variant="outline">
+            <Button
+              className="px-8 py-2 rounded-full"
+              variant="outline"
+              onClick={() => handleSubmit("Draft")}
+            >
               Save as draft
             </Button>
-            <Button onClick={handleSubmit} className="px-8 py-2 rounded-full bg-black text-white">Save and publish</Button>
+            <Button
+              onClick={() => handleSubmit("Published")}
+              className="px-8 py-2 rounded-full bg-black text-white"
+            >
+              Save and publish
+            </Button>
           </div>
         </div>
 
@@ -105,12 +118,13 @@ const AdminCreateArticle = () => {
             >
               Thumbnail image
             </label>
-            
-            {/* Thumbnail Image Upload */}
-            <ThumbnailUploader onFileSelect={(url) => setPostForm(prev => ({ ...prev, thumbnail_image: url }))} />
 
-            
-            
+            {/* Thumbnail Image Upload */}
+            <ThumbnailUploader
+              onFileSelect={(url) =>
+                setPostForm((prev) => ({ ...prev, thumbnail_image: url }))
+              }
+            />
           </div>
 
           <div>
@@ -171,9 +185,9 @@ const AdminCreateArticle = () => {
             />
           </div>
         </form>
-        </main>
+      </main>
     </div>
-  )
-}
+  );
+};
 
-export default AdminCreateArticle
+export default AdminCreateArticle;

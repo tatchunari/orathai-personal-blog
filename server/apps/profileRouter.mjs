@@ -12,13 +12,13 @@ const profileRouter = Router();
  * READ single user profile by id
  */
 profileRouter.get("/:id", async (req, res) => {
-    const { id } = req.params;
+  const { id } = req.params;
   try {
     const { data, error } = await supabase
       .from("profiles")
       .select("*")
       .eq("id", id)
-      .single()
+      .single();
 
     if (error) return res.status(500).json({ error: error.message });
     if (!data) return res.status(404).json({ error: "Profile not found" });
@@ -34,7 +34,7 @@ export default profileRouter;
  */
 profileRouter.put("/:id", async (req, res) => {
   const { id } = req.params;
-  const { name, bio, username, email } = req.body;
+  const { name, bio, username, email, avatar_url } = req.body;
 
   try {
     const { data, error } = await supabase
