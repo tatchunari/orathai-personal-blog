@@ -1,10 +1,8 @@
-import AdminPanel from '@/components/ArticleManagement/AdminPanel'
+import AdminPanel from "@/components/article-management/AdminPanel";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
-
 const AdminNotifications = () => {
-
   const notifications = [
     {
       id: 1,
@@ -31,8 +29,8 @@ const AdminNotifications = () => {
     },
   ];
   return (
-    <div className='flex h-screen'>
-      <AdminPanel/>
+    <div className="flex h-screen">
+      <AdminPanel />
 
       {/* Main Notification Section */}
       <main className="flex-1 p-8 bg-gray-50 overflow-hidden">
@@ -82,7 +80,7 @@ const AdminNotifications = () => {
         </div>
       </main>
     </div>
-  )
-}
+  );
+};
 
-export default AdminNotifications
+export default AdminNotifications;

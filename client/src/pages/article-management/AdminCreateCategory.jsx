@@ -1,11 +1,10 @@
-import AdminPanel from '@/components/ArticleManagement/AdminPanel'
-import { useRef } from 'react'
-import axios from 'axios'
+import AdminPanel from "@/components/article-management/AdminPanel";
+import { useRef } from "react";
+import axios from "axios";
 
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 const AdminCreateCategory = () => {
-
   const categoryNameInputRef = useRef();
 
   const handleSubmit = async () => {
@@ -27,14 +26,19 @@ const AdminCreateCategory = () => {
   };
 
   return (
-    <div className='flex h-screen'>
-      <AdminPanel/>
+    <div className="flex h-screen">
+      <AdminPanel />
 
       {/* Main Create Category Section */}
-        <main className="flex-1 p-8 bg-gray-50 overflow-auto">
+      <main className="flex-1 p-8 bg-gray-50 overflow-auto">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-semibold">Create Category</h2>
-          <Button onClick={() => handleSubmit()} className="px-8 py-2 rounded-full bg-black text-white">Save</Button>
+          <Button
+            onClick={() => handleSubmit()}
+            className="px-8 py-2 rounded-full bg-black text-white"
+          >
+            Save
+          </Button>
         </div>
         <div className="space-y-7 max-w-md">
           <div className="relative">
@@ -55,7 +59,7 @@ const AdminCreateCategory = () => {
         </div>
       </main>
     </div>
-  )
-}
+  );
+};
 
-export default AdminCreateCategory
+export default AdminCreateCategory;

@@ -1,7 +1,7 @@
-import AdminPanel from '@/components/ArticleManagement/AdminPanel'
-import { toast } from 'sonner';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import AdminPanel from "@/components/article-management/AdminPanel";
+import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   AlertDialog,
   AlertDialogContent,
@@ -10,12 +10,11 @@ import {
   AlertDialogCancel,
 } from "@/components/ui/alert-dialog";
 import { X } from "lucide-react";
+import supabase from "@/lib/supabaseClient";
+import axios from "axios";
+import { useState } from "react";
 
-
-
-import { useState } from 'react';
-const AdminResetPassWord = () => {
-
+const AdminResetPassword = () => {
   const [password, setPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
@@ -25,11 +24,13 @@ const AdminResetPassWord = () => {
     confirmNewPassword: true,
   });
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     const isValidPassword = password.trim() !== "";
-    const isValidNewPassword = newPassword.trim() !== "";
+    const isValidNewPassword =
+      newPassword.trim() !== "" && newPassword.length >= 8;
     const isValidConfirmPassword =
       confirmNewPassword.trim() !== "" && confirmNewPassword === newPassword;
 
@@ -44,37 +45,109 @@ const AdminResetPassWord = () => {
     }
   };
 
-  const handleResetPassword = () => {
-    // Add PUT API to reset password
-    toast.custom((t) => (
-      <div className="bg-green-500 text-white p-4 rounded-sm flex justify-between items-start">
-        <div>
-          <h2 className="font-bold text-lg mb-1">Reset!</h2>
-          <p className="text-sm">
-            Password reset successful. You can now log in with your new
-            password.
-          </p>
+  const handleResetPassword = async () => {
+    setIsLoading(true);
+    try {
+      // Get the current session token from Supabase
+      const {
+        data: { session },
+        error: sessionError,
+      } = await supabase.auth.getSession();
+
+      if (sessionError || !session) {
+        throw new Error("No active session. Please log in again.");
+      }
+
+      const token = session.access_token;
+      console.log("Token retrieved from Supabase session");
+      console.log(
+        "Sending request to backend with oldPassword:",
+        password ? "provided" : "missing"
+      );
+      console.log("New password:", newPassword ? "provided" : "missing");
+
+      const response = await axios.put(
+        "https://orathai-personal-blog-backend.vercel.app/auth/reset-password",
+        {
+          oldPassword: password,
+          newPassword: newPassword,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        toast.custom((t) => (
+          <div className="bg-green-500 text-white p-4 rounded-sm flex justify-between items-start">
+            <div>
+              <h2 className="font-bold text-lg mb-1">Reset!</h2>
+              <p className="text-sm">
+                Password reset successful. You can now log in with your new
+                password.
+              </p>
+            </div>
+            <button
+              onClick={() => toast.dismiss(t)}
+              className="text-white hover:text-gray-200"
+            >
+              <X size={20} />
+            </button>
+          </div>
+        ));
+
+        // Clear form
+        setPassword("");
+        setNewPassword("");
+        setConfirmNewPassword("");
+      }
+    } catch (err) {
+      console.error("Reset password error:", err);
+
+      let errorMessage = "Failed to reset password";
+
+      if (err.message?.includes("No active session")) {
+        errorMessage = "Session expired. Please log in again.";
+      } else if (err.response?.data?.error) {
+        errorMessage = err.response.data.error;
+      }
+
+      toast.custom((t) => (
+        <div className="bg-red-500 text-white p-4 rounded-sm flex justify-between items-start">
+          <div>
+            <h2 className="font-bold text-lg mb-1">Error!</h2>
+            <p className="text-sm">{errorMessage}</p>
+          </div>
+          <button
+            onClick={() => toast.dismiss(t)}
+            className="text-white hover:text-gray-200"
+          >
+            <X size={20} />
+          </button>
         </div>
-        <button
-          onClick={() => toast.dismiss(t)}
-          className="text-white hover:text-gray-200"
-        >
-          <X size={20} />
-        </button>
-      </div>
-    ));
-    setIsDialogOpen(false);
+      ));
+    } finally {
+      setIsLoading(false);
+      setIsDialogOpen(false);
+    }
   };
+
   return (
-    <div className='flex h-screen'>
-      <AdminPanel/>
+    <div className="flex h-screen">
+      <AdminPanel />
 
       {/* Reset Password Section */}
       <main className="flex-1 p-8 bg-gray-50 overflow-auto">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-semibold">Reset Password</h2>
-          <Button className="px-8 py-2 rounded-full" onClick={handleSubmit}>
-            Reset Password
+          <Button
+            className="px-8 py-2 rounded-full"
+            onClick={handleSubmit}
+            disabled={isLoading}
+          >
+            {isLoading ? "Resetting..." : "Reset Password"}
           </Button>
         </div>
 
@@ -152,16 +225,22 @@ const AdminResetPassWord = () => {
       </main>
 
       {/* Reset Password Modal */}
-       <ResetPasswordModal
+      <ResetPasswordModal
         dialogState={isDialogOpen}
         setDialogState={setIsDialogOpen}
         resetFunction={handleResetPassword}
+        isLoading={isLoading}
       />
     </div>
-  )
-}
+  );
+};
 
-function ResetPasswordModal({ dialogState, setDialogState, resetFunction }) {
+function ResetPasswordModal({
+  dialogState,
+  setDialogState,
+  resetFunction,
+  isLoading,
+}) {
   return (
     <AlertDialog open={dialogState} onOpenChange={setDialogState}>
       <AlertDialogContent className="bg-white rounded-md pt-16 pb-6 max-w-[22rem] sm:max-w-md flex flex-col items-center">
@@ -174,15 +253,17 @@ function ResetPasswordModal({ dialogState, setDialogState, resetFunction }) {
         <div className="flex flex-row gap-4">
           <button
             onClick={() => setDialogState(false)}
-            className="bg-background px-10 py-4 rounded-full text-foreground border border-foreground hover:border-muted-foreground hover:text-muted-foreground transition-colors"
+            disabled={isLoading}
+            className="bg-background px-10 py-4 rounded-full text-foreground border border-foreground hover:border-muted-foreground hover:text-muted-foreground transition-colors disabled:opacity-50"
           >
             Cancel
           </button>
           <button
             onClick={resetFunction}
-            className="rounded-full text-white bg-foreground hover:bg-muted-foreground transition-colors py-4 text-lg px-10 "
+            disabled={isLoading}
+            className="rounded-full text-white bg-foreground hover:bg-muted-foreground transition-colors py-4 text-lg px-10 disabled:opacity-50"
           >
-            Reset
+            {isLoading ? "Resetting..." : "Reset"}
           </button>
         </div>
         <AlertDialogCancel className="absolute right-4 top-2 sm:top-4 p-1 border-none">
@@ -193,5 +274,4 @@ function ResetPasswordModal({ dialogState, setDialogState, resetFunction }) {
   );
 }
 
-
-export default AdminResetPassWord
+export default AdminResetPassword;

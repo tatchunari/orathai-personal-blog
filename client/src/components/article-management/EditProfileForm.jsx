@@ -1,4 +1,4 @@
-import AdminPanel from "@/components/ArticleManagement/AdminPanel";
+import AdminPanel from "@/components/article-management/AdminPanel";
 import ProfileImageUploader from "@/components/profileImageUploader";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -7,10 +7,12 @@ import { useRef, useState } from "react";
 
 export const EditProfileForm = ({ profile, onSubmit }) => {
   const [formData, setFormData] = useState({
-    avatar_url: profile.avatar_url || "",
-    name: profile.name || "",
-    bio: profile.bio || "",
+    avatar_url: profile?.avatar_url || "",
+    name: profile?.name || "",
+    bio: profile?.bio || "",
   });
+
+  console.log("Profile Info", profile);
 
   const nameInputRef = useRef();
   const bioInputRef = useRef();
@@ -19,10 +21,9 @@ export const EditProfileForm = ({ profile, onSubmit }) => {
     const updateProfileValue = {
       name: nameInputRef.current.value,
       bio: bioInputRef.current.value,
-      avatar_url: formData.avatar_url,
+      avatar_url: formData.avatar_url, // This gets the uploaded image URL from state
     };
 
-    onSubmit(updateProfileValue);
     console.log("Submitting profile data:", updateProfileValue);
     onSubmit(updateProfileValue);
   };

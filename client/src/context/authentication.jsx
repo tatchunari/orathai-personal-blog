@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import supabase from '../lib/supabaseClient';
+import supabase from "../lib/supabaseClient";
 
 const AuthContext = React.createContext();
 
@@ -10,7 +10,7 @@ function AuthProvider(props) {
     getUserLoading: true,
     error: null,
     user: null,
-    profile: null
+    profile: null,
   });
 
   console.log(`state: `, state);
@@ -21,10 +21,12 @@ function AuthProvider(props) {
   const fetchUser = async () => {
     // console.log(`fetchUser....`);
     setState((prev) => ({ ...prev, getUserLoading: true }));
-    const { data: { user }, error } = await supabase.auth.getUser();
+    const {
+      data: { user },
+      error,
+    } = await supabase.auth.getUser();
 
     // console.log(`fetchUser data: `, user)
-    
 
     if (error) {
       console.error(error);
@@ -36,78 +38,78 @@ function AuthProvider(props) {
       }));
     } else {
       setState((prev) => ({ ...prev, user, getUserLoading: false }));
-      getProfileById(user.id)
+      getProfileById(user.id);
     }
   };
 
   const getCurrentProfile = async () => {
     return getProfileById(state.user?.id);
-  }
+  };
 
   // Get Profile data when user log in
   const getProfileById = async (id) => {
-      console.log('getProfileById : ', id);
-      try {
-        setState((prev) => ({ ...prev, getUserLoading: true, error: null }));
+    console.log("getProfileById : ", id);
+    try {
+      setState((prev) => ({ ...prev, getUserLoading: true, error: null }));
 
-        if (!id) throw new Error("No user logged in");
+      if (!id) throw new Error("No user logged in");
 
-        const { data, error } = await supabase
-          .from("profiles")
-          .select("id, name, bio, role, username, email")
-          .eq("id", id)
-          .single();
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("id, name, bio, role, username, email, avatar_url")
+        .eq("id", id)
+        .single();
 
-          // console.log("Profile Data", data);
-        if (error) throw error;
+      // console.log("Profile Data", data);
+      if (error) throw error;
 
-        setState((prev) => ({
-          ...prev,
-          profile: data,
-          getUserLoading: false,
-        }));
+      setState((prev) => ({
+        ...prev,
+        profile: data,
+        getUserLoading: false,
+      }));
 
-        return data;
-      } catch (error) {
-        setState((prev) => ({
-          ...prev,
-          profile: null,
-          getUserLoading: false,
-          error: error.message,
-        }));
-        return null;
-      }
-    };
-  
+      return data;
+    } catch (error) {
+      setState((prev) => ({
+        ...prev,
+        profile: null,
+        getUserLoading: false,
+        error: error.message,
+      }));
+      return null;
+    }
+  };
+
   // Save Profile data when user register
   const saveProfile = async (userData) => {
-    console.log("logging userData", userData)
-      try {
-        if (!userData) throw new Error("No user to save profile for");
+    console.log("logging userData", userData);
+    try {
+      if (!userData) throw new Error("No user to save profile for");
 
-        const saveData = [
-          {
-            id: userData.user.id,
-            name: userData.name,
-            email: userData.user.email, 
-            bio: "",
-            role: "user",
-            username: userData.username,
-          },
-        ];
+      const saveData = [
+        {
+          id: userData.user.id,
+          name: userData.name,
+          email: userData.user.email,
+          bio: "",
+          role: "user",
+          username: userData.username,
+        },
+      ];
 
-        console.log(`save user data : `, saveData);
+      console.log(`save user data : `, saveData);
 
-        const { error } = await supabase.from("profiles").insert(saveData);
+      const { error } = await supabase.from("profiles").insert(saveData);
 
-        if (error) throw error;
-      } catch (error) {
-        console.error("Error saving profile:", error.message);
-      }
-    };
+      if (error) throw error;
+    } catch (error) {
+      console.error("Error saving profile:", error.message);
+    }
+  };
 
   useEffect(() => {
-    console.log(`useEffect auth`)
+    console.log(`useEffect auth`);
     fetchUser();
 
     const { data: listener } = supabase.auth.onAuthStateChange(
@@ -135,8 +137,8 @@ function AuthProvider(props) {
         user: data.user,
         username: username,
         name: name,
-        email: email
-      }
+        email: email,
+      };
 
       await saveProfile(userData);
 
@@ -168,7 +170,6 @@ function AuthProvider(props) {
       setState((prev) => ({ ...prev, loading: false, error: error.message }));
       return { error: error.message };
     }
-    
   };
 
   // Logout user
@@ -179,7 +180,7 @@ function AuthProvider(props) {
   };
 
   //  Check Admin Role
-  const isAdmin = useMemo(() => state.profile?.role === 'admin');
+  const isAdmin = useMemo(() => state.profile?.role === "admin");
 
   const isAuthenticated = Boolean(state.user);
 
@@ -193,7 +194,7 @@ function AuthProvider(props) {
         isAuthenticated,
         fetchUser,
         isAdmin,
-        getCurrentProfile
+        getCurrentProfile,
       }}
     >
       {props.children}

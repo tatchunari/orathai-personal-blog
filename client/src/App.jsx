@@ -11,20 +11,20 @@ import LoginPage from "./pages/LoginPage.jsx";
 import SignUpPage from "./pages/SignUpPage.jsx";
 import SignUpSuccessPage from "./pages/SignUpSuccessPage";
 import { Toaster } from "sonner";
-import MemberManagementPage from "./pages/MemberManagement/MemberManagementPage.jsx";
-import ResetPasswordPage from "./pages/MemberManagement/ResetPasswordPage";
+import ResetPasswordPage from "./pages/member-management/ResetPasswordPage";
+import ProfilePage from "./pages/member-management/MemberManagementPage";
 
 // Admin
-import AdminDashboard from "./pages/ArticleManagement/AdminDashboard";
-import AdminArticles from "./pages/ArticleManagement/AdminArticles";
-import AdminCategories from "./pages/ArticleManagement/AdminCategories";
-import AdminNotifications from "./pages/ArticleManagement/AdminNotifications";
-import AdminResetPassWord from "./pages/ArticleManagement/AdminResetPassWord";
-import AdminCreateArticle from "./pages/ArticleManagement/AdminCreateArticle";
-import AdminEditArticle from "./pages/ArticleManagement/AdminEditArticle";
-import AdminProfile from "./pages/ArticleManagement/AdminProfile";
-import AdminCreateCategory from "./pages/ArticleManagement/AdminCreateCategory";
-import AdminEditCategory from "./pages/ArticleManagement/AdminEditCategory";
+import AdminDashboard from "./pages/article-management/AdminDashboard";
+import AdminArticles from "./pages/article-management/AdminArticles";
+import AdminCategories from "./pages/article-management/AdminCategories";
+import AdminNotifications from "./pages/article-management/AdminNotifications";
+import AdminResetPassWord from "./pages/article-management/AdminResetPassWord";
+import AdminCreateArticle from "./pages/article-management/AdminCreateArticle";
+import AdminEditArticle from "./pages/article-management/AdminEditArticle";
+import AdminProfile from "./pages/article-management/AdminProfile";
+import AdminCreateCategory from "./pages/article-management/AdminCreateCategory";
+import AdminEditCategory from "./pages/article-management/AdminEditCategory";
 import AdminLoginPage from "./pages/AdminLoginPage";
 import NotFoundPage from "./pages/NotFoundPage";
 
@@ -75,7 +75,7 @@ function App() {
             path="/member"
             element={
               <AuthenticationRoute>
-                <MemberManagementPage />
+                <ProfilePage />
               </AuthenticationRoute>
             }
           />

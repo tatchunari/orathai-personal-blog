@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import AdminPanel from "@/components/ArticleManagement/AdminPanel";
+import AdminPanel from "@/components/article-management/AdminPanel";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -21,12 +21,12 @@ import NotFoundPage from "../NotFoundPage";
 import ThumbnailUploader from "@/components/ImageUploader";
 
 const AdminEditArticle = () => {
- const { id } = useParams();
+  const { id } = useParams();
   const { data: post, loading } = useQuery(`posts/${id}`, [id]);
-  const { data: categories } = useQuery("category"); 
+  const { data: categories } = useQuery("category");
 
   const API_BASE = "https://orathai-personal-blog-backend.vercel.app";
-    const handleSubmit = async (formData) => {
+  const handleSubmit = async (formData) => {
     e.preventDefault();
     try {
       const response = await axios.put(`${API_BASE}/posts/${id}`, formData);
@@ -39,40 +39,35 @@ const AdminEditArticle = () => {
     }
   };
 
-  if (loading) return <LoadingScreen/>;
-  if (!post) return <NotFoundPage/>;
+  if (loading) return <LoadingScreen />;
+  if (!post) return <NotFoundPage />;
 
-  if(post && categories) {
-    return <AdminEditArticleForm post={post} 
-    categories={categories}
-    onSubmit={handleSubmit}
-     />
+  if (post && categories) {
+    return (
+      <AdminEditArticleForm
+        post={post}
+        categories={categories}
+        onSubmit={handleSubmit}
+      />
+    );
   }
 
-  return <div>Data not ready</div>
-}
+  return <div>Data not ready</div>;
+};
 
-const AdminEditArticleForm = ({
-  post,
-  categories,
-  onSubmit
-}) => {
+const AdminEditArticleForm = ({ post, categories, onSubmit }) => {
   // const { id } = useParams();
   // const { data: post, loading } = useQuery(`posts/${id}`, [id]);
   // const { data: categories } = useQuery("category");
 
-
-
-  const [formData, setFormData] = useState(
-    {
-        thumbnail_image: post.thumbnail_image || "",
-        author: post.author,
-        category: post.category || "",
-        title: post.title || "",
-        introduction: post.introduction || "",
-        content: post.content || "",
-      }
-  );
+  const [formData, setFormData] = useState({
+    thumbnail_image: post.thumbnail_image || "",
+    author: post.author,
+    category: post.category || "",
+    title: post.title || "",
+    introduction: post.introduction || "",
+    content: post.content || "",
+  });
 
   // useEffect(() => {
   //   if (post && categories) {
@@ -87,7 +82,7 @@ const AdminEditArticleForm = ({
   //   }
   // }, [post, categories]);
 
-  console.log("Form data:", formData)
+  console.log("Form data:", formData);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -98,11 +93,9 @@ const AdminEditArticleForm = ({
     setFormData((prev) => ({ ...prev, thumbnail_image: url }));
   };
 
-
   const handleSubmit = () => {
     onSubmit(formData);
-  }
-  
+  };
 
   // console.log("post data", post);
   // if (loading) return <LoadingScreen/>;
@@ -119,9 +112,9 @@ const AdminEditArticleForm = ({
             <Button className="px-8 py-2 rounded-full" variant="outline">
               Save as draft
             </Button>
-            <Button 
-            className="px-8 py-2 rounded-full bg-black text-white"
-            onClick={handleSubmit}
+            <Button
+              className="px-8 py-2 rounded-full bg-black text-white"
+              onClick={handleSubmit}
             >
               Save
             </Button>
@@ -131,20 +124,22 @@ const AdminEditArticleForm = ({
         <form className="space-y-7 max-w-4xl">
           {/* Thumbnail */}
           <ThumbnailUploader
-          initialValue={post.thumbnail_image}
-          onFileSelect={(url) =>
-            setFormData((prev) => ({ ...prev, thumbnail_image: url }))
-          }
-        />
+            initialValue={post.thumbnail_image}
+            onFileSelect={(url) =>
+              setFormData((prev) => ({ ...prev, thumbnail_image: url }))
+            }
+          />
 
           {/* Category */}
           <div>
             <label>Category: {formData.category}</label>
-            <Select 
-              value={formData.category} 
+            <Select
+              value={formData.category}
               onValueChange={(value) => {
                 // Find the category object to get both name and id if needed
-                const selectedCategory = categories?.find(cat => cat.name === value);
+                const selectedCategory = categories?.find(
+                  (cat) => cat.name === value
+                );
                 setFormData((prev) => ({ ...prev, category: value }));
               }}
             >
@@ -153,20 +148,22 @@ const AdminEditArticleForm = ({
               </SelectTrigger>
               <SelectContent className="bg-white">
                 {categories?.map((cat) => (
-                  <SelectItem key={cat.id} value={cat.name}> 
+                  <SelectItem key={cat.id} value={cat.name}>
                     {cat.name}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
-
-
           </div>
 
           {/* Author */}
           <div>
             <label>Author name</label>
-            <Input defaultValue={post.author} className="mt-1 max-w-lg" disabled />
+            <Input
+              defaultValue={post.author}
+              className="mt-1 max-w-lg"
+              disabled
+            />
           </div>
 
           {/* Title */}

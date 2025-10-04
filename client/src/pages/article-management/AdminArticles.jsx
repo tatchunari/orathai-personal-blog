@@ -25,7 +25,7 @@ import axios from "axios";
 import { useState } from "react";
 import { usePostsData } from "@/hooks/usePostsData";
 import { useNavigate, useParams } from "react-router-dom";
-import AdminPanel from "@/components/ArticleManagement/AdminPanel";
+import AdminPanel from "@/components/article-management/AdminPanel";
 import LoadingScreen from "../LoadingScreen";
 
 const AdminArticles = ({ onNavigate }) => {

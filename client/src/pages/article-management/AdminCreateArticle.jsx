@@ -1,4 +1,4 @@
-import AdminPanel from "@/components/ArticleManagement/AdminPanel";
+import AdminPanel from "@/components/article-management/AdminPanel";
 
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";

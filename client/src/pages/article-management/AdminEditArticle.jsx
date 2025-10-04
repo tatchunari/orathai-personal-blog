@@ -4,7 +4,7 @@ import axios from "axios";
 import { useQuery } from "@/hooks/useQuery";
 import LoadingScreen from "../LoadingScreen";
 import NotFoundPage from "../NotFoundPage";
-import { EditArticleForm } from "@/components/ArticleManagement/EditArticleForm";
+import { EditArticleForm } from "@/components/article-management/EditArticleForm";
 
 const AdminEditArticle = () => {
   const { id } = useParams();
