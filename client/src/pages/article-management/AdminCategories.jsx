@@ -14,16 +14,24 @@ import {
 } from "@/components/ui/table";
 
 import { useNavigate } from "react-router-dom";
-import { useCategoryData } from "@/hooks/useCategoryData";
 import axios from "axios";
 import { useQuery } from "@/hooks/useQuery";
+import { useState, useMemo } from "react";
+import LoadingScreen from "../LoadingScreen";
+import { InlineLoadingScreen } from "@/components/sub-components/InlineLoadingScreen";
 
 const AdminCategories = () => {
-  // console.log('render AdminCategories...');
-
   const { data, loading } = useQuery("category");
-
   const navigate = useNavigate();
+  const [searchTerm, setSearchTerm] = useState("");
+
+  // Filter categories based on search input
+  const filteredCategories = useMemo(() => {
+    if (!searchTerm) return data;
+    return data?.filter((category) =>
+      category.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }, [searchTerm, data]);
 
   // Delete Category
   const handleDelete = async (id) => {
@@ -31,8 +39,7 @@ const AdminCategories = () => {
       await axios.delete(
         `https://orathai-personal-blog-backend.vercel.app/category/${id}`
       );
-      // Optionally re-fetch data or filter locally
-      window.location.reload(); // quick way, but better to refetch
+      window.location.reload();
     } catch (err) {
       console.error("Delete failed:", err);
     }
@@ -44,63 +51,82 @@ const AdminCategories = () => {
 
       {/* Main Category Section */}
       <main className="flex-1 p-8 overflow-auto">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-semibold">Category management</h2>
-          <Button
-            className="px-8 py-2 rounded-full bg-black text-white"
-            onClick={() => navigate("/admin/category-management/create")}
-          >
-            <LuPencil className="mr-2 h-4 w-4" /> Create category
-          </Button>
-        </div>
+        {loading ? (
+          <div className="flex items-center justify-center h-full">
+            <InlineLoadingScreen />
+          </div>
+        ) : (
+          <>
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-2xl font-semibold">Category management</h2>
+              <button
+                className="px-10 flex py-4 items-center rounded-full bg-black text-white"
+                onClick={() => navigate("/admin/category-management/create")}
+              >
+                <LuPencil className="mr-2 h-4 w-4" /> Create category
+              </button>
+            </div>
 
-        <div className="mb-6">
-          <Input
-            type="text"
-            placeholder="Search..."
-            className="w-full max-w-md py-3 rounded-sm placeholder:text-muted-foreground focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-muted-foreground"
-          />
-        </div>
+            <div className="mb-6">
+              <Input
+                type="text"
+                placeholder="Search..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full max-w-md py-3 rounded-sm placeholder:text-muted-foreground border-gray-300"
+              />
+            </div>
 
-        {loading && <div>Loading...</div>}
-
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="w-full">Category</TableHead>
-              <TableHead className="text-right"></TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {data?.map((category) => (
-              <TableRow key={category.id}>
-                <TableCell className="font-medium">{category.name}</TableCell>
-                <TableCell className="text-right flex">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() =>
-                      navigate(`/admin/category-management/edit/${category.id}`)
-                    }
+            <Table className="rounded-lg overflow-hidden shadow-sm border border-gray-200">
+              <TableHeader className="bg-[#F9F8F6]">
+                <TableRow className="border-b border-gray-200">
+                  <TableHead className="text-[#43403B] w-full">
+                    Category
+                  </TableHead>
+                  <TableHead className="w-[50%] text-gray-500"></TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {filteredCategories?.map((category, index) => (
+                  <TableRow
+                    key={index}
+                    className={`border-b border-gray-200 ${
+                      index % 2 === 0 ? "bg-[#F9F8F6]" : "bg-[#EFEEEB]"
+                    }`}
                   >
-                    <LuPencil className="h-4 w-4 hover:text-muted-foreground" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => {
-                      if (confirm("Are you sure?")) {
-                        handleDelete(category.id);
-                      }
-                    }}
-                  >
-                    <FaRegTrashAlt className="h-4 w-4 hover:text-muted-foreground" />
-                  </Button>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+                    <TableCell className="font-medium">
+                      {category.name}
+                    </TableCell>
+                    <TableCell className="text-right flex">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() =>
+                          navigate(
+                            `/admin/category-management/edit/${category.id}`
+                          )
+                        }
+                      >
+                        <LuPencil className="h-4 w-4 hover:text-muted-foreground" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => {
+                          if (confirm("Are you sure?")) {
+                            handleDelete(category.id);
+                          }
+                        }}
+                      >
+                        <FaRegTrashAlt className="h-4 w-4 hover:text-muted-foreground" />
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </>
+        )}
       </main>
     </div>
   );

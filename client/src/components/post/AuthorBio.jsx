@@ -16,7 +16,7 @@ const AuthorBio = ({ post }) => {
       </div>
       <hr className="border-gray-300 mb-4" />
       <div className="text-muted-foreground space-y-4">
-        {/* <p>{state?.profile.bio}</p> */}
+        <p>{post.profile.bio}</p>
       </div>
     </div>
   );

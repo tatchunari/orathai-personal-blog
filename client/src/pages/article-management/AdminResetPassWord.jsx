@@ -143,7 +143,7 @@ const AdminResetPassword = () => {
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-semibold">Reset Password</h2>
           <Button
-            className="px-8 py-2 rounded-full"
+            className="px-8 py-4 rounded-full text-white bg-black"
             onClick={handleSubmit}
             disabled={isLoading}
           >
@@ -165,7 +165,7 @@ const AdminResetPassword = () => {
               placeholder="Current password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className={`mt-1 py-3 rounded-sm placeholder:text-muted-foreground focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-muted-foreground ${
+              className={`mt-1 border-[#75716B] py-3 rounded-sm placeholder:text-muted-foreground focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-muted-foreground ${
                 !valid.password ? "border-red-500" : ""
               }`}
             />
@@ -188,7 +188,7 @@ const AdminResetPassword = () => {
               placeholder="New password"
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
-              className={`mt-1 py-3 rounded-sm placeholder:text-muted-foreground focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-muted-foreground ${
+              className={`mt-1 border-[#75716B] py-3 rounded-sm placeholder:text-muted-foreground focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-muted-foreground ${
                 !valid.newPassword ? "border-red-500" : ""
               }`}
             />
@@ -211,7 +211,7 @@ const AdminResetPassword = () => {
               placeholder="Confirm new password"
               value={confirmNewPassword}
               onChange={(e) => setConfirmNewPassword(e.target.value)}
-              className={`mt-1 py-3 rounded-sm placeholder:text-muted-foreground focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-muted-foreground ${
+              className={`mt-1 border-[#75716B] py-3 rounded-sm placeholder:text-muted-foreground focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-muted-foreground ${
                 !valid.confirmNewPassword ? "border-red-500" : ""
               }`}
             />

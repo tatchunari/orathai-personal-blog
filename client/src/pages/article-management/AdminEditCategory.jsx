@@ -1,52 +1,68 @@
 import AdminPanel from "@/components/article-management/AdminPanel";
-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-
 import { useEffect, useState, useRef } from "react";
 import axios from "axios";
-import { useParams } from "react-router-dom";
-import { useQuery } from "@/hooks/useQuery";
+import { useNavigate, useParams } from "react-router-dom";
+
+// Import Sonner for toast notifications
+import { toast, Toaster } from "sonner";
 
 const AdminEditCategory = () => {
   const { categoryId } = useParams();
   const categoryNameInputRef = useRef();
-  const { data, loading } = useQuery(`category/${categoryId}`);
-
   const [categoryName, setCategoryName] = useState("");
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   fetchCategoryById(categoryId);
-  // }, [])
+  // 1️⃣ Fetch category on mount
+  useEffect(() => {
+    const fetchCategoryById = async (id) => {
+      try {
+        const response = await axios.get(
+          `https://orathai-personal-blog-backend.vercel.app/category/${id}`
+        );
+        setCategoryName(response.data.name);
+        setLoading(false);
+      } catch (err) {
+        console.error("Fetch category failed:", err);
+        setLoading(false);
+        toast.error("Failed to fetch category.");
+      }
+    };
 
-  // // Fetch Category name
-  // const fetchCategoryById = async (id) => {
-  //     try {
-  //       const response = await axios.get(`https://orathai-personal-blog-backend.vercel.app/category/${id}`);
-  //       setCategoryName(response.data.name);
-  //       // setCategoryName(response)
-  //     } catch (err) {
-  //       console.error("Fetch data failed:", err);
-  //     }
-  //   };
+    fetchCategoryById(categoryId);
+  }, [categoryId]);
 
-  // Update Category name
-  const handleUpdateCategoryName = async (id) => {
+  // 2️⃣ Update category
+  const handleUpdateCategoryName = async () => {
     const name = categoryNameInputRef.current?.value;
     if (!name) {
-      alert("Category name is required");
+      toast.error("Category name is required");
       return;
     }
+
     try {
-      const response = await axios.put(
-        `https://orathai-personal-blog-backend.vercel.app/category/${id}`,
+      await axios.put(
+        `https://orathai-personal-blog-backend.vercel.app/category/${categoryId}`,
         { name }
       );
-      console.log(response);
+      toast.success("Category updated successfully!"); // ✅ toast instead of alert
+      setCategoryName(name); // update state after success
+      navigate("/admin/category-management");
     } catch (err) {
       console.error("Edit Category failed:", err);
+      toast.error("Failed to update category. Please try again.");
     }
   };
+
+  if (loading) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <p>Loading...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="flex h-screen">
@@ -58,7 +74,7 @@ const AdminEditCategory = () => {
           <h2 className="text-2xl font-semibold">Edit Category</h2>
           <Button
             className="px-8 py-2 rounded-full bg-black text-white"
-            onClick={() => handleUpdateCategoryName(categoryId)}
+            onClick={handleUpdateCategoryName}
           >
             Save
           </Button>
@@ -66,18 +82,18 @@ const AdminEditCategory = () => {
         <div className="space-y-7 max-w-md">
           <div className="relative">
             <label
-              htmlFor="current-password"
-              className="block text-sm font-medium text-gray-700 mb-1"
+              htmlFor="category-name"
+              className="block text-sm font-medium text-gray-500 mb-1"
             >
               Category Name
             </label>
             <Input
-              id="current-password"
+              id="category-name"
               type="text"
               ref={categoryNameInputRef}
               placeholder="Category name"
-              className="mt-3 py-3 rounded-sm placeholder:text-muted-foreground focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-muted-foreground"
-              defaultValue={data?.name}
+              className="mt-3 py-3 rounded-sm placeholder:text-muted-foreground focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-muted-foreground border-gray-300"
+              defaultValue={categoryName}
             />
           </div>
         </div>

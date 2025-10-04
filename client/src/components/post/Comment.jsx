@@ -1,20 +1,19 @@
-import { Textarea } from "@/components/ui/textarea"
+import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
-import AlertDialog from "../AlertDialog";
+import AlertDialog from "../sub-components/AlertDialog";
 
 const Comment = ({ comments = [] }) => {
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const isLoggedIn = false;
 
-    const [isDialogOpen, setIsDialogOpen] = useState(false);
-    const isLoggedIn = false;
-
-    const handleComment = () => {
-      if (!isLoggedIn) {
-        setIsDialogOpen(true);
-        return;
-      }
+  const handleComment = () => {
+    if (!isLoggedIn) {
+      setIsDialogOpen(true);
+      return;
     }
+  };
   return (
-   <div>
+    <div>
       <div className="space-y-4 px-4 mb-16">
         <h3 className="text-lg font-semibold">Comment</h3>
         <div className="space-y-2">
@@ -23,9 +22,9 @@ const Comment = ({ comments = [] }) => {
             className="w-full p-4 h-24 resize-none py-3 rounded-sm placeholder:text-muted-foreground focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-muted-foreground"
           />
           <div className="flex justify-end">
-            <button 
-            className="px-8 py-2 bg-[#26231E] hover:bg-[#43403B] text-white rounded-full transition-colors cursor-pointer"
-            onClick={handleComment}
+            <button
+              className="px-8 py-2 bg-[#26231E] hover:bg-[#43403B] text-white rounded-full transition-colors cursor-pointer"
+              onClick={handleComment}
             >
               Send
             </button>
@@ -57,12 +56,13 @@ const Comment = ({ comments = [] }) => {
           </div>
         ))}
       </div>
-       <AlertDialog
+      <AlertDialog
         isOpen={isDialogOpen}
         onClose={() => setIsDialogOpen(false)}
-        message="Create an account to continue" />
+        message="Create an account to continue"
+      />
     </div>
   );
-}
+};
 
-export default Comment
+export default Comment;

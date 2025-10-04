@@ -2,12 +2,10 @@ import ArticleNavbarMobile from "./ArticleNavbarMobile";
 import ArticleNavbarDesktop from "./ArticleNavbarDesktop";
 import BlogCard from "./BlogCard";
 
-
 import { useEffect, useState } from "react";
 import { usePostsData } from "@/hooks/usePostsData";
 
 const ArticleSection = () => {
-
   const { posts, loading } = usePostsData();
   const categories = ["Highlight", "Dev", "Hobbies", "Art"];
   const [category, setCategory] = useState("Highlight");
@@ -29,9 +27,8 @@ const ArticleSection = () => {
 
       {/* Blog/Article Cards Section */}
       <div className="max-w-5xl mx-auto px-4 mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-        {
-         posts.map((post) => 
-          <BlogCard 
+        {posts.map((post) => (
+          <BlogCard
             key={post.id}
             id={post.id}
             image={post.thumbnail_image}
@@ -43,11 +40,9 @@ const ArticleSection = () => {
               day: "numeric",
               month: "long",
               year: "numeric",
-            })} 
+            })}
           />
-
-        ) 
-        }
+        ))}
       </div>
     </section>
   );

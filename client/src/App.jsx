@@ -8,8 +8,8 @@ import AnonUserRoute from "./components/auth/AnonUserRoute";
 import LandingPage from "./pages/LandingPage.jsx";
 import ViewPostPage from "./pages/ViewPostPage.jsx";
 import LoginPage from "./pages/LoginPage.jsx";
-import SignUpPage from "./pages/SignUpPage.jsx";
-import SignUpSuccessPage from "./pages/SignUpSuccessPage";
+import SignUpPage from "./pages/member-management/SignUpPage";
+import SignUpSuccessPage from "./pages/member-management/SignUpSuccessPage";
 import { Toaster } from "sonner";
 import ResetPasswordPage from "./pages/member-management/ResetPasswordPage";
 import ProfilePage from "./pages/member-management/MemberManagementPage";
@@ -25,7 +25,7 @@ import AdminEditArticle from "./pages/article-management/AdminEditArticle";
 import AdminProfile from "./pages/article-management/AdminProfile";
 import AdminCreateCategory from "./pages/article-management/AdminCreateCategory";
 import AdminEditCategory from "./pages/article-management/AdminEditCategory";
-import AdminLoginPage from "./pages/AdminLoginPage";
+import AdminLoginPage from "./pages/article-management/AdminLoginPage";
 import NotFoundPage from "./pages/NotFoundPage";
 
 function App() {

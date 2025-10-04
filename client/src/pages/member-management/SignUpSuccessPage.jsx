@@ -1,5 +1,5 @@
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import Navbar from "@/components/sub-components/Navbar";
+import Footer from "@/components/sub-components/Footer";
 import { Check } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 

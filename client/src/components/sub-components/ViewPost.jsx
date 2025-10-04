@@ -1,14 +1,13 @@
 import { useEffect, useState } from "react";
 import { useQuery } from "@/hooks/useQuery";
-import { useParams, useNavigate } from "react-router-dom";
-import { useAuth } from "@/context/authentication";
+import { useParams } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
 import axios from "axios";
 
 import LoadingScreen from "@/pages/LoadingScreen";
-import AuthorBio from "./post/AuthorBio";
-import Comment from "./post/Comment";
-import Share from "./post/Share";
+import AuthorBio from "../post/AuthorBio";
+import Comment from "../post/Comment";
+import Share from "../post/Share";
 import NotFoundPage from "@/pages/NotFoundPage";
 
 const ViewPost = () => {
@@ -23,10 +22,6 @@ const ViewPost = () => {
   const [notFound, setNotFound] = useState(false);
 
   const params = useParams();
-  const navigate = useNavigate();
-  const { state } = useAuth();
-  const user = state.user;
-
   const { data: post } = useQuery(`posts/${params.id}`, [params.id]);
 
   useEffect(() => {

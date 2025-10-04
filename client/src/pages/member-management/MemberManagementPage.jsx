@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import Navbar from "@/components/sub-components/Navbar";
+import Footer from "@/components/sub-components/Footer";
+import ProfileImageUploader from "@/components/sub-components/profileImageUploader";
 import { useNavigate } from "react-router-dom";
 import { X, User, Lock } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -8,29 +9,37 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { toast } from "sonner";
 import axios from "axios";
 import { useAuth } from "@/context/authentication";
+import LoadingScreen from "../LoadingScreen";
+import { InlineLoadingScreen } from "@/components/sub-components/InlineLoadingScreen";
 
 export default function ProfilePage() {
   const navigate = useNavigate();
-  const { state, fetchUser } = useAuth();
-  const [profile, setProfile] = useState({
-    image: "",
+  const { state } = useAuth();
+  const [profile, setProfile] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [formData, setFormData] = useState({
+    avatar_url: "",
     name: "",
     username: "",
-    email: "",
   });
   const [isSaving, setIsSaving] = useState(false);
-  const [imageFile, setImageFile] = useState(null);
 
   useEffect(() => {
     const fetchProfile = async () => {
+      if (!state.profile?.id) return;
+
       try {
-        setProfile({
-          image: state.user.profilePic || "",
-          name: state.user.name || "",
-          username: state.user.username || "",
-          email: state.user.email || "",
+        const response = await axios.get(
+          `https://orathai-personal-blog-backend.vercel.app/profiles/${state.profile.id}`
+        );
+        setProfile(response.data);
+        setFormData({
+          avatar_url: response.data.avatar_url || "",
+          name: response.data.name || "",
+          username: response.data.username || "",
         });
-      } catch {
+      } catch (error) {
+        console.error("Failed to fetch profile:", error);
         toast.custom((t) => (
           <div className="bg-red-500 text-white p-4 rounded-sm flex justify-between items-start">
             <div>
@@ -47,71 +56,19 @@ export default function ProfilePage() {
             </button>
           </div>
         ));
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchProfile();
-  }, [state.user]);
+  }, [state.profile?.id]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setProfile((prev) => ({
+    setFormData((prev) => ({
       ...prev,
       [name]: value,
-    }));
-  };
-
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
-
-    if (!file) return;
-
-    // Check file type
-    const allowedTypes = ["image/jpeg", "image/png", "image/gif", "image/webp"];
-    if (!allowedTypes.includes(file.type)) {
-      toast.custom((t) => (
-        <div className="bg-red-500 text-white p-4 rounded-sm flex justify-between items-start">
-          <div>
-            <h2 className="font-bold text-lg mb-1">Invalid file type</h2>
-            <p className="text-sm">
-              Please upload a valid image file (JPEG, PNG, GIF, WebP).
-            </p>
-          </div>
-          <button
-            onClick={() => toast.dismiss(t)}
-            className="text-white hover:text-gray-200"
-          >
-            <X size={20} />
-          </button>
-        </div>
-      ));
-      return;
-    }
-
-    // Check file size (5MB limit)
-    const maxSize = 5 * 1024 * 1024;
-    if (file.size > maxSize) {
-      toast.custom((t) => (
-        <div className="bg-red-500 text-white p-4 rounded-sm flex justify-between items-start">
-          <div>
-            <h2 className="font-bold text-lg mb-1">File too large</h2>
-            <p className="text-sm">Please upload an image smaller than 5MB.</p>
-          </div>
-          <button
-            onClick={() => toast.dismiss(t)}
-            className="text-white hover:text-gray-200"
-          >
-            <X size={20} />
-          </button>
-        </div>
-      ));
-      return;
-    }
-
-    setImageFile(file);
-    setProfile((prev) => ({
-      ...prev,
-      image: URL.createObjectURL(file),
     }));
   };
 
@@ -120,19 +77,12 @@ export default function ProfilePage() {
     try {
       setIsSaving(true);
 
-      const formData = new FormData();
-      formData.append("name", profile.name);
-      formData.append("username", profile.username);
-
-      if (imageFile) {
-        formData.append("imageFile", imageFile);
-      }
-
       await axios.put(
-        "https://orathai-personal-blog-backend.vercel.app/api/profiles",
-        formData,
+        `https://orathai-personal-blog-backend.vercel.app/profiles/${state.profile.id}`,
         {
-          headers: { "Content-Type": "multipart/form-data" },
+          name: formData.name,
+          username: formData.username,
+          avatar_url: formData.avatar_url,
         }
       );
 
@@ -152,7 +102,8 @@ export default function ProfilePage() {
           </button>
         </div>
       ));
-    } catch {
+    } catch (error) {
+      console.error("Failed to update profile:", error);
       toast.custom((t) => (
         <div className="bg-red-500 text-white p-4 rounded-sm flex justify-between items-start">
           <div>
@@ -169,9 +120,20 @@ export default function ProfilePage() {
       ));
     } finally {
       setIsSaving(false);
-      fetchUser();
     }
   };
+
+  if (loading || !profile) {
+    return (
+      <div className="flex flex-col min-h-screen">
+        <Navbar />
+        <div className="flex-1 flex items-center justify-center">
+          <InlineLoadingScreen />
+        </div>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -182,7 +144,7 @@ export default function ProfilePage() {
           <div className="hidden md:flex items-center p-6">
             <Avatar className="h-14 w-14">
               <AvatarImage
-                src={state.user.profilePic}
+                src={formData.avatar_url}
                 alt="Profile"
                 className="object-cover"
               />
@@ -190,21 +152,23 @@ export default function ProfilePage() {
                 <User />
               </AvatarFallback>
             </Avatar>
-            <div className="ml-4">
-              <h1 className="text-2xl font-bold">{state.user.name}</h1>
+            <div className="ml-4 flex flex-row justify-center items-center gap-4">
+              <h1 className="text-2xl text-black font-bold">{formData.name}</h1>
+              <p className="text-2xl font-bold text-gray-700">|</p>
+              <h1 className="text-2xl font-bold text-gray-600">Profile</h1>
             </div>
           </div>
 
           {/* Mobile Header */}
           <div className="md:hidden p-4">
-            <div className="flex justify-start gap-12 items-center mb-4">
-              <div className="flex items-center space-x-2 text-foreground font-medium cursor-default">
+            <div className="flex justify-start gap-5 items-center mb-4">
+              <div className="flex items-center bg-gray-200 p-3 rounded-md space-x-2 text-foreground font-medium cursor-default">
                 <User className="h-5 w-5 mb-1" />
                 <span>Profile</span>
               </div>
               <a
                 onClick={() => navigate("/reset-password")}
-                className="flex items-center gap-2 text-muted-foreground transition-colors hover:text-foreground cursor-pointer"
+                className="flex items-center gap-2 p-3 text-muted-foreground transition-colors hover:bg-gray-200 rounded-md cursor-pointer"
               >
                 <Lock className="h-5 w-5 mb-1" />
                 Reset password
@@ -213,7 +177,7 @@ export default function ProfilePage() {
             <div className="flex items-center">
               <Avatar className="h-10 w-10">
                 <AvatarImage
-                  src={profile.image}
+                  src={formData.avatar_url}
                   alt="Profile"
                   className="object-cover"
                 />
@@ -221,7 +185,7 @@ export default function ProfilePage() {
                   <User className="h-8 w-8" />
                 </AvatarFallback>
               </Avatar>
-              <h2 className="ml-3 text-xl font-semibold">{profile.name}</h2>
+              <h2 className="ml-3 text-xl font-semibold">{formData.name}</h2>
             </div>
           </div>
 
@@ -230,13 +194,13 @@ export default function ProfilePage() {
             <aside className="hidden md:block w-64 p-6">
               <nav>
                 <div className="space-y-3">
-                  <div className="flex items-center space-x-2 text-foreground font-medium cursor-default">
+                  <div className="flex items-center space-x-2 text-foreground font-medium p-3 bg-gray-200 rounded-md cursor-default">
                     <User className="h-5 w-5 mb-1" />
                     <span>Profile</span>
                   </div>
                   <a
                     onClick={() => navigate("/reset-password")}
-                    className="flex items-center gap-2 text-muted-foreground transition-colors hover:text-foreground cursor-pointer"
+                    className="flex items-center gap-2 text-muted-foreground transition-colors hover:text-foreground p-3 hover:bg-gray-200 rounded-md cursor-pointer"
                   >
                     <Lock className="h-5 w-5 mb-1" />
                     Reset password
@@ -247,29 +211,14 @@ export default function ProfilePage() {
 
             {/* Main Content */}
             <main className="flex-1 p-8 bg-[#EFEEEB] md:m-2 md:shadow-md md:rounded-lg">
-              <div className="flex flex-col md:flex-row items-center justify-start md:gap-6 mb-6">
-                <Avatar className="h-28 w-28 mb-5">
-                  <AvatarImage
-                    src={profile.image}
-                    alt="Profile"
-                    className="object-cover"
-                  />
-                  <AvatarFallback>
-                    <User className="h-8 w-8" />
-                  </AvatarFallback>
-                </Avatar>
-                <label className="bg-background px-8 py-2 rounded-full text-foreground border border-foreground hover:border-muted-foreground hover:text-muted-foreground transition-colors cursor-pointer">
-                  Upload profile picture
-                  <input
-                    type="file"
-                    className="sr-only"
-                    onChange={handleFileChange}
-                    accept="image/*"
-                  />
-                </label>
-              </div>
+              <ProfileImageUploader
+                onFileSelect={(url) =>
+                  setFormData((prev) => ({ ...prev, avatar_url: url }))
+                }
+                initialValue={formData.avatar_url}
+              />
 
-              <form onSubmit={handleSubmit} className="space-y-4">
+              <form onSubmit={handleSubmit} className="space-y-4 mt-6">
                 <div>
                   <label
                     htmlFor="name"
@@ -280,7 +229,7 @@ export default function ProfilePage() {
                   <Input
                     id="name"
                     name="name"
-                    value={profile.name}
+                    value={formData.name}
                     onChange={handleInputChange}
                     className="mt-1 py-3 rounded-sm placeholder:text-muted-foreground focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-muted-foreground"
                   />
@@ -295,7 +244,7 @@ export default function ProfilePage() {
                   <Input
                     id="username"
                     name="username"
-                    value={profile.username}
+                    value={formData.username}
                     onChange={handleInputChange}
                     className="mt-1 py-3 rounded-sm placeholder:text-muted-foreground focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-muted-foreground"
                   />
@@ -319,7 +268,7 @@ export default function ProfilePage() {
                 <button
                   type="submit"
                   disabled={isSaving}
-                  className="px-8 py-2 mt-2 bg-foreground text-white rounded-full hover:bg-muted-foreground transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="bg-black px-8 py-2 mt-2 bg-foreground text-white hover:bg-gray-800 rounded-full cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isSaving ? "Saving..." : "Save"}
                 </button>

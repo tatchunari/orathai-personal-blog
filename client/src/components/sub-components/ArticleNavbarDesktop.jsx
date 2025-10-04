@@ -7,10 +7,8 @@ import { usePostsData } from "@/hooks/usePostsData";
 import { useCategoryData } from "@/hooks/useCategoryData";
 
 const ArticleNavbarDesktop = () => {
-
   const { categories } = useCategoryData();
   const [selectedCategory, setSelectedCategory] = useState(null);
-
 
   const { posts, loading } = usePostsData();
   const [query, setQuery] = useState("");
@@ -20,14 +18,14 @@ const ArticleNavbarDesktop = () => {
   const handleSearchChange = (e) => {
     const value = e.target.value;
     setQuery(value);
-  
-  if (value.trim === "") {
-    setFilteredPosts([]);
-  } else {
-    const matches = posts.filter(
-      (post) => post.title.toLowerCase().includes(value.toLowerCase())
-      )
-      setFilteredPosts(matches)
+
+    if (value.trim === "") {
+      setFilteredPosts([]);
+    } else {
+      const matches = posts.filter((post) =>
+        post.title.toLowerCase().includes(value.toLowerCase())
+      );
+      setFilteredPosts(matches);
     }
   };
 
@@ -37,7 +35,7 @@ const ArticleNavbarDesktop = () => {
     setQuery("");
     setFilteredPosts([]);
     navigate(`/post/${id}`);
-  }
+  };
 
   return (
     <div className="hidden md:flex bg-[#efeeeb] rounded-xl p-4 items-center justify-between">
@@ -76,20 +74,20 @@ const ArticleNavbarDesktop = () => {
           className="rounded-lg bg-white border border-[#e2e1de] focus:ring-0 pr-10"
         />
         <Search className="w-4 h-4 absolute right-4 top-1/2 -translate-y-1/2 text-[#43403B]" />
-      {/* Drop-down Search Results */}
-      {filteredPosts.length > 0 && (
-        <ul className="absolute z-20 w-full mt-2 bg-white border border-gray-200 roundedlg shadow-lg max-h-60 overflow-y-auto">
-          {filteredPosts.map((post) => (
-            <li
-            key={post.id}
-            onClick={() => handleSelectedPost(post.id)}
-            className="px-4 py-2 cursor-pointer hover:bg-gray-100"
-            >
-              {post.title}
-            </li>
-          ))}
-        </ul>
-      )}
+        {/* Drop-down Search Results */}
+        {filteredPosts.length > 0 && (
+          <ul className="absolute z-20 w-full mt-2 bg-white border border-gray-200 roundedlg shadow-lg max-h-60 overflow-y-auto">
+            {filteredPosts.map((post) => (
+              <li
+                key={post.id}
+                onClick={() => handleSelectedPost(post.id)}
+                className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+              >
+                {post.title}
+              </li>
+            ))}
+          </ul>
+        )}
       </form>
     </div>
   );

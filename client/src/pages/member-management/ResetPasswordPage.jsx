@@ -1,7 +1,6 @@
-/* eslint-disable react/prop-types */
 import { useState } from "react";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import Navbar from "@/components/sub-components/Navbar";
+import Footer from "@/components/sub-components/Footer";
 import { useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -15,10 +14,12 @@ import {
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
 import { useAuth } from "@/context/authentication";
+import supabase from "@/lib/supabaseClient";
 import axios from "axios";
 
 export default function ResetPasswordPage() {
   const navigate = useNavigate();
+  const { state } = useAuth();
   const [password, setPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
@@ -28,12 +29,13 @@ export default function ResetPasswordPage() {
     confirmNewPassword: true,
   });
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const { state } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     const isValidPassword = password.trim() !== "";
-    const isValidNewPassword = newPassword.trim() !== "";
+    const isValidNewPassword =
+      newPassword.trim() !== "" && newPassword.length >= 8;
     const isValidConfirmPassword =
       confirmNewPassword.trim() !== "" && confirmNewPassword === newPassword;
 
@@ -49,14 +51,31 @@ export default function ResetPasswordPage() {
   };
 
   const handleResetPassword = async () => {
+    setIsLoading(true);
     try {
-      setIsDialogOpen(false);
+      // Get the current session token from Supabase
+      const {
+        data: { session },
+        error: sessionError,
+      } = await supabase.auth.getSession();
+
+      if (sessionError || !session) {
+        throw new Error("No active session. Please log in again.");
+      }
+
+      const token = session.access_token;
+      console.log("Token retrieved from Supabase session");
 
       const response = await axios.put(
-        `https://blog-post-project-api-with-db.vercel.app/auth/reset-password`,
+        "https://orathai-personal-blog-backend.vercel.app/auth/reset-password",
         {
           oldPassword: password,
           newPassword: newPassword,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
 
@@ -84,15 +103,26 @@ export default function ResetPasswordPage() {
         setNewPassword("");
         setConfirmNewPassword("");
       }
-    } catch (error) {
+    } catch (err) {
+      console.error("Reset password error:", err);
+      console.error("Error response:", err.response?.data);
+      console.error("Error status:", err.response?.status);
+
+      let errorMessage = "Failed to reset password";
+
+      if (err.message?.includes("No active session")) {
+        errorMessage = "Session expired. Please log in again.";
+      } else if (err.response?.data?.error) {
+        errorMessage = err.response.data.error;
+      } else if (err.response?.status === 401) {
+        errorMessage = "Unauthorized. Your session may have expired.";
+      }
+
       toast.custom((t) => (
         <div className="bg-red-500 text-white p-4 rounded-sm flex justify-between items-start">
           <div>
-            <h2 className="font-bold text-lg mb-1">Error</h2>
-            <p className="text-sm">
-              {error.response?.data?.error ||
-                "Something went wrong. Please try again."}
-            </p>
+            <h2 className="font-bold text-lg mb-1">Error!</h2>
+            <p className="text-sm">{errorMessage}</p>
           </div>
           <button
             onClick={() => toast.dismiss(t)}
@@ -102,6 +132,9 @@ export default function ResetPasswordPage() {
           </button>
         </div>
       ));
+    } finally {
+      setIsLoading(false);
+      setIsDialogOpen(false);
     }
   };
 
@@ -114,7 +147,7 @@ export default function ResetPasswordPage() {
           <div className="hidden md:flex items-center p-6">
             <Avatar className="h-14 w-14">
               <AvatarImage
-                src={state.user.profilePic}
+                src={state.profile?.avatar_url}
                 alt="Profile"
                 className="object-cover"
               />
@@ -123,21 +156,21 @@ export default function ResetPasswordPage() {
               </AvatarFallback>
             </Avatar>
             <div className="ml-4">
-              <h1 className="text-2xl font-bold">{state.user.name}</h1>
+              <h1 className="text-2xl font-bold">{state.profile?.name}</h1>
             </div>
           </div>
 
           {/* Mobile Header */}
           <div className="md:hidden p-4">
-            <div className="flex justify-start gap-12 items-center mb-4">
+            <div className="flex justify-start gap-5 items-center mb-4">
               <a
                 onClick={() => navigate("/member")}
-                className="flex items-center gap-2 text-muted-foreground transition-colors hover:text-foreground cursor-pointer"
+                className="flex items-center gap-2 p-3 hover:bg-gray-200 text-muted-foreground rounded-md transition-colors cursor-pointer"
               >
                 <User className="h-5 w-5 mb-1" />
                 Profile
               </a>
-              <div className="flex items-center space-x-2 text-foreground font-medium cursor-default">
+              <div className="flex items-center bg-gray-200 p-3 rounded-md space-x-2 text-foreground font-medium cursor-default">
                 <Lock className="h-5 w-5 mb-1" />
                 <span>Reset password</span>
               </div>
@@ -145,7 +178,7 @@ export default function ResetPasswordPage() {
             <div className="flex items-center">
               <Avatar className="h-10 w-10">
                 <AvatarImage
-                  src={state.user.profilePic}
+                  src={state.profile?.avatar_url}
                   alt="Profile"
                   className="object-cover"
                 />
@@ -153,7 +186,9 @@ export default function ResetPasswordPage() {
                   <User />
                 </AvatarFallback>
               </Avatar>
-              <h2 className="ml-3 text-xl font-semibold">{state.user.name}</h2>
+              <h2 className="ml-3 text-xl font-semibold">
+                {state.profile?.name}
+              </h2>
             </div>
           </div>
 
@@ -164,12 +199,12 @@ export default function ResetPasswordPage() {
                 <div className="space-y-3">
                   <a
                     onClick={() => navigate("/member")}
-                    className="flex items-center gap-2 text-muted-foreground transition-colors hover:text-foreground cursor-pointer"
+                    className="flex items-center gap-2 p-3 rounded-md text-muted-foreground transition-colors hover:bg-gray-200 cursor-pointer"
                   >
                     <User className="h-5 w-5 mb-1" />
                     Profile
                   </a>
-                  <div className="flex items-center space-x-2 text-foreground font-medium cursor-default">
+                  <div className="flex items-center space-x-2 text-foreground font-medium cursor-default p-3 rounded-md bg-gray-200">
                     <Lock className="h-5 w-5 mb-1" />
                     <span>Reset password</span>
                   </div>
@@ -251,9 +286,10 @@ export default function ResetPasswordPage() {
                 </div>
                 <button
                   type="submit"
-                  className="px-8 py-2 bg-foreground text-white rounded-full hover:bg-muted-foreground transition-colors"
+                  disabled={isLoading}
+                  className="px-8 py-2 cursor-pointer bg-black text-white rounded-full hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Reset password
+                  {isLoading ? "Resetting..." : "Reset password"}
                 </button>
               </form>
             </main>
@@ -265,36 +301,44 @@ export default function ResetPasswordPage() {
         dialogState={isDialogOpen}
         setDialogState={setIsDialogOpen}
         resetFunction={handleResetPassword}
+        isLoading={isLoading}
       />
     </div>
   );
 }
 
-function ResetPasswordModal({ dialogState, setDialogState, resetFunction }) {
+function ResetPasswordModal({
+  dialogState,
+  setDialogState,
+  resetFunction,
+  isLoading,
+}) {
   return (
     <AlertDialog open={dialogState} onOpenChange={setDialogState}>
-      <AlertDialogContent className="bg-white rounded-md pt-16 pb-6 max-w-[22rem] sm:max-w-md flex flex-col items-center">
-        <AlertDialogTitle className="text-3xl font-semibold pb-2 text-center">
+      <AlertDialogContent className="bg-white rounded-lg pt-16 pb-6 max-w-[22rem] sm:max-w-md flex flex-col items-center">
+        <AlertDialogTitle className="text-3xl font-semibold text-center">
           Reset password
         </AlertDialogTitle>
-        <AlertDialogDescription className="flex flex-row mb-2 justify-center font-medium text-center text-muted-foreground">
+        <AlertDialogDescription className="flex flex-row mb-2 justify-center font-light text-md text-center">
           Do you want to reset your password?
         </AlertDialogDescription>
         <div className="flex flex-row gap-4">
           <button
             onClick={() => setDialogState(false)}
-            className="bg-background px-10 py-4 rounded-full text-foreground border border-foreground hover:border-muted-foreground hover:text-muted-foreground transition-colors"
+            disabled={isLoading}
+            className="bg-background px-10 py-4 rounded-full text-foreground border border-foreground disabled:opacity-50 cursor-pointer"
           >
             Cancel
           </button>
           <button
             onClick={resetFunction}
-            className="rounded-full text-white bg-foreground hover:bg-muted-foreground transition-colors py-4 text-lg px-10"
+            disabled={isLoading}
+            className="rounded-full text-white bg-black bg-foreground cursor-pointer hover:bg-gray-700 transition-colors py-4 text-lg px-10 disabled:opacity-50"
           >
-            Reset
+            {isLoading ? "Resetting..." : "Reset"}
           </button>
         </div>
-        <AlertDialogCancel className="absolute right-4 top-2 sm:top-4 p-1 border-none">
+        <AlertDialogCancel className="absolute right-4 top-2 sm:top-4 p-1 cursor-pointer border-none">
           <X className="h-6 w-6" />
         </AlertDialogCancel>
       </AlertDialogContent>

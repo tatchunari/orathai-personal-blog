@@ -18,7 +18,7 @@ import { FaRegTrashAlt } from "react-icons/fa";
 import { useQuery } from "@/hooks/useQuery";
 import LoadingScreen from "../LoadingScreen";
 import NotFoundPage from "../NotFoundPage";
-import ThumbnailUploader from "@/components/ImageUploader";
+import ThumbnailUploader from "@/components/sub-components/ImageUploader";
 
 const AdminEditArticle = () => {
   const { id } = useParams();

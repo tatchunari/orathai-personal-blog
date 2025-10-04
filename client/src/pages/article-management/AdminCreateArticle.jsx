@@ -16,7 +16,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import LoadingScreen from "../LoadingScreen";
-import ThumbnailUploader from "../../components/ImageUploader";
+import ThumbnailUploader from "../../components/sub-components/ImageUploader";
 import { useQuery } from "@/hooks/useQuery";
 
 const AdminCreateArticle = () => {
@@ -137,7 +137,7 @@ const AdminCreateArticle = () => {
           <div>
             <label
               htmlFor="thumbnail"
-              className="block text-gray-700 font-medium mb-2"
+              className="block text-[#75716B] font-medium mb-2"
             >
               Thumbnail image
             </label>
@@ -151,12 +151,17 @@ const AdminCreateArticle = () => {
           </div>
 
           <div>
-            <label htmlFor="category">Category</label>
+            <label htmlFor="category" className="text-[#75716B]">
+              Category
+            </label>
             <Select name="category" onValueChange={handleCategoryChange}>
-              <SelectTrigger className="max-w-lg mt-1 py-3 rounded-sm text-muted-foreground focus:ring-0 focus:ring-offset-0 focus:border-muted-foreground">
-                <SelectValue placeholder="Select category" />
+              <SelectTrigger className="max-w-lg mt-1 py-3 rounded-sm text-muted-foreground focus:ring-0 focus:ring-offset-0 focus:border-muted-foreground border-[#75716B]">
+                <SelectValue
+                  className="text-[#75716B]"
+                  placeholder="Select category"
+                />
               </SelectTrigger>
-              <SelectContent className="bg-white">
+              <SelectContent className="bg-white border-gray-300">
                 {categories?.map((cat) => (
                   <SelectItem key={cat.id} value={cat.name}>
                     {cat.name}
@@ -167,46 +172,54 @@ const AdminCreateArticle = () => {
           </div>
 
           <div>
-            <label htmlFor="author">Author name</label>
+            <label className="text-[#75716B]" htmlFor="author">
+              Author name
+            </label>
             <Input
               name="author"
-              className="mt-1 max-w-lg"
+              className="mt-1 max-w-lg text-[#75716B]"
               onChange={handleInputChange}
             />
           </div>
 
           <div>
-            <label htmlFor="title">Title</label>
+            <label className="text-[#75716B]" htmlFor="title">
+              Title
+            </label>
             <Input
               type="text"
               name="title"
               placeholder="Title"
               onChange={handleInputChange}
-              className="mt-1 py-3 rounded-sm placeholder:text-muted-foreground focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-muted-foreground"
+              className="border-[#75716B] mt-1 py-3 rounded-sm placeholder:text-muted-foreground focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-muted-foreground"
             />
           </div>
 
           <div>
-            <label htmlFor="introduction">Introduction (max 120 letters)</label>
+            <label className="text-[#75716B]" htmlFor="introduction">
+              Introduction (max 120 letters)
+            </label>
             <Textarea
               type="text"
               name="introduction"
               placeholder="Introduction"
               onChange={handleInputChange}
               rows={3}
-              className="mt-1 py-3 rounded-sm placeholder:text-muted-foreground focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-muted-foreground"
+              className="border-[#75716B] mt-1 py-3 rounded-sm placeholder:text-muted-foreground focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-muted-foreground"
               maxLength={120}
             />
           </div>
 
           <div>
-            <label htmlFor="content">Content</label>
+            <label className="text-[#75716B]" htmlFor="content">
+              Content
+            </label>
             <Textarea
               name="content"
               placeholder="Content"
               rows={20}
               onChange={handleInputChange}
-              className="mt-1 py-3 rounded-sm placeholder:text-muted-foreground focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-muted-foreground"
+              className="border-[#75716B] mt-1 py-3 rounded-sm placeholder:text-muted-foreground focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-muted-foreground"
             />
           </div>
         </form>

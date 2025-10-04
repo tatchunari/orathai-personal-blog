@@ -1,11 +1,10 @@
 import { SmilePlus, Copy } from "lucide-react";
 import { FaFacebook, FaLinkedin } from "react-icons/fa";
 import { FaSquareXTwitter } from "react-icons/fa6";
-import AlertDialog from "../AlertDialog";
+import AlertDialog from "../sub-components/AlertDialog";
 import { useState } from "react";
 import { toast } from "sonner";
 import { X } from "lucide-react";
-
 
 function Share({ postId, likesAmount }) {
   const shareLink = encodeURI(window.location.href);
@@ -18,27 +17,27 @@ function Share({ postId, likesAmount }) {
       setIsDialogOpen(true);
       return;
     }
-  }
+  };
   return (
     <div className="md:px-4">
       <div className="bg-[#EFEEEB] py-4 px-4 md:rounded-sm flex flex-col space-y-4 md:gap-16 md:flex-row md:items-center md:space-y-0 md:justify-between mb-10">
-
         {/* Like Article Button */}
-        <button 
-        className="bg-white flex items-center justify-center space-x-2 px-11 py-3 rounded-full text-foreground border border-foreground hover:bg-[#26231E] hover:border-muted-foreground hover:text-white transition-colors group cursor-pointer"
-        onClick={handleLike}
+        <button
+          className="bg-white flex items-center justify-center space-x-2 px-11 py-3 rounded-full text-foreground border border-foreground hover:bg-[#26231E] hover:border-muted-foreground hover:text-white transition-colors group cursor-pointer"
+          onClick={handleLike}
         >
           <SmilePlus className="w-5 h-5 text-foreground group-hover:text-muted-foreground transition-colors" />
           <span className="text-foreground group-hover:text-muted-foreground font-medium transition-colors">
             {likesAmount}
           </span>
         </button>
-        
+
         {/* Alert Dialog when not logged in */}
-         <AlertDialog
-        isOpen={isDialogOpen}
-        onClose={() => setIsDialogOpen(false)}
-        message="Create an account to continue" />
+        <AlertDialog
+          isOpen={isDialogOpen}
+          onClose={() => setIsDialogOpen(false)}
+          message="Create an account to continue"
+        />
         <div className="flex items-center space-x-2">
           <button
             onClick={() => {
@@ -60,7 +59,7 @@ function Share({ postId, likesAmount }) {
                     <X size={20} />
                   </button>
                 </div>
-              ))
+              ));
             }}
             className="bg-white flex flex-1 items-center justify-center space-x-2 px-11 py-3 rounded-full text-foreground border border-foreground hover:border-muted-foreground hover:text-white hover:bg-[#26231E] transition-colors group cursor-pointer"
           >

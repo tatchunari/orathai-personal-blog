@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import AdminPanel from "./AdminPanel";
-import ThumbnailUploader from "../ImageUploader";
+import ThumbnailUploader from "../sub-components/ImageUploader";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";

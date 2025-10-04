@@ -61,7 +61,7 @@ const ProfileImageUploader = ({ onFileSelect, initialValue = null }) => {
 
       {/* Upload Button */}
       <Button
-        className={`border-1 border-black text-black rounded-full font-normal ${
+        className={`border-1 bg-white border-black text-black cursor-pointer rounded-full font-normal ${
           uploading ? "opacity-50 cursor-not-allowed" : ""
         }`}
         onClick={() => document.getElementById("profile-upload").click()}

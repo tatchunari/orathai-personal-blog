@@ -19,27 +19,27 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { InlineLoadingScreen } from "@/components/sub-components/InlineLoadingScreen";
 
 import axios from "axios";
 
 import { useState } from "react";
 import { usePostsData } from "@/hooks/usePostsData";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { useQuery } from "@/hooks/useQuery";
 import AdminPanel from "@/components/article-management/AdminPanel";
-import LoadingScreen from "../LoadingScreen";
 
-const AdminArticles = ({ onNavigate }) => {
+const AdminArticles = () => {
   console.log(`render AdminArticles....`);
 
   const [status, setStatus] = useState("");
   const [category, setCategory] = useState("");
+  const { data: categories } = useQuery("category");
 
   const { posts, loading } = usePostsData();
   const [search, setSearch] = useState("");
   // Remove the navigate hook since we'll use onNavigate prop
   const navigate = useNavigate();
-
-  if (loading) return <LoadingScreen />;
 
   // Filter Logic
   const filteredArticles = posts.filter((article) => {
@@ -69,96 +69,116 @@ const AdminArticles = ({ onNavigate }) => {
 
       {/* Main Article Table Section */}
       <main className="flex-1 p-8 overflow-auto">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-semibold">Article management</h2>
-          <Button
-            className="font-normal px-8 py-2 rounded-full bg-black text-white"
-            onClick={() => navigate("/admin/article-management/create")}
-          >
-            <LuPencil className="mr-2 h-4 w-4" /> Create article
-          </Button>
-        </div>
-
-        <div className="flex space-x-4 mb-6">
-          <div className="flex-1">
-            <Input
-              type="text"
-              placeholder="Search..."
-              className="w-full py-3 rounded-sm placeholder:text-muted-foreground focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-muted-foreground"
-            />
+        {loading ? (
+          <div className="flex items-center justify-center h-full">
+            <InlineLoadingScreen />
           </div>
-          <Select>
-            <SelectTrigger className="w-[180px] py-3 rounded-sm text-muted-foreground focus:ring-0 focus:ring-offset-0 focus:border-muted-foreground">
-              <SelectValue placeholder="Status" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="published">Published</SelectItem>
-              <SelectItem value="draft">Draft</SelectItem>
-            </SelectContent>
-          </Select>
-          <Select>
-            <SelectTrigger className="w-[180px] py-3 rounded-sm text-muted-foreground focus:ring-0 focus:ring-offset-0 focus:border-muted-foreground">
-              <SelectValue placeholder="Category" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="cat">Cat</SelectItem>
-              <SelectItem value="general">General</SelectItem>
-              <SelectItem value="inspiration">Inspiration</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
+        ) : (
+          <>
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-2xl font-semibold">Article management</h2>
+              <button
+                className="font-normal flex text-sm px-10 py-4 rounded-full bg-black text-white"
+                onClick={() => navigate("/admin/article-management/create")}
+              >
+                <LuPencil className="mr-2 h-4 w-4" /> Create article
+              </button>
+            </div>
 
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="w-[50%]">Article title</TableHead>
-              <TableHead>Category</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead className="text-right"></TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {posts.map((post, index) => (
-              <TableRow key={index}>
-                <TableCell className="font-medium">{post.title}</TableCell>
-                <TableCell>{post.category}</TableCell>
-                <TableCell>
-                  <span
-                    className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                      post.status === "Published"
-                        ? "bg-green-100 text-green-800"
-                        : "bg-gray-100 text-gray-800"
+            <div className="flex space-x-4 mb-6">
+              <div className="flex-1">
+                <Input
+                  type="text"
+                  placeholder="Search..."
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)} // update state
+                  className="w-full py-3 rounded-sm placeholder:text-muted-foreground focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-muted-foreground border-gray-300"
+                />
+              </div>
+              <Select onValueChange={setStatus} value={status}>
+                <SelectTrigger className="w-[180px] py-3 rounded-sm text-muted-foreground focus:ring-0 focus:ring-offset-0 focus:border-muted-foreground border-gray-300">
+                  <SelectValue placeholder="Status" />
+                </SelectTrigger>
+                <SelectContent className="bg-white border-gray-200">
+                  <SelectItem value="Published">Published</SelectItem>
+                  <SelectItem value="Draft">Draft</SelectItem>
+                </SelectContent>
+              </Select>
+
+              <Select onValueChange={setCategory} value={category}>
+                <SelectTrigger className="w-[180px] py-3 rounded-sm text-muted-foreground focus:ring-0 focus:ring-offset-0 focus:border-muted-foreground border-gray-300">
+                  <SelectValue placeholder="Category" />
+                </SelectTrigger>
+                <SelectContent className="bg-white border-gray-200">
+                  {categories?.map((cat) => (
+                    <SelectItem key={cat.id} value={cat.name}>
+                      {cat.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <Table className="rounded-lg overflow-hidden shadow-sm border border-gray-200">
+              <TableHeader className="bg-[#F9F8F6]">
+                <TableRow className="border-b border-gray-200">
+                  <TableHead className="w-[50%] text-gray-500">
+                    Article title
+                  </TableHead>
+                  <TableHead className="text-[#43403B]">Category</TableHead>
+                  <TableHead className="text-[#43403B]">Status</TableHead>
+                  <TableHead className="text-right"></TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {filteredArticles.map((post, index) => (
+                  <TableRow
+                    key={index}
+                    className={`border-b border-gray-200 ${
+                      index % 2 === 0 ? "bg-[#F9F8F6]" : "bg-[#EFEEEB]"
                     }`}
                   >
-                    {post.status}
-                  </span>
-                </TableCell>
-                <TableCell className="text-right">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() =>
-                      navigate(`/admin/article-management/edit/${post.id}`)
-                    }
-                  >
-                    <LuPencil className="h-4 w-4 hover:text-muted-foreground cursor-pointer" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => {
-                      if (confirm("Are you sure?")) {
-                        handleDelete(post.id);
-                      }
-                    }}
-                  >
-                    <FaRegTrashAlt className="h-4 w-4 cursor-pointer hover:text-muted-foreground" />
-                  </Button>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+                    <TableCell className="font-medium">{post.title}</TableCell>
+                    <TableCell>{post.category}</TableCell>
+                    <TableCell>
+                      <span
+                        className={`inline-flex items-center rounded-full py-0.5 text-sm font-normal ${
+                          post.status === "Published"
+                            ? "text-green-500"
+                            : "text-gray-500 "
+                        }`}
+                      >
+                        • {post.status}
+                      </span>
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() =>
+                          navigate(`/admin/article-management/edit/${post.id}`)
+                        }
+                      >
+                        <LuPencil className="h-4 w-4 hover:text-muted-foreground cursor-pointer" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => {
+                          if (confirm("Are you sure?")) {
+                            handleDelete(post.id);
+                          }
+                        }}
+                      >
+                        <FaRegTrashAlt className="h-4 w-4 cursor-pointer hover:text-muted-foreground" />
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </>
+        )}
       </main>
     </div>
   );
