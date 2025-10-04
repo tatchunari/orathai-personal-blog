@@ -76,9 +76,19 @@ postRouter.get("/:postId", async (req, res) => {
   const { postId } = req.params;
 
   try {
+    // Join posts with profile table
     const { data, error } = await supabase
       .from("posts")
-      .select("*")
+      .select(
+        `
+        *,
+        profile:user_id (
+          id,
+          name,
+          bio
+        )
+      `
+      )
       .eq("id", postId)
       .single();
 

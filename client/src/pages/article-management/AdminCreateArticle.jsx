@@ -3,6 +3,7 @@ import AdminPanel from "@/components/article-management/AdminPanel";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import supabase from "@/lib/supabaseClient";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -16,10 +17,12 @@ import {
 } from "@/components/ui/select";
 import LoadingScreen from "../LoadingScreen";
 import ThumbnailUploader from "../../components/ImageUploader";
+import { useQuery } from "@/hooks/useQuery";
 
 const AdminCreateArticle = () => {
   // const [thumbnail, setThumbnail] = useState(null);
   const navigate = useNavigate();
+  const { data: categories } = useQuery("category");
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
@@ -49,22 +52,42 @@ const AdminCreateArticle = () => {
   const handleSubmit = async (status) => {
     setIsLoading(true);
     try {
+      // 1️⃣ Get current user session
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      if (!session) {
+        alert("Please log in first!");
+        setIsLoading(false);
+        return;
+      }
+
+      const token = session.access_token; // JWT token
+
+      // 2️⃣ Prepare payload
       const payload = {
         author: postForm.author,
         title: postForm.title,
         introduction: postForm.introduction,
         content: postForm.content,
         category: postForm.category,
-        thumbnail_image: postForm.thumbnail_image || null, // optional
-        status: status, // Add status to payload
+        thumbnail_image: postForm.thumbnail_image || null,
+        status: status,
       };
 
       console.log("Submitting post:", payload);
 
+      // 3️⃣ Send POST request with Authorization header
       await axios.post(
         "https://orathai-personal-blog-backend.vercel.app/posts",
         payload,
-        { headers: { "Content-Type": "application/json" } }
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`, // ✅ pass token here
+          },
+        }
       );
 
       alert(
@@ -133,10 +156,12 @@ const AdminCreateArticle = () => {
               <SelectTrigger className="max-w-lg mt-1 py-3 rounded-sm text-muted-foreground focus:ring-0 focus:ring-offset-0 focus:border-muted-foreground">
                 <SelectValue placeholder="Select category" />
               </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="cat">Cat</SelectItem>
-                <SelectItem value="general">General</SelectItem>
-                <SelectItem value="inspiration">Inspiration</SelectItem>
+              <SelectContent className="bg-white">
+                {categories?.map((cat) => (
+                  <SelectItem key={cat.id} value={cat.name}>
+                    {cat.name}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
