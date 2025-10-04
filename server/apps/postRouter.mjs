@@ -52,29 +52,10 @@ postRouter.post("/", validatePostData, async (req, res) => {
 /**
  * READ all posts
  */
-postRouter.post("/", validatePostData, async (req, res) => {
-  const newPost = req.body;
+postRouter.get("/", async (req, res) => {
   try {
-    // Get the token from the Authorization header
-    const token = req.headers.authorization?.split(" ")[1];
-    if (!token) return res.status(401).json({ message: "Missing auth token" });
-
-    // Retrieve user info from Supabase
-    const {
-      data: { user },
-      error: userError,
-    } = await supabase.auth.getUser(token);
-
-    if (userError || !user) {
-      return res.status(401).json({ message: "Invalid or expired token" });
-    }
-
-    // Include the user's ID in the post
-    const postWithUser = { ...newPost, user_id: user.id };
-
     const { data, error } = await supabase
       .from("posts")
-      .insert([postWithUser])
       .select(
         `
         *,
@@ -85,14 +66,11 @@ postRouter.post("/", validatePostData, async (req, res) => {
         )
       `
       )
-      .single();
+      .order("created_at", { ascending: false });
 
     if (error) return res.status(500).json({ message: error.message });
 
-    return res.status(201).json({
-      message: "Created post successfully",
-      post: data,
-    });
+    return res.status(200).json(data);
   } catch (e) {
     return res.status(500).json({ message: e.message });
   }
