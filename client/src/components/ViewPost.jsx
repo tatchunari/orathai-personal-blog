@@ -1,17 +1,17 @@
-import { useEffect, useState } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
-import { useAuth } from '@/context/authentication';
-import ReactMarkdown from 'react-markdown';
-import axios from 'axios';
+import { useEffect, useState } from "react";
+import { useQuery } from "@/hooks/useQuery";
+import { useParams, useNavigate } from "react-router-dom";
+import { useAuth } from "@/context/authentication";
+import ReactMarkdown from "react-markdown";
+import axios from "axios";
 
-import LoadingScreen from '@/pages/LoadingScreen';
-import AuthorBio from './post/AuthorBio';
-import Comment from './post/Comment';
-import Share from './post/Share';
-import NotFoundPage from '@/pages/NotFoundPage';
+import LoadingScreen from "@/pages/LoadingScreen";
+import AuthorBio from "./post/AuthorBio";
+import Comment from "./post/Comment";
+import Share from "./post/Share";
+import NotFoundPage from "@/pages/NotFoundPage";
 
 const ViewPost = () => {
-
   const [img, setImg] = useState(null);
   const [title, setTitle] = useState("");
   const [date, setDate] = useState("");
@@ -27,14 +27,18 @@ const ViewPost = () => {
   const { state } = useAuth();
   const user = state.user;
 
+  const { data: post } = useQuery(`posts/${params.id}`, [params.id]);
+
   useEffect(() => {
     getPost();
-  }, [])
+  }, []);
 
   const getPost = async () => {
     setIsLoading(true);
     try {
-      const response = await axios.get(`https://orathai-personal-blog-backend.vercel.app/posts/${params.id}`);
+      const response = await axios.get(
+        `https://orathai-personal-blog-backend.vercel.app/posts/${params.id}`
+      );
       console.log(response);
 
       if (!response.data || Object.keys(response.data).length === 0) {
@@ -57,10 +61,10 @@ const ViewPost = () => {
       }
       setIsLoading(false);
     }
-  }
+  };
 
   if (isLoading) return <LoadingScreen />;
-  if (notFound) return <NotFoundPage />
+  if (notFound) return <NotFoundPage />;
   return (
     <div className="max-w-7xl mx-auto space-y-8 container md:px-8 pb-20 md:pb-28 md:pt-8 lg:pt-16">
       <div className="space-y-4 md:px-4">
@@ -94,7 +98,7 @@ const ViewPost = () => {
           </article>
 
           <div className="xl:hidden px-4">
-            <AuthorBio />
+            <AuthorBio post={post} />
           </div>
 
           <Share likesAmount={likes} />
@@ -103,12 +107,12 @@ const ViewPost = () => {
 
         <div className="hidden xl:block xl:w-1/4">
           <div className="sticky top-4">
-            <AuthorBio />
+            <AuthorBio post={post} />
           </div>
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default ViewPost
+export default ViewPost;

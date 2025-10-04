@@ -16,9 +16,25 @@ postRouter.post("/", validatePostData, async (req, res) => {
   const newPost = req.body;
 
   try {
+    // Get the token from the Authorization header
+    const token = req.headers.authorization?.split(" ")[1];
+    if (!token) return res.status(401).json({ message: "Missing auth token" });
+
+    // Retrieve user info from Supabase
+    const {
+      data: { user },
+      error: userError,
+    } = await supabase.auth.getUser(token);
+    if (userError || !user) {
+      return res.status(401).json({ message: "Invalid or expired token" });
+    }
+
+    // Include the user's ID in the post
+    const postWithUser = { ...newPost, user_id: user.id };
+
     const { data, error } = await supabase
       .from("posts")
-      .insert([newPost]) // Supabase automatically maps fields if column names match
+      .insert([postWithUser])
       .select()
       .single();
 
