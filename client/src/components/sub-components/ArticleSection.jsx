@@ -3,14 +3,15 @@ import ArticleNavbarDesktop from "./ArticleNavbarDesktop";
 import BlogCard from "./BlogCard";
 import { useState, useMemo } from "react";
 import { usePostsData } from "@/hooks/usePostsData";
+import { InlineLoadingScreen } from "./InlineLoadingScreen";
 
 const ArticleSection = () => {
   const { posts, loading } = usePostsData();
-  const [selectedCategory, setSelectedCategory] = useState("Highlight");
+  const [selectedCategory, setSelectedCategory] = useState("All");
 
   // Filter posts based on selected category
   const filteredPosts = useMemo(() => {
-    if (selectedCategory === "Highlight") {
+    if (selectedCategory === "All") {
       return posts; // Show all posts
     }
     return posts.filter((post) => post.category === selectedCategory);
@@ -37,31 +38,38 @@ const ArticleSection = () => {
       </div>
 
       {/* Blog/Article Cards Section */}
-      <div className="max-w-5xl mx-auto px-4 mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+      {/* Blog/Article Cards Section */}
+      <div className="max-w-5xl mx-auto px-4 mt-6">
         {loading ? (
-          <p className="col-span-2 text-center">Loading...</p>
-        ) : filteredPosts.length > 0 ? (
-          filteredPosts.map((post) => (
-            <BlogCard
-              key={post.id}
-              id={post.id}
-              image={post.thumbnail_image}
-              category={post.category}
-              title={post.title}
-              description={post.content}
-              author={post.author}
-              authorImage={post.profiles?.avatar_url}
-              date={new Date(post.created_at).toLocaleDateString("en-GB", {
-                day: "numeric",
-                month: "long",
-                year: "numeric",
-              })}
-            />
-          ))
+          <div className="flex items-center justify-center py-20">
+            <InlineLoadingScreen />
+          </div>
         ) : (
-          <p className="col-span-2 text-center text-muted-foreground">
-            No articles found in this category
-          </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {filteredPosts.length > 0 ? (
+              filteredPosts.map((post) => (
+                <BlogCard
+                  key={post.id}
+                  id={post.id}
+                  image={post.thumbnail_image}
+                  category={post.category}
+                  title={post.title}
+                  description={post.content}
+                  author={post.author}
+                  authorImage={post.profiles?.avatar_url}
+                  date={new Date(post.created_at).toLocaleDateString("en-GB", {
+                    day: "numeric",
+                    month: "long",
+                    year: "numeric",
+                  })}
+                />
+              ))
+            ) : (
+              <p className="col-span-2 text-center text-muted-foreground">
+                No articles found in this category
+              </p>
+            )}
+          </div>
         )}
       </div>
     </section>

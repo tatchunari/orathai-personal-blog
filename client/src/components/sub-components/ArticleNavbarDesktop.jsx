@@ -1,19 +1,20 @@
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search } from "lucide-react";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { usePostsData } from "@/hooks/usePostsData";
 import { useCategoryData } from "@/hooks/useCategoryData";
 
 const ArticleNavbarDesktop = ({ selectedCategory, onCategoryChange }) => {
   const { categories } = useCategoryData();
-
   const { posts, loading } = usePostsData();
   const [query, setQuery] = useState("");
   const [filteredPosts, setFilteredPosts] = useState([]);
+  const searchRef = useRef(null);
   const navigate = useNavigate();
 
+  // Handle Search Change
   const handleSearchChange = (e) => {
     const value = e.target.value;
     setQuery(value);
@@ -36,22 +37,48 @@ const ArticleNavbarDesktop = ({ selectedCategory, onCategoryChange }) => {
     navigate(`/post/${id}`);
   };
 
+  // Clear search when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (searchRef.current && !searchRef.current.contains(event.target)) {
+        setQuery("");
+        setFilteredPosts([]);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   return (
     <div className="hidden md:flex bg-[#efeeeb] rounded-xl p-4 items-center justify-between">
       {/* Category buttons */}
       <nav className="flex gap-4 flex-wrap">
+        {/* All button */}
+        <Button
+          onClick={() => onCategoryChange("All")}
+          className={`rounded-lg px-6 py-2 font-medium transition-colors
+            ${
+              selectedCategory === "All"
+                ? "bg-[#75716B] text-white"
+                : "bg-white text-[#75716B] hover:text-[#43403B] hover:bg-[#d8d6d1]"
+            }
+          `}
+        >
+          All
+        </Button>
         {categories.map((cat) => {
-          const isActive = selectedCategory == cat.id;
-
+          const isActive = selectedCategory === cat.name; // Compare with name
           return (
             <Button
               key={cat.id}
-              onClick={() => onCategoryChange(cat)}
+              onClick={() => onCategoryChange(cat.name)} // Pass name string
               disabled={isActive}
               className={`rounded-lg px-6 py-2 font-medium transition-colors
                 ${
                   isActive
-                    ? "bg-[#75716B] text-white cursor-not-allowed" // active button
+                    ? "bg-[#75716B] text-white cursor-not-allowed"
                     : "bg-white text-[#75716B] hover:text-[#43403B] hover:bg-[#d8d6d1]"
                 }
               `}
@@ -61,9 +88,8 @@ const ArticleNavbarDesktop = ({ selectedCategory, onCategoryChange }) => {
           );
         })}
       </nav>
-
       {/* Search input */}
-      <form className="w-72 relative">
+      <form className="w-72 relative" ref={searchRef}>
         <Input
           type="text"
           placeholder={loading ? "Loading posts" : "Search posts..."}
@@ -75,7 +101,7 @@ const ArticleNavbarDesktop = ({ selectedCategory, onCategoryChange }) => {
         <Search className="w-4 h-4 absolute right-4 top-1/2 -translate-y-1/2 text-[#43403B]" />
         {/* Drop-down Search Results */}
         {filteredPosts.length > 0 && (
-          <ul className="absolute z-20 w-full mt-2 bg-white border border-gray-200 roundedlg shadow-lg max-h-60 overflow-y-auto">
+          <ul className="absolute z-20 w-full mt-2 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto">
             {filteredPosts.map((post) => (
               <li
                 key={post.id}
