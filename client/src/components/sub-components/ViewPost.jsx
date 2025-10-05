@@ -24,7 +24,6 @@ const ViewPost = () => {
   const params = useParams();
   const postId = params.id;
   const { data: post } = useQuery(`posts/${params.id}`, [params.id]);
-
   useEffect(() => {
     getPost();
   }, []);
@@ -47,7 +46,7 @@ const ViewPost = () => {
       setDescription(response.data.description);
       setCategory(response.data.category);
       setContent(response.data.content);
-      setLikes(response.data.likes);
+      setLikes(response.data.like_count);
       setIsLoading(false);
     } catch (error) {
       console.log(error);

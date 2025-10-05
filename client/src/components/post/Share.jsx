@@ -10,7 +10,8 @@ import axios from "axios";
 
 function Share({ postId, likesAmount }) {
   const shareLink = encodeURI(window.location.href);
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, state } = useAuth();
+  const token = state.token;
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [likes, setLikes] = useState(likesAmount);
   const [hasLiked, setHasLiked] = useState(false);
@@ -43,8 +44,17 @@ function Share({ postId, likesAmount }) {
 
       // Call API to increase like count
       const response = await axios.post(
-        `https://orathai-personal-blog-backend.vercel.app/posts/${postId}/likes`
+        `https://orathai-personal-blog-backend.vercel.app/posts/${postId}/likes`,
+        {}, // body (empty if your endpoint doesn't need extra data)
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`, // ✅ pass token here
+          },
+        }
       );
+
+      console.log("Like response:", response.data);
 
       if (response.status === 200) {
         setLikes(likes + 1);
