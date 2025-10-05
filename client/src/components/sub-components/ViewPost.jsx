@@ -57,9 +57,8 @@ const ViewPost = () => {
       setIsLoading(false);
     }
   };
-
-  if (isLoading) return <LoadingScreen />;
   if (notFound) return <NotFoundPage />;
+  if (isLoading || !post) return <LoadingScreen />;
   return (
     <div className="max-w-7xl mx-auto space-y-8 container md:px-8 pb-20 md:pb-28 md:pt-8 lg:pt-16">
       <div className="space-y-4 md:px-4">

@@ -1,16 +1,20 @@
 import ArticleNavbarMobile from "./ArticleNavbarMobile";
 import ArticleNavbarDesktop from "./ArticleNavbarDesktop";
 import BlogCard from "./BlogCard";
-
-import { useEffect, useState } from "react";
+import { useState, useMemo } from "react";
 import { usePostsData } from "@/hooks/usePostsData";
-import { useAuth } from "@/context/authentication";
 
 const ArticleSection = () => {
   const { posts, loading } = usePostsData();
-  const categories = ["Highlight", "Dev", "Hobbies", "Art"];
-  const [category, setCategory] = useState("Highlight");
-  const [isLoading, setIsLoading] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState("Highlight");
+
+  // Filter posts based on selected category
+  const filteredPosts = useMemo(() => {
+    if (selectedCategory === "Highlight") {
+      return posts; // Show all posts
+    }
+    return posts.filter((post) => post.category === selectedCategory);
+  }, [posts, selectedCategory]);
 
   return (
     <section className="w-full bg-[#f7f6f3] py-8 px-0">
@@ -19,31 +23,46 @@ const ArticleSection = () => {
           Latest articles
         </h2>
         <div className="block md:hidden">
-          <ArticleNavbarMobile />
+          <ArticleNavbarMobile
+            selectedCategory={selectedCategory}
+            onCategoryChange={setSelectedCategory}
+          />
         </div>
         <div className="hidden md:block">
-          <ArticleNavbarDesktop />
+          <ArticleNavbarDesktop
+            selectedCategory={selectedCategory}
+            onCategoryChange={setSelectedCategory}
+          />
         </div>
       </div>
 
       {/* Blog/Article Cards Section */}
       <div className="max-w-5xl mx-auto px-4 mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-        {posts.map((post) => (
-          <BlogCard
-            key={post.id}
-            id={post.id}
-            image={post.thumbnail_image}
-            category={post.category}
-            title={post.title}
-            description={post.content}
-            author={post.author}
-            date={new Date(post.created_at).toLocaleDateString("en-GB", {
-              day: "numeric",
-              month: "long",
-              year: "numeric",
-            })}
-          />
-        ))}
+        {loading ? (
+          <p className="col-span-2 text-center">Loading...</p>
+        ) : filteredPosts.length > 0 ? (
+          filteredPosts.map((post) => (
+            <BlogCard
+              key={post.id}
+              id={post.id}
+              image={post.thumbnail_image}
+              category={post.category}
+              title={post.title}
+              description={post.content}
+              author={post.author}
+              authorImage={post.profiles?.avatar_url}
+              date={new Date(post.created_at).toLocaleDateString("en-GB", {
+                day: "numeric",
+                month: "long",
+                year: "numeric",
+              })}
+            />
+          ))
+        ) : (
+          <p className="col-span-2 text-center text-muted-foreground">
+            No articles found in this category
+          </p>
+        )}
       </div>
     </section>
   );

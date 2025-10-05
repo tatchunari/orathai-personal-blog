@@ -1,11 +1,9 @@
 import { Link } from "react-router-dom";
-import { useQuery } from "@/hooks/useQuery";
 
 function BlogCard(props) {
-  const { id, image, category, title, description, author, date } = props;
-  const { data: post } = useQuery("posts");
+  const { id, image, category, title, description, author, date, authorImage } =
+    props;
 
-  console.log("Post Data", post);
   return (
     <div className="flex flex-col gap-4">
       <a href="#" className="relative h-[212px] sm:h-[360px]">
@@ -33,11 +31,13 @@ function BlogCard(props) {
           {description}
         </p>
         <div className="flex">
-          <img
-            className="w-10 h-10 md:w-8 md:h-8 rounded-full mr-2"
-            src="https://res.cloudinary.com/dcbpjtd1r/image/upload/v1728449784/my-blog-post/xgfy0xnvyemkklcqodkg.jpg"
-            alt={author}
-          />
+          {authorImage && (
+            <img
+              className="w-10 h-10 md:w-8 md:h-8 rounded-full mr-2"
+              src={authorImage}
+              alt={author}
+            />
+          )}
           {/* Author & Date */}
           <div className="flex flex-row justify-center items-center text-center">
             <span className="text-base">{author}</span>

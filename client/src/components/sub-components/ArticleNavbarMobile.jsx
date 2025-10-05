@@ -12,16 +12,7 @@ import {
 } from "@/components/ui/select";
 import { useCategoryData } from "@/hooks/useCategoryData";
 
-const ArticleNavbarMobile = () => {
-  // const categories = [
-  // { value: "highlight", label: "Highlight" },
-  // { value: "dev", label: "Dev" },
-  // { value: "hobbies", label: "Hobbies" },
-  // { value: "art", label: "Art" },
-  // ];
-
-  const [selectedCategory, setSelectedCategory] = useState("highlight");
-
+const ArticleNavbarMobile = ({ selectedCategory, onCategoryChange }) => {
   const { posts, loading } = usePostsData();
   const { categories } = useCategoryData();
   const [query, setQuery] = useState("");
@@ -79,9 +70,9 @@ const ArticleNavbarMobile = () => {
 
       {/* Category Dropdown */}
       <div className="mb-2 text-[#75716B] text-lg">Category</div>
-      <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+      <Select value={selectedCategory} onValueChange={onCategoryChange}>
         <SelectTrigger className="w-full h-14 border border-[#d6d3cb] bg-white text-[#75716B] px-4">
-          <SelectValue placeholder="Highlight" />
+          <SelectValue placeholder="Select Category" />
         </SelectTrigger>
         <SelectContent className="bg-white border border-[#d6d3cb] text-[#75716B]">
           {categories.map((cat) => (

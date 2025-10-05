@@ -6,9 +6,8 @@ import { useNavigate } from "react-router-dom";
 import { usePostsData } from "@/hooks/usePostsData";
 import { useCategoryData } from "@/hooks/useCategoryData";
 
-const ArticleNavbarDesktop = () => {
+const ArticleNavbarDesktop = ({ selectedCategory, onCategoryChange }) => {
   const { categories } = useCategoryData();
-  const [selectedCategory, setSelectedCategory] = useState(null);
 
   const { posts, loading } = usePostsData();
   const [query, setQuery] = useState("");
@@ -47,8 +46,8 @@ const ArticleNavbarDesktop = () => {
           return (
             <Button
               key={cat.id}
-              onClick={() => setSelectedCategory(cat.id)}
-              disabled={isActive} // ปุ่มที่ถูกเลือกแล้วกดไม่ได้
+              onClick={() => onCategoryChange(cat)}
+              disabled={isActive}
               className={`rounded-lg px-6 py-2 font-medium transition-colors
                 ${
                   isActive
