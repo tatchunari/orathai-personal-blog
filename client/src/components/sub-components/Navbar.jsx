@@ -134,10 +134,6 @@ const Navbar = () => {
               </>
             ) : (
               <div className="flex flex-row gap-x-4">
-                <div className="border border-gray-300 bg-white px-3 py-3 rounded-full items-center justify-center">
-                  <FaRegBell className="w-4 h-4 text-gray-400" />
-                </div>
-
                 {/* Desktop Drop Down when logged in */}
                 <div>
                   <DropdownMenu>

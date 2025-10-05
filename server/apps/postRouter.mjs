@@ -160,4 +160,55 @@ postRouter.delete("/:postId", async (req, res) => {
   }
 });
 
+// Add like to post by id
+postRouter.post("/:postId/likes", async (req, res) => {
+  const { postId } = req.params;
+
+  try {
+    // Get the token from the Authorization header
+    const token = req.headers.authorization?.split(" ")[1];
+    if (!token) return res.status(401).json({ message: "Missing auth token" });
+
+    // Retrieve user info from Supabase
+    const {
+      data: { user },
+      error: userError,
+    } = await supabase.auth.getUser(token);
+
+    if (userError || !user) {
+      return res.status(401).json({ message: "Invalid or expired token" });
+    }
+
+    // Check if post exists
+    const { data: post, error: postError } = await supabase
+      .from("posts")
+      .select("id, like_count")
+      .eq("id", postId)
+      .single();
+
+    if (postError || !post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+
+    // Increment the likes count
+    const { data: updatedPost, error: updateError } = await supabase
+      .from("posts")
+      .update({ likes: (post.like_count || 0) + 1 })
+      .eq("id", postId)
+      .select()
+      .single();
+
+    if (updateError) {
+      return res.status(500).json({ message: updateError.message });
+    }
+
+    return res.status(200).json({
+      message: "Post liked successfully",
+      likes: updatedPost.likes,
+    });
+  } catch (e) {
+    return res.status(500).json({ message: e.message });
+  }
+});
+
 export default postRouter;
