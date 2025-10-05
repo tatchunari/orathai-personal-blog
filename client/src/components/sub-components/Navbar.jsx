@@ -31,7 +31,8 @@ const Navbar = () => {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <Link to="/">
-            <div className="md:text-xl text-base font-semibold text-gray-700">
+            <div className="md:text-xl flex flex-row text-base font-semibold text-gray-700 items-center gap-2">
+              <img src="/capybara.png" className="w-8 h-8" />
               Orathai.Blog
             </div>
           </Link>
