@@ -11,10 +11,12 @@ const ArticleSection = () => {
 
   // Filter posts based on selected category
   const filteredPosts = useMemo(() => {
+    const publishedPosts = posts.filter((post) => post.status === "Published");
+
     if (selectedCategory === "All") {
-      return posts; // Show all posts
+      return publishedPosts; // Show all posts
     }
-    return posts.filter((post) => post.category === selectedCategory);
+    return publishedPosts.filter((post) => post.category === selectedCategory);
   }, [posts, selectedCategory]);
 
   return (
