@@ -6,7 +6,7 @@ export const InlineLoadingScreen = () => {
       <div className="flex flex-col items-center justify-center gap-5">
         <img
           className="h-40 w-40"
-          src="/public/spinning-capy-nobg.gif"
+          src="/spinning-capy-nobg.gif"
           alt="loading-capybara"
         />
         <div className="flex gap-2">

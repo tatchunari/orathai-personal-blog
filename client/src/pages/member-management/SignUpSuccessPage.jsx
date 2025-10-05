@@ -13,7 +13,7 @@ export default function SignUpSuccessPage() {
           <div className="relative">
             <img
               className="w-50 h-50"
-              src="/public/success-capy-nobg.gif"
+              src="/success-capy-nobg.gif"
               alt="success-capy"
             />
           </div>
