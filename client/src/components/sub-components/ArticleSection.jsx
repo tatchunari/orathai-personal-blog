@@ -38,7 +38,6 @@ const ArticleSection = () => {
       </div>
 
       {/* Blog/Article Cards Section */}
-      {/* Blog/Article Cards Section */}
       <div className="max-w-5xl mx-auto px-4 mt-6">
         {loading ? (
           <div className="flex items-center justify-center py-20">

@@ -11,11 +11,18 @@ export default function SignUpSuccessPage() {
       <main className="flex-grow flex items-center justify-center p-4 my-4">
         <div className="flex flex-col space-y-8 items-center w-full max-w-xl bg-[#EFEEEB] rounded-sm shadow-md px-3 sm:px-20 py-14">
           <div className="relative">
-            <div className="h-20 w-20 bg-green-500 rounded-full flex items-center justify-center">
-              <Check className="h-12 w-12 text-white" strokeWidth={3} />
+            <img
+              className="w-50 h-50"
+              src="/public/success-capy-nobg.gif"
+              alt="success-capy"
+            />
+          </div>
+          <div className="flex flex-row gap-3 items-center">
+            <h1 className="mt-4 text-2xl font-bold">Registration Successful</h1>
+            <div className="h-10 w-10 bg-green-500 rounded-full flex items-center justify-center">
+              <Check className="h-5 w-5 text-white" strokeWidth={3} />
             </div>
           </div>
-          <h1 className="mt-4 text-2xl font-bold">Registration Successful</h1>
           <button
             onClick={() => navigate("/login")}
             className="px-8 py-4 bg-black text-white rounded-full hover:bg-muted-foreground cursor-pointer hover:bg-gray-700 transition-colors"
