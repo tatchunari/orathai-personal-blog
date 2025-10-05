@@ -1,20 +1,29 @@
 import AdminPanel from "@/components/article-management/AdminPanel";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import axios from "axios";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 const AdminCreateCategory = () => {
   const categoryNameInputRef = useRef();
+  const [error, setError] = useState(""); // 🔴 store validation
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async () => {
     const name = categoryNameInputRef.current?.value;
 
+    // Basic validations
     if (!name) {
-      alert("Category name is required");
+      setError("Category name is required.");
+      return;
+    }
+
+    if (name.length > 30) {
+      setError("Category name must be no longer than 30 characters");
       return;
     }
     try {
+      setIsSubmitting(true);
       await axios.post(
         `https://orathai-personal-blog-backend.vercel.app/category`,
         { name }
@@ -22,6 +31,9 @@ const AdminCreateCategory = () => {
       window.location.reload();
     } catch (err) {
       console.error("Add Category failed:", err);
+      setError("Failed to create category. Please try again.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -55,6 +67,8 @@ const AdminCreateCategory = () => {
               placeholder="Category name"
               className="mt-3 py-3 rounded-sm placeholder:text-muted-foreground focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-muted-foreground"
             />
+            {/* 🔴 Error Message */}
+            {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
           </div>
         </div>
       </main>

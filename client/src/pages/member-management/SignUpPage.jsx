@@ -168,7 +168,7 @@ const SignUpPage = () => {
                 />
                 {formErrors.name && (
                   <p className="text-red-500 text-xs absolute">
-                    {formErrors.name}
+                    {formErrors.username}
                   </p>
                 )}
               </div>

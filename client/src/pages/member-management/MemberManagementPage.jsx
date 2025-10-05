@@ -22,6 +22,10 @@ export default function ProfilePage() {
     name: "",
     username: "",
   });
+  const [errors, setErrors] = useState({
+    name: "",
+    username: "",
+  });
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
@@ -70,18 +74,63 @@ export default function ProfilePage() {
       ...prev,
       [name]: value,
     }));
+    // Clear error when user starts typing
+    if (errors[name]) {
+      setErrors((prev) => ({
+        ...prev,
+        [name]: "",
+      }));
+    }
+  };
+
+  const validateForm = () => {
+    const newErrors = {
+      name: "",
+      username: "",
+    };
+    let isValid = true;
+
+    // Validate name
+    if (!formData.name.trim()) {
+      newErrors.name = "Name is required";
+      isValid = false;
+    } else if (formData.name.trim().length < 2) {
+      newErrors.name = "Name must be at least 2 characters";
+      isValid = false;
+    }
+
+    // Validate username
+    if (!formData.username.trim()) {
+      newErrors.username = "Username is required";
+      isValid = false;
+    } else if (formData.username.trim().length < 3) {
+      newErrors.username = "Username must be at least 3 characters";
+      isValid = false;
+    } else if (!/^[a-zA-Z0-9_]+$/.test(formData.username.trim())) {
+      newErrors.username =
+        "Username can only contain letters, numbers, and underscores";
+      isValid = false;
+    }
+
+    setErrors(newErrors);
+    return isValid;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!validateForm()) {
+      return;
+    }
+
     try {
       setIsSaving(true);
 
       await axios.put(
         `https://orathai-personal-blog-backend.vercel.app/profiles/${state.profile.id}`,
         {
-          name: formData.name,
-          username: formData.username,
+          name: formData.name.trim(),
+          username: formData.username.trim(),
           avatar_url: formData.avatar_url,
         }
       );
@@ -231,8 +280,15 @@ export default function ProfilePage() {
                     name="name"
                     value={formData.name}
                     onChange={handleInputChange}
-                    className="mt-1 py-3 rounded-sm placeholder:text-muted-foreground focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-muted-foreground"
+                    className={`mt-1 py-3 rounded-sm placeholder:text-muted-foreground focus-visible:ring-0 focus-visible:ring-offset-0 ${
+                      errors.name
+                        ? "border-red-500 focus-visible:border-red-500"
+                        : "focus-visible:border-muted-foreground"
+                    }`}
                   />
+                  {errors.name && (
+                    <p className="mt-1 text-sm text-red-600">{errors.name}</p>
+                  )}
                 </div>
                 <div>
                   <label
@@ -246,8 +302,17 @@ export default function ProfilePage() {
                     name="username"
                     value={formData.username}
                     onChange={handleInputChange}
-                    className="mt-1 py-3 rounded-sm placeholder:text-muted-foreground focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-muted-foreground"
+                    className={`mt-1 py-3 rounded-sm placeholder:text-muted-foreground focus-visible:ring-0 focus-visible:ring-offset-0 ${
+                      errors.username
+                        ? "border-red-500 focus-visible:border-red-500"
+                        : "focus-visible:border-muted-foreground"
+                    }`}
                   />
+                  {errors.username && (
+                    <p className="mt-1 text-sm text-red-600">
+                      {errors.username}
+                    </p>
+                  )}
                 </div>
                 <div>
                   <label

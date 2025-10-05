@@ -12,16 +12,32 @@ export const EditProfileForm = ({ profile, onSubmit }) => {
     bio: profile?.bio || "",
   });
 
-  console.log("Profile Info", profile);
+  const [errors, setErrors] = useState({}); // 🔴 store error messages
 
   const nameInputRef = useRef();
   const bioInputRef = useRef();
 
   const handleSubmit = () => {
+    const name = nameInputRef.current?.value.trim();
+    const bio = bioInputRef.current?.value.trim();
+
+    const newErrors = {};
+
+    // ✅ Validation rules
+    if (!name) newErrors.name = "Full name is required.";
+    if (!bio) newErrors.bio = "Bio cannot be empty.";
+    else if (bio.length > 120)
+      newErrors.bio = "Bio must be 120 characters or less.";
+
+    setErrors(newErrors);
+
+    // stop submit if errors exist
+    if (Object.keys(newErrors).length > 0) return;
+
     const updateProfileValue = {
-      name: nameInputRef.current.value,
-      bio: bioInputRef.current.value,
-      avatar_url: formData.avatar_url, // This gets the uploaded image URL from state
+      name,
+      bio,
+      avatar_url: formData.avatar_url,
     };
 
     console.log("Submitting profile data:", updateProfileValue);
@@ -44,7 +60,7 @@ export const EditProfileForm = ({ profile, onSubmit }) => {
           </Button>
         </div>
 
-        <form>
+        <form className="max-w-2xl space-y-7">
           {/* Profile Image Uploader */}
           <ProfileImageUploader
             onFileSelect={(url) =>
@@ -53,48 +69,64 @@ export const EditProfileForm = ({ profile, onSubmit }) => {
             initialValue={formData.avatar_url}
           />
 
-          <div className="space-y-7 max-w-2xl">
-            <div>
-              <label htmlFor="name">Full Name</label>
-              <Input
-                id="name"
-                defaultValue={profile.name}
-                ref={nameInputRef}
-                className="mt-1 py-3 border-[#DAD6D1] rounded-sm placeholder:text-muted-foreground focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-muted-foreground"
-              />
-            </div>
+          {/* Full Name */}
+          <div>
+            <label htmlFor="name">Full Name</label>
+            <Input
+              id="name"
+              defaultValue={profile.name}
+              ref={nameInputRef}
+              className={`mt-1 py-3 border-[#DAD6D1] rounded-sm placeholder:text-muted-foreground focus-visible:ring-0 focus-visible:ring-offset-0 ${
+                errors.name
+                  ? "border-red-500"
+                  : "focus-visible:border-muted-foreground"
+              }`}
+            />
+            {errors.name && (
+              <p className="text-red-500 text-sm mt-2">{errors.name}</p>
+            )}
+          </div>
 
-            <div>
-              <label htmlFor="username">Username</label>
-              <Input
-                id="username"
-                defaultValue={profile.username}
-                disabled
-                className="mt-1 py-3 border-[#DAD6D1] rounded-sm placeholder:text-muted-foreground focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-muted-foreground"
-              />
-            </div>
+          {/* Username (disabled) */}
+          <div>
+            <label htmlFor="username">Username</label>
+            <Input
+              id="username"
+              defaultValue={profile.username}
+              disabled
+              className="mt-1 py-3 border-[#DAD6D1] rounded-sm placeholder:text-muted-foreground focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-muted-foreground"
+            />
+          </div>
 
-            <div>
-              <label htmlFor="email">Email</label>
-              <Input
-                id="email"
-                type="email"
-                defaultValue={profile.email}
-                disabled
-                className="mt-1 py-3 border-[#DAD6D1] rounded-sm placeholder:text-muted-foreground focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-muted-foreground"
-              />
-            </div>
+          {/* Email (disabled) */}
+          <div>
+            <label htmlFor="email">Email</label>
+            <Input
+              id="email"
+              type="email"
+              defaultValue={profile.email}
+              disabled
+              className="mt-1 py-3 border-[#DAD6D1] rounded-sm placeholder:text-muted-foreground focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-muted-foreground"
+            />
+          </div>
 
-            <div>
-              <label htmlFor="bio">Bio (max 120 letters)</label>
-              <Textarea
-                id="bio"
-                ref={bioInputRef}
-                defaultValue={profile.bio}
-                rows={10}
-                className="mt-1 py-3 border-[#DAD6D1] rounded-sm placeholder:text-muted-foreground focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-muted-foreground"
-              />
-            </div>
+          {/* Bio */}
+          <div>
+            <label htmlFor="bio">Bio (max 120 letters)</label>
+            <Textarea
+              id="bio"
+              ref={bioInputRef}
+              defaultValue={profile.bio}
+              rows={10}
+              className={`mt-1 py-3 border-[#DAD6D1] rounded-sm placeholder:text-muted-foreground focus-visible:ring-0 focus-visible:ring-offset-0 ${
+                errors.bio
+                  ? "border-red-500"
+                  : "focus-visible:border-muted-foreground"
+              }`}
+            />
+            {errors.bio && (
+              <p className="text-red-500 text-sm mt-2">{errors.bio}</p>
+            )}
           </div>
         </form>
       </main>

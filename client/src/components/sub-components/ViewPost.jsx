@@ -20,13 +20,28 @@ const ViewPost = () => {
   const [likes, setLikes] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [notFound, setNotFound] = useState(false);
+  const [comments, setComments] = useState([]);
 
   const params = useParams();
   const postId = params.id;
   const { data: post } = useQuery(`posts/${params.id}`, [params.id]);
   useEffect(() => {
     getPost();
-  }, []);
+    const fetchComments = async () => {
+      const response = await axios.get(
+        `https://orathai-personal-blog-backend.vercel.app/posts/${postId}/comments`
+      );
+      setComments(response.data);
+    };
+    fetchComments();
+  }, [postId]);
+
+  const handleCommentAdded = async () => {
+    const response = await axios.get(
+      `https://orathai-personal-blog-backend.vercel.app/posts/${postId}/comments`
+    );
+    setComments(response.data);
+  };
 
   const getPost = async () => {
     setIsLoading(true);
@@ -96,7 +111,11 @@ const ViewPost = () => {
           </div>
 
           <Share likesAmount={likes} postId={postId} />
-          <Comment />
+          <Comment
+            postId={postId}
+            comments={comments}
+            onCommentAdded={handleCommentAdded}
+          />
         </div>
 
         <div className="hidden xl:block xl:w-1/4">
