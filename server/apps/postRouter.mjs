@@ -193,7 +193,7 @@ postRouter.post("/:postId/likes", async (req, res) => {
     // Increment the likes count
     const { data: updatedPost, error: updateError } = await supabase
       .from("posts")
-      .update({ likes: (post.like_count || 0) + 1 })
+      .update({ like_count: (post.like_count || 0) + 1 })
       .eq("id", postId)
       .select()
       .single();

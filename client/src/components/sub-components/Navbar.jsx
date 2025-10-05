@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { RxHamburgerMenu } from "react-icons/rx";
-import { FaRegBell } from "react-icons/fa6";
 import { IoIosArrowDown } from "react-icons/io";
 import { RxPerson } from "react-icons/rx";
 import { GrPowerReset } from "react-icons/gr";

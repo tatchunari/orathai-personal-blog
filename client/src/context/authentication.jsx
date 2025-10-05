@@ -11,11 +11,29 @@ function AuthProvider(props) {
     error: null,
     user: null,
     profile: null,
+    token: null,
   });
 
   console.log(`state: `, state);
 
   const navigate = useNavigate();
+
+  // Helper for loading session
+  const loadSession = async () => {
+    const { data, error } = await supabase.auth.getSession();
+    if (error) {
+      console.error("Error loading session:", error);
+      return;
+    }
+
+    const session = data.session;
+
+    setState((prev) => ({
+      ...prev,
+      user: session?.user ?? null,
+      token: session?.access_token ?? null, // ✅ store token
+    }));
+  };
 
   // Fetch current logged-in user
   const fetchUser = async () => {
@@ -35,9 +53,16 @@ function AuthProvider(props) {
         user: null,
         error: error.message,
         getUserLoading: false,
+        token: null,
       }));
     } else {
-      setState((prev) => ({ ...prev, user, getUserLoading: false }));
+      const { data: sessionData } = await supabase.auth.getSession();
+      setState((prev) => ({
+        ...prev,
+        user,
+        getUserLoading: false,
+        token: sessionData?.session?.access_token ?? null,
+      }));
       getProfileById(user.id);
     }
   };
@@ -115,9 +140,13 @@ function AuthProvider(props) {
     const { data: listener } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         if (session?.user) {
-          setState((prev) => ({ ...prev, user: session.user }));
+          setState((prev) => ({
+            ...prev,
+            user: session.user,
+            token: session.access_token,
+          }));
         } else {
-          setState((prev) => ({ ...prev, user: null }));
+          setState((prev) => ({ ...prev, user: null, token: null }));
         }
       }
     );
@@ -163,7 +192,12 @@ function AuthProvider(props) {
 
       console.log("Login data : ", JSON.stringify(data));
 
-      setState((prev) => ({ ...prev, user: data.user, loading: false }));
+      setState((prev) => ({
+        ...prev,
+        user: data.user,
+        token: data.session.access_token,
+        loading: false,
+      }));
       await getProfileById(data.user.id);
       navigate("/");
     } catch (error) {
@@ -175,7 +209,12 @@ function AuthProvider(props) {
   // Logout user
   const logout = async () => {
     await supabase.auth.signOut();
-    setState({ user: null, loading: false, error: null });
+    setState({
+      user: null,
+      token: null,
+      loading: false,
+      error: null,
+    });
     navigate("/");
   };
 

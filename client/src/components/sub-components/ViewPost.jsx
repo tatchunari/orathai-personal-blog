@@ -22,6 +22,7 @@ const ViewPost = () => {
   const [notFound, setNotFound] = useState(false);
 
   const params = useParams();
+  const postId = params.id;
   const { data: post } = useQuery(`posts/${params.id}`, [params.id]);
 
   useEffect(() => {
@@ -95,7 +96,7 @@ const ViewPost = () => {
             <AuthorBio post={post} />
           </div>
 
-          <Share likesAmount={likes} />
+          <Share likesAmount={likes} postId={postId} />
           <Comment />
         </div>
 
