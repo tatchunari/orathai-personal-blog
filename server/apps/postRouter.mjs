@@ -211,4 +211,133 @@ postRouter.post("/:postId/likes", async (req, res) => {
   }
 });
 
+// GET comments for a post
+postRouter.get("/:id/comments", async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const { data, error } = await supabase
+      .from("comments")
+      .select(
+        `
+        *,
+        profiles:user_id (
+          id,
+          name,
+          avatar_url
+        )
+      `
+      )
+      .eq("post_id", parseInt(id))
+      .order("created_at", { ascending: false });
+
+    if (error) return res.status(500).json({ message: error.message });
+
+    return res.status(200).json(data);
+  } catch (e) {
+    return res.status(500).json({ message: e.message });
+  }
+});
+
+// POST a new comment
+postRouter.post("/:id/comments", async (req, res) => {
+  const { id } = req.params;
+  const { content } = req.body;
+
+  try {
+    const token = req.headers.authorization?.split(" ")[1];
+    if (!token) return res.status(401).json({ message: "Missing auth token" });
+
+    const {
+      data: { user },
+      error: userError,
+    } = await supabase.auth.getUser(token);
+
+    if (userError || !user) {
+      return res.status(401).json({ message: "Invalid or expired token" });
+    }
+
+    if (!content || content.trim() === "") {
+      return res.status(400).json({ message: "Comment content is required" });
+    }
+
+    const { data, error } = await supabase
+      .from("comments")
+      .insert([
+        {
+          post_id: parseInt(id),
+          user_id: user.id,
+          content: content.trim(),
+        },
+      ])
+      .select(
+        `
+        *,
+        profiles:user_id (
+          id,
+          name,
+          avatar_url
+        )
+      `
+      )
+      .single();
+
+    if (error) return res.status(500).json({ message: error.message });
+
+    return res.status(201).json({
+      message: "Comment added successfully",
+      comment: data,
+    });
+  } catch (e) {
+    return res.status(500).json({ message: e.message });
+  }
+});
+
+// DELETE a comment (only by the comment author)
+postRouter.delete("/comments/:commentId", async (req, res) => {
+  const { commentId } = req.params;
+
+  try {
+    const token = req.headers.authorization?.split(" ")[1];
+    if (!token) return res.status(401).json({ message: "Missing auth token" });
+
+    const {
+      data: { user },
+      error: userError,
+    } = await supabase.auth.getUser(token);
+
+    if (userError || !user) {
+      return res.status(401).json({ message: "Invalid or expired token" });
+    }
+
+    // Check if comment belongs to user
+    const { data: comment } = await supabase
+      .from("comments")
+      .select("user_id")
+      .eq("id", parseInt(commentId))
+      .single();
+
+    if (!comment) {
+      return res.status(404).json({ message: "Comment not found" });
+    }
+
+    if (comment.user_id !== user.id) {
+      return res
+        .status(403)
+        .json({ message: "Unauthorized to delete this comment" });
+    }
+
+    const { error } = await supabase
+      .from("comments")
+      .delete()
+      .eq("id", parseInt(commentId));
+
+    if (error) return res.status(500).json({ message: error.message });
+
+    return res.status(200).json({ message: "Comment deleted successfully" });
+  } catch (e) {
+    return res.status(500).json({ message: e.message });
+  }
+});
+
 export default postRouter;
