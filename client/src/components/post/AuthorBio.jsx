@@ -4,8 +4,8 @@ const AuthorBio = ({ post }) => {
       <div className="flex items-center mb-4">
         <div className="w-16 h-16 rounded-full overflow-hidden mr-4">
           <img
-            src="https://res.cloudinary.com/dcbpjtd1r/image/upload/v1728449784/my-blog-post/xgfy0xnvyemkklcqodkg.jpg"
-            alt="Thompson P."
+            src={post.profile.avatar_url}
+            alt="author-image"
             className="object-cover w-16 h-16"
           />
         </div>
