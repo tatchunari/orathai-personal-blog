@@ -92,7 +92,8 @@ postRouter.get("/:postId", async (req, res) => {
         profile:user_id (
           id,
           name,
-          bio
+          bio,
+          avatar_url
         )
       `
       )
