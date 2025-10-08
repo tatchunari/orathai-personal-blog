@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
-
+import { toast } from "sonner";
 import { useQuery } from "@/hooks/useQuery";
 import LoadingScreen from "../LoadingScreen";
 import NotFoundPage from "../NotFoundPage";
@@ -10,20 +10,19 @@ const AdminEditArticle = () => {
   const { id } = useParams();
   const { data: post, loading } = useQuery(`posts/${id}`, [id]);
   const { data: categories } = useQuery("category");
-
   const navigate = useNavigate();
-
   const API_BASE = "https://orathai-personal-blog-backend.vercel.app";
+
   const handleSubmit = async (formData) => {
     try {
       const response = await axios.put(`${API_BASE}/posts/${id}`, formData);
       if (response.status === 200) {
-        alert("Post updated successfully!");
+        toast.success("Post updated successfully!");
         navigate("/admin");
       }
     } catch (err) {
       console.error("Update error:", err);
-      alert("Failed to update post.");
+      toast.error("Failed to update post. Please try again.");
     }
   };
 

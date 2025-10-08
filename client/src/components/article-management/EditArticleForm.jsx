@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { toast } from "sonner";
 
 import AdminPanel from "./AdminPanel";
 import ThumbnailUploader from "../sub-components/ImageUploader";
@@ -107,7 +108,7 @@ export const EditArticleForm = ({ post, categories, onSubmit }) => {
   const handleSubmit = (status) => {
     // Validate form before submitting
     if (!validateForm()) {
-      alert("Please fill in all required fields correctly.");
+      toast.error("Please fill in all required fields correctly");
       return;
     }
 

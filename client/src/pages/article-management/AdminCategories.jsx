@@ -1,6 +1,7 @@
 import AdminPanel from "@/components/article-management/AdminPanel";
 import { LuPencil } from "react-icons/lu";
 import { FaRegTrashAlt } from "react-icons/fa";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,6 +13,16 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -25,6 +36,10 @@ const AdminCategories = () => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
 
+  // Alert Dialog state
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [categoryToDelete, setCategoryToDelete] = useState(null);
+
   // Filter categories based on search input
   const filteredCategories = useMemo(() => {
     if (!searchTerm) return data;
@@ -33,15 +48,28 @@ const AdminCategories = () => {
     );
   }, [searchTerm, data]);
 
+  // Open delete confirmation dialog
+  const confirmDelete = (category) => {
+    setCategoryToDelete(category);
+    setDeleteDialogOpen(true);
+  };
+
   // Delete Category
-  const handleDelete = async (id) => {
+  const handleDelete = async () => {
+    if (!categoryToDelete) return;
+
     try {
       await axios.delete(
-        `https://orathai-personal-blog-backend.vercel.app/category/${id}`
+        `https://orathai-personal-blog-backend.vercel.app/category/${categoryToDelete.id}`
       );
+      toast.success("Category deleted successfully!");
+      setDeleteDialogOpen(false);
+      setCategoryToDelete(null);
       window.location.reload();
     } catch (err) {
       console.error("Delete failed:", err);
+      toast.error("Failed to delete category. Please try again.");
+      setDeleteDialogOpen(false);
     }
   };
 
@@ -112,11 +140,7 @@ const AdminCategories = () => {
                       <Button
                         variant="ghost"
                         size="sm"
-                        onClick={() => {
-                          if (confirm("Are you sure?")) {
-                            handleDelete(category.id);
-                          }
-                        }}
+                        onClick={() => confirmDelete(category)}
                       >
                         <FaRegTrashAlt className="h-4 w-4 hover:text-muted-foreground" />
                       </Button>
@@ -128,6 +152,28 @@ const AdminCategories = () => {
           </>
         )}
       </main>
+
+      {/* Delete Confirmation Alert Dialog */}
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent className="bg-white">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete the
+              category "{categoryToDelete?.name}".
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDelete}
+              className="bg-red-400 hover:bg-red-700"
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };

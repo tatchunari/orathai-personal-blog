@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import supabase from "@/lib/supabaseClient";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -134,7 +135,7 @@ const AdminCreateArticle = () => {
   const handleSubmit = async (status) => {
     // Validate form before submitting
     if (!validateForm()) {
-      alert("Please fill in all required fields correctly.");
+      toast.error("Please fill in all required fields correctly");
       return;
     }
 
@@ -146,7 +147,7 @@ const AdminCreateArticle = () => {
       } = await supabase.auth.getSession();
 
       if (!session) {
-        alert("Please log in first!");
+        toast.error("Please log in first!");
         setIsLoading(false);
         return;
       }
@@ -178,7 +179,7 @@ const AdminCreateArticle = () => {
         }
       );
 
-      alert(
+      toast.success(
         `Article ${
           status === "Published" ? "published" : "saved as draft"
         } successfully!`
@@ -187,7 +188,7 @@ const AdminCreateArticle = () => {
     } catch (error) {
       setError(error.message);
       console.log("Errors: ", error.response?.data || error.message);
-      alert("Failed to create article. Please try again.");
+      toast.error("Failed to create article. Please try again.");
     } finally {
       setIsLoading(false);
     }

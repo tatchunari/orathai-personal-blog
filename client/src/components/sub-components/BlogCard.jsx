@@ -6,13 +6,13 @@ function BlogCard(props) {
 
   return (
     <div className="flex flex-col gap-4">
-      <a href="#" className="relative h-[212px] sm:h-[360px]">
+      <Link to={`/post/${id}`} className="relative h-[212px] sm:h-[360px]">
         <img
           className="w-full h-full object-cover rounded-md"
           src={image}
           alt={title}
         />
-      </a>
+      </Link>
       <div className="flex flex-col">
         <div className="flex">
           <span className="bg-[#D7F2E9] rounded-full px-3 py-1 text-sm font-semibold text-[#12B279] mb-2">

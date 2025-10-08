@@ -1,6 +1,7 @@
 // Article Management
 import { LuPencil } from "react-icons/lu";
 import { FaRegTrashAlt } from "react-icons/fa";
+import { toast } from "sonner";
 
 import {
   Select,
@@ -17,6 +18,16 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { InlineLoadingScreen } from "@/components/sub-components/InlineLoadingScreen";
@@ -38,8 +49,11 @@ const AdminArticles = () => {
 
   const { posts, loading } = usePostsData();
   const [search, setSearch] = useState("");
-  // Remove the navigate hook since we'll use onNavigate prop
   const navigate = useNavigate();
+
+  // Alert Dialog state
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [postToDelete, setPostToDelete] = useState(null);
 
   // Filter Logic
   const filteredArticles = posts.filter((article) => {
@@ -50,16 +64,28 @@ const AdminArticles = () => {
     );
   });
 
+  // Open delete confirmation dialog
+  const confirmDelete = (post) => {
+    setPostToDelete(post);
+    setDeleteDialogOpen(true);
+  };
+
   // Delete handler
-  const handleDelete = async (id) => {
+  const handleDelete = async () => {
+    if (!postToDelete) return;
+
     try {
       await axios.delete(
-        `https://orathai-personal-blog-backend.vercel.app/posts/${id}`
+        `https://orathai-personal-blog-backend.vercel.app/posts/${postToDelete.id}`
       );
-      // Optionally re-fetch data or filter locally
-      window.location.reload(); // quick way, but better to refetch
+      toast.success("Article deleted successfully!");
+      setDeleteDialogOpen(false);
+      setPostToDelete(null);
+      window.location.reload(); // Consider using a refetch method instead
     } catch (err) {
       console.error("Delete failed:", err);
+      toast.error("Failed to delete article. Please try again.");
+      setDeleteDialogOpen(false);
     }
   };
 
@@ -91,7 +117,7 @@ const AdminArticles = () => {
                   type="text"
                   placeholder="Search..."
                   value={search}
-                  onChange={(e) => setSearch(e.target.value)} // update state
+                  onChange={(e) => setSearch(e.target.value)}
                   className="w-full py-3 rounded-sm placeholder:text-muted-foreground focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-muted-foreground border-gray-300"
                 />
               </div>
@@ -164,11 +190,7 @@ const AdminArticles = () => {
                       <Button
                         variant="ghost"
                         size="sm"
-                        onClick={() => {
-                          if (confirm("Are you sure?")) {
-                            handleDelete(post.id);
-                          }
-                        }}
+                        onClick={() => confirmDelete(post)}
                       >
                         <FaRegTrashAlt className="h-4 w-4 cursor-pointer hover:text-muted-foreground" />
                       </Button>
@@ -180,6 +202,28 @@ const AdminArticles = () => {
           </>
         )}
       </main>
+
+      {/* Delete Confirmation Alert Dialog */}
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent className="bg-white">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete the
+              article "{postToDelete?.title}".
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDelete}
+              className="bg-red-400 hover:bg-red-700"
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
