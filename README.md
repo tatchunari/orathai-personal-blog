@@ -54,9 +54,9 @@ The project is fully deployed on **Vercel**.
 
 > ⚠️ Note: Environment variables are private and not shared publicly.
 
-If you’d like to explore the admin dashboard:
-
 ---
+
+## Project Structure
 ```
 orathai-blog/
 │
