@@ -57,7 +57,7 @@ The project is fully deployed on **Vercel**.
 If you’d like to explore the admin dashboard:
 
 ---
-
+```
 orathai-blog/
 │
 ├── client/ # React frontend
@@ -80,3 +80,4 @@ orathai-blog/
 │ └── app.mjs
 │
 └── README.md
+```
